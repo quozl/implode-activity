@@ -1,0 +1,36 @@
+
+2007/08/09 - Version 1 released.
+
+2007/11/19 - Version 2 released.
+
+  - Icon modified to display in Mediawiki renderer correctly (works fine
+    everywhere else).
+  - Added a reward graphic when the level is successfully cleared.
+  - Rewrote board data structure to one that should be more effective.
+  - Improved level generator.  The old generator generated some unsolvable
+    levels, and the rest were solvable in a certain way that makes the game
+    easier once you know about it.  The new one should be more robust.
+  - Implemented "new game" and "repeat game" functions.
+  - Completed sliding animation.
+  - Implemented undo/redo.
+  - Added "sugarless" file for developing in a non-Sugar environment.
+  - Ported sugarless code back to activity.
+  - Added new, retry, undo, redo, easy, medium, and hard icons.
+
+TODO: 
+- Add a way to select difficulty.
+- Gamepad/keyboard controls need to be added.
+- Check for internationalizable text.
+- Maybe include a way to regenerate earlier games or games from another
+  laptop?
+- The game could detect a loss and display a "Try again" graphic?
+- The activity needs to save/restore the current game on exit/restart (maybe
+  using the Journal?).
+- Rectangle invalidation could be improved.
+- A tutorial mode or sequence of introductory games might help.
+- The code documentation and organization could be improved. Some
+  calculations are repeated.
+- Audio cues might be nice.
+- Tracking win/loss statistics might be nice.
+
+

@@ -1,0 +1,17 @@
+activity/activity-implode.svg
+activity/activity.info
+board.py
+boardgen.py
+color.py
+gridwidget.py
+icons/easy-level.svg
+icons/edit-redo.svg
+icons/edit-undo.svg
+icons/hard-level.svg
+icons/medium-level.svg
+icons/new-game.svg
+icons/replay-game.svg
+implodeactivity.py
+implodegame.py
+MANIFEST
+NEWS
