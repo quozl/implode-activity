@@ -17,15 +17,19 @@
   - Ported sugarless code back to activity.
   - Added new, retry, undo, redo, easy, medium, and hard icons.
 
+2008/03/29
+
+  - Added Arabic translation courtesy of khaled.
+  - Modified colors for better contrast in b/w mode.
+  - Fixed ticket #5737: Implode smiley face draws over new game.
+
 TODO: 
-- Add a way to select difficulty.
 - Gamepad/keyboard controls need to be added.
-- Check for internationalizable text.
+- The activity needs to save/restore the current game on exit/restart (maybe
+  using the Journal?).
 - Maybe include a way to regenerate earlier games or games from another
   laptop?
 - The game could detect a loss and display a "Try again" graphic?
-- The activity needs to save/restore the current game on exit/restart (maybe
-  using the Journal?).
 - Rectangle invalidation could be improved.
 - A tutorial mode or sequence of introductory games might help.
 - The code documentation and organization could be improved. Some

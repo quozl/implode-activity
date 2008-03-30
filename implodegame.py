@@ -68,6 +68,9 @@ class ImplodeGame(gtk.EventBox):
         self._seed = 0
         self._fragmentation = 0
 
+        self._animating = False
+        self._end_anim_func = None
+
         self._grid = gridwidget.GridWidget()
         self._grid.connect('piece-selected', self._piece_selected_cb)
         self.add(self._grid)
@@ -76,6 +79,7 @@ class ImplodeGame(gtk.EventBox):
 
     def new_game(self):
         _logger.debug('New game.')
+        self._finish_animation()
         self._seed = self._random.randint(0, 99999)
         size_frag_dict = {
             0: (( 8,  6), 0),
@@ -86,11 +90,13 @@ class ImplodeGame(gtk.EventBox):
         self._reset_board()
 
     def replay_game(self):
+        self._finish_animation()
         _logger.debug('Replay game.')
         self._reset_board()
 
     def undo(self):
         _logger.debug('Undo.')
+        self._finish_animation()
         if len(self._undoStack) == 0:
             return
 
@@ -103,6 +109,7 @@ class ImplodeGame(gtk.EventBox):
 
     def redo(self):
         _logger.debug('Redo.')
+        self._finish_animation()
         if len(self._redoStack) == 0:
             return
 
@@ -127,18 +134,28 @@ class ImplodeGame(gtk.EventBox):
 
     def _piece_selected_cb(self, widget, x, y):
         # Handles piece selection.
+        self._finish_animation()
         contiguous = self._board.get_contiguous(x, y)
         if len(contiguous) >= 3:
             self._contiguous = contiguous
             if not self._animate:
                 self._remove_contiguous()
             else:
-                gobject.timeout_add(_TIMER_INTERVAL, self._removal_timer)
                 self._start_time = time.time()
                 self._animation_mode = 0
                 self._grid.set_removal_block_set(contiguous)
                 self._grid.set_animation_mode(_ANIM_MODES[0])
                 self._grid.set_animation_percent(0.0)
+                self._animating = True
+                self._end_anim_func = self._end_removal_animation
+                gobject.timeout_add(_TIMER_INTERVAL, self._removal_timer)
+
+    def _finish_animation(self):
+        if self._end_anim_func:
+            temp_animate = self._animate
+            self._animate = False
+            self._end_anim_func()
+            self._animate = temp_animate
 
     def _remove_contiguous(self):
         self._redoStack = []
@@ -154,10 +171,12 @@ class ImplodeGame(gtk.EventBox):
             if not self._animate:
                 self._init_win_state()
             else:
-                gobject.timeout_add(_TIMER_INTERVAL, self._win_timer)
                 self._start_time = time.time()
                 self._grid.set_animation_mode(gridwidget.ANIMATE_WIN)
                 self._grid.set_animation_percent(0.0)
+                self._animating = True
+                self._end_anim_func = self._end_win_animation
+                gobject.timeout_add(_TIMER_INTERVAL, self._win_timer)
         else:
             contiguous = self._board.get_all_contiguous()
             if len(contiguous) == 0:
@@ -170,6 +189,8 @@ class ImplodeGame(gtk.EventBox):
         pass
 
     def _win_timer(self):
+        if not self._animating:
+            return False
         delta = time.time() - self._start_time
         total = _WIN_ANIM_TIME * self._grid.get_animation_length()
         if total > 0:
@@ -177,11 +198,18 @@ class ImplodeGame(gtk.EventBox):
             if percent < 1.0:
                 self._grid.set_animation_percent(percent)
                 return True
-        self._grid.set_animation_mode(gridwidget.ANIMATE_NONE)
-        self._init_win_state()
+        self._end_win_animation()
         return False
 
+    def _end_win_animation(self):
+        self._animating = False
+        self._end_anim_func = None
+        self._grid.set_animation_mode(gridwidget.ANIMATE_NONE)
+        self._init_win_state()
+
     def _removal_timer(self):
+        if not self._animating:
+            return False
         delta = time.time() - self._start_time
         total = (_ANIM_TIMES[_ANIM_MODES[self._animation_mode]]
                  * self._grid.get_animation_length())
@@ -192,8 +220,7 @@ class ImplodeGame(gtk.EventBox):
                 return True
         self._animation_mode += 1
         if self._animation_mode >= len(_ANIM_MODES):
-            self._grid.set_animation_mode(gridwidget.ANIMATE_NONE)
-            self._remove_contiguous()
+            self._end_removal_animation()
             return False
         else:
             self._grid.set_animation_mode(_ANIM_MODES[self._animation_mode])
@@ -201,3 +228,8 @@ class ImplodeGame(gtk.EventBox):
             self._start_time = time.time()
             return True
 
+    def _end_removal_animation(self):
+        self._animating = False
+        self._end_anim_func = None
+        self._grid.set_animation_mode(gridwidget.ANIMATE_NONE)
+        self._remove_contiguous()
