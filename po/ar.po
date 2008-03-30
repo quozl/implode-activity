@@ -1,0 +1,52 @@
+# Arabic translations for PACKAGE package.
+# Copyright (C) 2008 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#  <olpc@xo-05-25-9a.localdomain>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-02-29 20:42+0200\n"
+"PO-Revision-Date: 2008-02-29 20:18+0200\n"
+"Last-Translator:  <olpc@xo-05-25-9a.localdomain>\n"
+"Language-Team: Arabic\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: activity/activity.info:2
+msgid "Implode"
+msgstr "التهاوي"
+
+#: implodeactivity.py:98
+msgid "New"
+msgstr "جديد"
+
+#: implodeactivity.py:99
+msgid "Replay"
+msgstr "أعِد اللعب"
+
+#: implodeactivity.py:100
+msgid "Undo"
+msgstr "تراجع"
+
+#: implodeactivity.py:101
+msgid "Redo"
+msgstr "أعِد"
+
+#: implodeactivity.py:120
+msgid "Easy"
+msgstr "سهل"
+
+#: implodeactivity.py:121
+msgid "Medium"
+msgstr "متوسط"
+
+#: implodeactivity.py:122
+msgid "Hard"
+msgstr "صعب"
+
+#: implodeactivity.py:124
+msgid "Game"
+msgstr "اللعبة"

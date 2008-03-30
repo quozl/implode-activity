@@ -13,5 +13,8 @@ icons/new-game.svg
 icons/replay-game.svg
 implodeactivity.py
 implodegame.py
+po/Implode.pot
+po/ar.po
+setup.py
 MANIFEST
 NEWS

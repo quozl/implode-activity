@@ -1,0 +1,53 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-02-29 20:42+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: activity/activity.info:2
+msgid "Implode"
+msgstr ""
+
+#: implodeactivity.py:98
+msgid "New"
+msgstr ""
+
+#: implodeactivity.py:99
+msgid "Replay"
+msgstr ""
+
+#: implodeactivity.py:100
+msgid "Undo"
+msgstr ""
+
+#: implodeactivity.py:101
+msgid "Redo"
+msgstr ""
+
+#: implodeactivity.py:120
+msgid "Easy"
+msgstr ""
+
+#: implodeactivity.py:121
+msgid "Medium"
+msgstr ""
+
+#: implodeactivity.py:122
+msgid "Hard"
+msgstr ""
+
+#: implodeactivity.py:124
+msgid "Game"
+msgstr ""

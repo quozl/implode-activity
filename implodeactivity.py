@@ -95,10 +95,10 @@ class _Toolbox(ActivityToolbox):
 
             return button
 
-        add_button('new-game'   , "New"   , 'new-game-clicked')
-        add_button('replay-game', "Replay", 'replay-game-clicked')
-        add_button('edit-undo'  , "Undo"  , 'undo-clicked')
-        add_button('edit-redo'  , "Redo"  , 'redo-clicked')
+        add_button('new-game'   , _("New")   , 'new-game-clicked')
+        add_button('replay-game', _("Replay"), 'replay-game-clicked')
+        add_button('edit-undo'  , _("Undo")  , 'undo-clicked')
+        add_button('edit-redo'  , _("Redo")  , 'redo-clicked')
 
         toolbar.add(gtk.SeparatorToolItem())
 
@@ -117,10 +117,10 @@ class _Toolbox(ActivityToolbox):
             button.connect('clicked', callback)
             button.set_tooltip(tooltip)
 
-        add_level_button('easy-level'  , "Easy"  , 'easy-clicked')
-        add_level_button('medium-level', "Medium", 'medium-clicked')
-        add_level_button('hard-level'  , "Hard"  , 'hard-clicked')
+        add_level_button('easy-level'  , _("Easy")  , 'easy-clicked')
+        add_level_button('medium-level', _("Medium"), 'medium-clicked')
+        add_level_button('hard-level'  , _("Hard")  , 'hard-clicked')
 
-        self.add_toolbar('Game', toolbar)
+        self.add_toolbar(_("Game"), toolbar)
         self.set_current_toolbar(1)
 

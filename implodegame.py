@@ -76,7 +76,6 @@ class ImplodeGame(gtk.EventBox):
 
     def new_game(self):
         _logger.debug('New game.')
-        print "New game"
         self._seed = self._random.randint(0, 99999)
         size_frag_dict = {
             0: (( 8,  6), 0),
@@ -87,12 +86,10 @@ class ImplodeGame(gtk.EventBox):
         self._reset_board()
 
     def replay_game(self):
-        print "Replay game"
         _logger.debug('Replay game.')
         self._reset_board()
 
     def undo(self):
-        print "Undo"
         _logger.debug('Undo.')
         if len(self._undoStack) == 0:
             return
@@ -105,7 +102,6 @@ class ImplodeGame(gtk.EventBox):
         self._grid.set_win_draw_flag(False)
 
     def redo(self):
-        print "Redo"
         _logger.debug('Redo.')
         if len(self._redoStack) == 0:
             return
