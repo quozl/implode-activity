@@ -59,6 +59,38 @@ _SMILEY = """
     ..xxxxxx..
 """
 
+_KEY_MAP = {
+    gtk.keysyms.KP_Up        : 'up',
+    gtk.keysyms.KP_Down      : 'down',
+    gtk.keysyms.KP_Left      : 'left',
+    gtk.keysyms.KP_Right     : 'right',
+
+    gtk.keysyms.Up           : 'up',
+    gtk.keysyms.Down         : 'down',
+    gtk.keysyms.Left         : 'left',
+    gtk.keysyms.Right        : 'right',
+
+    gtk.keysyms.uparrow      : 'up',
+    gtk.keysyms.downarrow    : 'down',
+    gtk.keysyms.leftarrow    : 'left',
+    gtk.keysyms.rightarrow   : 'right',
+
+    gtk.keysyms.Return       : 'select',
+    gtk.keysyms.KP_Space     : 'select',
+    gtk.keysyms.KP_Enter     : 'select',
+    gtk.keysyms.space        : 'select',
+    gtk.keysyms.End          : 'select',
+    gtk.keysyms.KP_End       : 'select',
+
+    gtk.keysyms.Home         : 'new',
+    gtk.keysyms.KP_Home      : 'new',
+    gtk.keysyms.Page_Down    : 'redo',
+    gtk.keysyms.KP_Page_Down : 'redo',
+    gtk.keysyms.Page_Up      : 'undo',
+    gtk.keysyms.KP_Page_Up   : 'undo',
+}
+
+
 # Animation modes.
 ANIMATE_NONE = 0
 ANIMATE_SHRINK = 1
@@ -85,8 +117,12 @@ class GridWidget(gtk.DrawingArea):
     """Gtk widget for rendering the game board."""
 
     __gsignals__ = {
-        'piece-selected': (gobject.SIGNAL_RUN_LAST, None, (int, int)),
+        'piece-selected'  : (gobject.SIGNAL_RUN_LAST, None, (int, int)),
+        'undo-key-pressed': (gobject.SIGNAL_RUN_LAST, None, (int,)),
+        'redo-key-pressed': (gobject.SIGNAL_RUN_LAST, None, (int,)),
+        'new-key-pressed' : (gobject.SIGNAL_RUN_LAST, None, (int,)),
         'button-press-event': 'override',
+        'key-press-event': 'override',
         'expose-event': 'override',
         'size-allocate': 'override',
         'motion-notify-event': 'override',
@@ -95,7 +131,9 @@ class GridWidget(gtk.DrawingArea):
     def __init__(self, *args, **kwargs):
         super(GridWidget, self).__init__(*args, **kwargs)
         self.set_events(gtk.gdk.BUTTON_PRESS_MASK
-                        | gtk.gdk.POINTER_MOTION_MASK)
+                        | gtk.gdk.POINTER_MOTION_MASK
+                        | gtk.gdk.KEY_PRESS_MASK)
+        self.set_flags(gtk.CAN_FOCUS)
         self._board = None
         self._board_width = 0
         self._board_height = 0
@@ -129,6 +167,12 @@ class GridWidget(gtk.DrawingArea):
         self._recalc_contiguous_map()
         self._init_board_layout(self.allocation.width,
                                 self.allocation.height)
+        if self._selected_cell is not None:
+            # If a cell is selected, clamp it to new board boundaries.
+            (x, y) = self._selected_cell
+            x = max(0, min(self._board_width  - 1, x))
+            y = max(0, min(self._board_height - 1, y))
+            self._selected_cell = (x, y)
         self._invalidate_board()
 
     def set_removal_block_set(self, value):
@@ -172,9 +216,63 @@ class GridWidget(gtk.DrawingArea):
         # Ignore mouse clicks while animating.
         if self._animation_mode != ANIMATE_NONE:
             return
+        self.grab_focus()
         self._set_mouse_selection(event.x, event.y)
         if self._selected_cell is not None:
             self.emit('piece-selected', *self._selected_cell)
+
+    def select_center_cell(self):
+        if not self._board_is_valid():
+            return
+        if self._selected_cell is not None:
+            self._invalidate_selection(self._selected_cell)
+        self._selected_cell = (int(self._board_width / 2),
+                               self._board_height - 1)
+        self._invalidate_selection(self._selected_cell)
+
+    @_log_errors
+    def do_key_press_event(self, event):
+        action = _KEY_MAP.get(event.keyval, None)
+        if action == 'new':
+            self.emit('new-key-pressed', 0)
+            return True
+        # Ignore key presses while animating.
+        if self._animation_mode != ANIMATE_NONE:
+            return False
+        if not self._board_is_valid():
+            self._selected_cell = None
+            return False
+        else:
+            if self._selected_cell is None:
+                self.select_center_cell()
+                return True
+            else:
+                if action == 'select':
+                    self.emit('piece-selected', *self._selected_cell)
+                    return True
+                elif action == 'undo':
+                    self.emit('undo-key-pressed', 0)
+                    return True
+                elif action == 'redo':
+                    self.emit('redo-key-pressed', 0)
+                    return True
+                else:
+                    (x, y) = self._selected_cell
+                    if action == 'up':
+                        y = min(self._board_height - 1, y + 1)
+                    elif action == 'down':
+                        y = max(0, y - 1)
+                    elif action == 'left':
+                        x = max(0, x - 1)
+                    elif action == 'right':
+                        x = min(self._board_width - 1, x + 1)
+                    if self._selected_cell != (x, y):
+                        self._invalidate_selection(self._selected_cell)
+                        self._selected_cell = (x, y)
+                        self._invalidate_selection(self._selected_cell)
+                        return True
+                    else:
+                        return False
 
     @_log_errors
     def do_motion_notify_event(self, event):

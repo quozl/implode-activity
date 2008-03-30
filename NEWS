@@ -22,9 +22,9 @@
   - Added Arabic translation courtesy of khaled.
   - Modified colors for better contrast in b/w mode.
   - Fixed ticket #5737: Implode smiley face draws over new game.
+  - Added initial gamepad/keyboard support.
 
 TODO: 
-- Gamepad/keyboard controls need to be added.
 - The activity needs to save/restore the current game on exit/restart (maybe
   using the Journal?).
 - Maybe include a way to regenerate earlier games or games from another

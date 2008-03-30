@@ -79,6 +79,7 @@ class ImplodeWindow(gtk.Window):
         self.add(main_box)
 
         self.show_all()
+        self.game.grab_focus()
 
     def _delete_event_cb(self, window, event):
         gtk.main_quit()

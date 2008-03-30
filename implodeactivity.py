@@ -67,6 +67,7 @@ class ImplodeActivity(Activity):
 
         self.set_canvas(self._game)
         self.show_all()
+        self._game.grab_focus()
 
 class _Toolbox(ActivityToolbox):
     __gsignals__ = {

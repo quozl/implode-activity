@@ -73,9 +73,16 @@ class ImplodeGame(gtk.EventBox):
 
         self._grid = gridwidget.GridWidget()
         self._grid.connect('piece-selected', self._piece_selected_cb)
+        self._grid.connect('undo-key-pressed', self._undo_key_pressed_cb)
+        self._grid.connect('redo-key-pressed', self._redo_key_pressed_cb)
+        self._grid.connect('new-key-pressed', self._new_key_pressed_cb)
         self.add(self._grid)
 
         self.new_game()
+
+    def grab_focus(self):
+        self._grid.grab_focus()
+        self._grid.select_center_cell()
 
     def new_game(self):
         _logger.debug('New game.')
@@ -149,6 +156,18 @@ class ImplodeGame(gtk.EventBox):
                 self._animating = True
                 self._end_anim_func = self._end_removal_animation
                 gobject.timeout_add(_TIMER_INTERVAL, self._removal_timer)
+
+    def _undo_key_pressed_cb(self, widget, dummy):
+        self.undo()
+
+    def _redo_key_pressed_cb(self, widget, dummy):
+        self.redo()
+
+    def _new_key_pressed_cb(self, widget, dummy):
+        # Only invoke new command via game pad if board is clear, to prevent
+        # terrible accidents.
+        if self._board.is_empty():
+            self.new_game()
 
     def _finish_animation(self):
         if self._end_anim_func:
