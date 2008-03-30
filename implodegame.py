@@ -184,6 +184,9 @@ class ImplodeGame(gtk.EventBox):
 
     def _init_win_state(self):
         self._grid.set_win_draw_flag(True)
+        # Clear the undo stack so that the undo/redo buttons do nothing after
+        # winning.
+        self._undoStack = []
 
     def _init_lose_state(self):
         pass
