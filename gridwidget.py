@@ -28,7 +28,7 @@ import random
 import color
 
 # Color of the background.
-_BG_COLOR = (0.5, 0.5, 0.7)
+_BG_COLOR = (0.35, 0.35, 0.7)
 
 # Color of the selection border.
 _SELECTED_COLOR = (1.0, 1.0, 1.0)
