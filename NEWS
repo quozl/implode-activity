@@ -24,11 +24,11 @@
   - Fixed ticket #5737: Implode smiley face draws over new game.
   - Added initial gamepad/keyboard support.
 
+2008/04/01
+
+  - Added Journal suspend/resume.
+
 TODO: 
-- The activity needs to save/restore the current game on exit/restart (maybe
-  using the Journal?).
-- Maybe include a way to regenerate earlier games or games from another
-  laptop?
 - The game could detect a loss and display a "Try again" graphic?
 - Rectangle invalidation could be improved.
 - A tutorial mode or sequence of introductory games might help.

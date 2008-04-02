@@ -27,7 +27,8 @@ from sugar.graphics.radiotoolbutton import RadioToolButton
 
 import implodegame
 
-#import sys, os
+import os
+import json
 import gtk
 import gobject
 
@@ -68,6 +69,35 @@ class ImplodeActivity(Activity):
         self.set_canvas(self._game)
         self.show_all()
         self._game.grab_focus()
+
+        last_game_path = self._get_last_game_path()
+        if os.path.exists(last_game_path):
+            self.read_file(last_game_path)
+
+    def _get_last_game_path(self):
+        return os.path.join(self.get_activity_root(), 'data', 'last_game')
+
+    def read_file(self, file_path):
+        # Loads the game state from a file.
+        f = file(file_path, 'rt')
+        file_data = json.read(f.read())
+        f.close()
+        print file_data
+        _logger.debug(file_data)
+        (file_type, version, game_data) = file_data
+        if file_type == 'Implode save game' and version <= [1, 0]:
+            self._game.set_game_state(game_data)
+
+    def write_file(self, file_path):
+        # Writes the game state to a file.
+        game_data = self._game.get_game_state()
+        file_data = ['Implode save game', [1, 0], game_data]
+        content = json.write(file_data)
+        last_game_path = self._get_last_game_path()
+        for path in (file_path, last_game_path):
+            f = file(path, 'wt')
+            f.write(content)
+            f.close()
 
 class _Toolbox(ActivityToolbox):
     __gsignals__ = {
@@ -124,4 +154,3 @@ class _Toolbox(ActivityToolbox):
 
         self.add_toolbar(_("Game"), toolbar)
         self.set_current_toolbar(1)
-

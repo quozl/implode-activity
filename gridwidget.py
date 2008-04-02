@@ -194,6 +194,19 @@ class GridWidget(gtk.DrawingArea):
             self._win_draw_flag = value
             self._invalidate_board()
 
+    def get_win_draw_flag(self):
+        return self._win_draw_flag
+
+    def get_win_color(self):
+        return self._win_color
+
+    def set_win_state(self, draw_flag, win_color):
+        self._win_draw_flag = draw_flag
+        if draw_flag:
+            self._recalc_win_animation_frames()
+            self._win_color = win_color
+            self._invalidate_board()
+
     def get_animation_length(self):
         if self._animation_mode == ANIMATE_NONE:
             return 0.0

@@ -129,6 +129,48 @@ class ImplodeGame(gtk.EventBox):
     def set_level(self, level):
         self._difficulty = level
 
+    def get_game_state(self):
+        # Returns a dictionary containing the game state, in atomic subobjects.
+        def encode_board(b):
+            (w, h) = (b.width, b.height)
+            data = []
+            for i in range(h):
+                for j in range(w):
+                    data.append(b.get_value(j, i))
+            return [w, h] + data
+        return {
+            'difficulty' : self._difficulty,
+            'seed' : self._seed,
+            'size' : self._size,
+            'fragmentation' : self._fragmentation,
+            'board' : encode_board(self._board),
+            'undo_stack': [encode_board(b) for b in self._undoStack],
+            'redo_stack': [encode_board(b) for b in self._redoStack],
+            'win_draw_flag': self._grid.get_win_draw_flag(),
+            'win_color': self._grid.get_win_color(),
+        }
+
+    def set_game_state(self, state):
+        # Sets the game state using a dictionary of atomic subobjects.
+        self._finish_animation()
+        def decode_board(state):
+            b = board.Board()
+            (w, h) = (state[0], state[1])
+            data = state[2:]
+            for i in range(h):
+                for j in range(w):
+                    b.set_value(j, i, data.pop(0))
+            return b
+        self._difficulty = state['difficulty']
+        self._seed = state['seed']
+        self._size = state['size']
+        self._fragmentation = state['fragmentation']
+        self._board = decode_board(state['board'])
+        self._undoStack = [decode_board(x) for x in state['undo_stack']]
+        self._redoStack = [decode_board(x) for x in state['redo_stack']]
+        self._grid.set_board(self._board)
+        self._grid.set_win_state(state['win_draw_flag'], state['win_color'])
+
     def _reset_board(self):
         # Regenerates the board with the current seed.
         self._board = boardgen.generate_board(seed=self._seed,
