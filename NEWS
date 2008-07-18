@@ -1,3 +1,5 @@
+4
+
 
 2007/08/09 - Version 1 released.
 
@@ -28,6 +30,10 @@
 
   - Added Journal suspend/resume.
   - Version 3 released.
+
+2008/07/17
+
+  - Updated to run with new version of Sugar API.
 
 TODO: 
 - The game could detect a loss and display a "Try again" graphic?

@@ -136,9 +136,9 @@ class _Toolbox(ActivityToolbox):
         levels = []
         def add_level_button(icon_name, tooltip, signal_name):
             if levels:
-                button = RadioToolButton(icon_name, levels[0])
+                button = RadioToolButton(named_icon=icon_name, group=levels[0])
             else:
-                button = RadioToolButton(icon_name)
+                button = RadioToolButton(named_icon=icon_name)
             levels.append(button)
             toolbar.add(button)
 
