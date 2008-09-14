@@ -35,6 +35,10 @@
 
   - Updated to run with new version of Sugar API.
 
+2008/09/14
+
+  - Augmented license information.
+
 TODO: 
 - The game could detect a loss and display a "Try again" graphic?
 - Rectangle invalidation could be improved.
