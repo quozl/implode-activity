@@ -15,5 +15,7 @@ implodeactivity.py
 implodegame.py
 po/Implode.pot
 po/ar.po
+po/es.po
 setup.py
+COPYING
 NEWS
