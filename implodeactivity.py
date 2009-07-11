@@ -28,7 +28,12 @@ from sugar.graphics.radiotoolbutton import RadioToolButton
 import implodegame
 
 import os
-import json
+try:
+    import json
+    json.dumps
+except (ImportError, AttributeError):
+    import simplejson as json
+from StringIO import StringIO
 import gtk
 import gobject
 
@@ -80,8 +85,11 @@ class ImplodeActivity(Activity):
     def read_file(self, file_path):
         # Loads the game state from a file.
         f = file(file_path, 'rt')
-        file_data = json.read(f.read())
+        content = f.read()
+        io = StringIO(content)
+        file_data = json.load(io)
         f.close()
+
         print file_data
         _logger.debug(file_data)
         (file_type, version, game_data) = file_data
@@ -92,10 +100,12 @@ class ImplodeActivity(Activity):
         # Writes the game state to a file.
         game_data = self._game.get_game_state()
         file_data = ['Implode save game', [1, 0], game_data]
-        content = json.write(file_data)
         last_game_path = self._get_last_game_path()
         for path in (file_path, last_game_path):
             f = file(path, 'wt')
+            io = StringIO()
+            json.dump(file_data,io)
+            content = io.getvalue()
             f.write(content)
             f.close()
 
