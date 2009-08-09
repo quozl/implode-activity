@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (C) 2007, Joseph C. Lee
+# Copyright (C) 2007-2009, Joseph C. Lee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ import gobject
 import gtk
 import math
 import random
+import time
 
 import color
 
@@ -99,6 +100,23 @@ ANIMATE_SLIDE = 3
 ANIMATE_ZOOM = 4
 ANIMATE_WIN = 5
 
+# A list of the animation stages in order, along with time on-screen (in
+# seconds per tick).
+_ANIM_TIME_LIST = (
+    (ANIMATE_SHRINK, 0.1),
+    (ANIMATE_FALL,   0.1),
+    (ANIMATE_SLIDE,  0.1),
+    (ANIMATE_ZOOM,   0.1),
+)
+_ANIM_MODES = [x[0] for x in _ANIM_TIME_LIST]
+_ANIM_TIMES = dict(_ANIM_TIME_LIST)
+
+# Win animation time on screen (in seconds per tick).
+_WIN_ANIM_TIME = 0.04
+
+# Animation timer interval (in msec)
+_TIMER_INTERVAL = 20
+
 #import traceback
 #def _log_errors(func):
 #    # A function decorator to add error logging to selected functions.
@@ -134,6 +152,148 @@ class GridWidget(gtk.DrawingArea):
                         | gtk.gdk.POINTER_MOTION_MASK
                         | gtk.gdk.KEY_PRESS_MASK)
         self.set_flags(gtk.CAN_FOCUS)
+
+        self._drawer = GridDrawer(get_size_func=self._get_size,
+                                  invalidate_rect_func=self._invalidate_rect)
+
+    def _get_size(self):
+        return (self.allocation.width, self.allocation.height)
+
+    def _invalidate_rect(self, rect):
+        if self.window:
+            self.window.invalidate_rect(rect, True)
+
+    # NOTE: There is a lot of forwarding to the drawer here, which may benefit
+    # from better separation of responsibilities.
+
+    def set_board(self, board):
+        self._drawer.set_board(board)
+
+    def set_removal_block_set(self, value):
+        self._drawer.set_removal_block_set(value)
+
+    def set_animation_mode(self, value):
+        self._drawer.set_animation_mode(value)
+
+    def set_animation_mode(self, value):
+        self._drawer.set_animation_mode(value)
+
+    def set_animation_percent(self, value):
+        self._drawer.set_animation_percent(value)
+
+    def set_win_draw_flag(self, value):
+        self._drawer.set_win_draw_flag(value)
+
+    def get_win_draw_flag(self):
+        return self._drawer.get_win_draw_flag()
+
+    def get_win_color(self):
+        return self._drawer.get_win_color()
+
+    def set_win_state(self, draw_flag, win_color):
+        self._drawer.set_win_state(draw_flag, win_color)
+
+    def get_animation_length(self):
+        return self._drawer.get_animation_length()
+
+    def select_center_cell(self):
+        self._drawer.select_center_cell()
+
+    @_log_errors
+    def do_button_press_event(self, event):
+        # Ignore mouse clicks while animating.
+        if self._drawer.get_animation_mode() != ANIMATE_NONE:
+            return
+        self.grab_focus()
+        self._drawer.set_mouse_selection(event.x, event.y)
+        selected_cell = self._drawer.get_selected_cell()
+        if selected_cell is not None:
+            self.emit('piece-selected', *selected_cell)
+
+    @_log_errors
+    def do_key_press_event(self, event):
+        action = _KEY_MAP.get(event.keyval, None)
+        if action == 'new':
+            self.emit('new-key-pressed', 0)
+            return True
+        # Ignore key presses while animating.
+        if self._drawer.get_animation_mode() != ANIMATE_NONE:
+            return False
+        if not self._drawer.board_is_valid():
+            self._drawer.set_selected_cell(None)
+            return False
+        else:
+            selected_cell = self._drawer.get_selected_cell()
+            if selected_cell is None:
+                self._drawer.select_center_cell()
+                return True
+            else:
+                if action == 'select':
+                    self.emit('piece-selected', *selected_cell)
+                    return True
+                elif action == 'undo':
+                    self.emit('undo-key-pressed', 0)
+                    return True
+                elif action == 'redo':
+                    self.emit('redo-key-pressed', 0)
+                    return True
+                else:
+                    offsets = {'up'    : ( 0,  1),
+                               'down'  : ( 0, -1),
+                               'left'  : (-1,  0),
+                               'right' : ( 1,  0)}
+                    if action in offsets:
+                        offset = offsets[action]
+                        return self._drawer.move_selected_cell(*offset)
+                    else:
+                        return False
+
+    @_log_errors
+    def do_motion_notify_event(self, event):
+        if event.is_hint:
+            (x, y, state) = event.window.get_pointer()
+        else:
+            x = event.x
+            y = event.y
+            state = event.state
+        self._drawer.set_mouse_selection(x, y)
+
+    @_log_errors
+    def do_expose_event(self, event):
+        cr = self.window.cairo_create()
+        cr.rectangle(event.area.x,
+                     event.area.y,
+                     event.area.width,
+                     event.area.height)
+        cr.clip()
+        (width, height) = self.window.get_size()
+        self._drawer.draw(cr, width, height)
+
+    @_log_errors
+    def do_size_allocate(self, allocation):
+        super(GridWidget, self).do_size_allocate(self, allocation)
+        self._drawer.init_board_layout(allocation.width, allocation.height)
+
+    def start_removal_anim(self, end_anim_func, contiguous):
+        anim = RemovalAnim(self, end_anim_func, contiguous)
+        anim.start()
+        return anim
+
+    def start_win_anim(self, end_anim_func):
+        anim = WinAnim(self, end_anim_func)
+        anim.start()
+        return anim
+
+
+# NOTE: We separate the drawing/interaction code from the GTK widget code so
+# that we can reuse the drawing in a widget that draws more on top; apparently
+# GTK doesn't like overlapping widgets.
+
+class GridDrawer(object):
+    """Object to manage drawing/animation of game board."""
+
+    def __init__(self, get_size_func, invalidate_rect_func, *args, **kwargs):
+        super(GridDrawer, self).__init__(*args, **kwargs)
         self._board = None
         self._board_width = 0
         self._board_height = 0
@@ -161,12 +321,16 @@ class GridWidget(gtk.DrawingArea):
         # Drawing offset and scale.
         self._board_transform = None
 
+        # Callback functions set by owner.
+        self._get_size_func = get_size_func
+        self._invalidate_rect_func = invalidate_rect_func
+
     def set_board(self, value):
         self._board = value
         self._recalc_board_dimensions()
         self._recalc_contiguous_map()
-        self._init_board_layout(self.allocation.width,
-                                self.allocation.height)
+        (width, height) = self._get_size_func()
+        self.init_board_layout(width, height)
         if self._selected_cell is not None:
             # If a cell is selected, clamp it to new board boundaries.
             (x, y) = self._selected_cell
@@ -184,6 +348,9 @@ class GridWidget(gtk.DrawingArea):
         if value == ANIMATE_WIN:
             self._recalc_win_animation_frames()
         self._invalidate_board()
+
+    def get_animation_mode(self):
+        return self._animation_mode
 
     def set_animation_percent(self, value):
         self._animation_percent = value
@@ -224,18 +391,14 @@ class GridWidget(gtk.DrawingArea):
             for coord in contiguous:
                 self._contiguous_map[coord] = contiguous
 
-    @_log_errors
-    def do_button_press_event(self, event):
-        # Ignore mouse clicks while animating.
-        if self._animation_mode != ANIMATE_NONE:
-            return
-        self.grab_focus()
-        self._set_mouse_selection(event.x, event.y)
-        if self._selected_cell is not None:
-            self.emit('piece-selected', *self._selected_cell)
+    def get_selected_cell(self):
+        return self._selected_cell
+
+    def set_selected_cell(self, value):
+        self._selected_cell = value
 
     def select_center_cell(self):
-        if not self._board_is_valid():
+        if not self.board_is_valid():
             return
         if self._selected_cell is not None:
             self._invalidate_selection(self._selected_cell)
@@ -243,62 +406,24 @@ class GridWidget(gtk.DrawingArea):
                                self._board_height - 1)
         self._invalidate_selection(self._selected_cell)
 
-    @_log_errors
-    def do_key_press_event(self, event):
-        action = _KEY_MAP.get(event.keyval, None)
-        if action == 'new':
-            self.emit('new-key-pressed', 0)
+    def move_selected_cell(self, x_offset, y_offset):
+        # Moves the selected cell in the direction of the given offset,
+        # returning True if the cell changed after clamping, False otherwise.
+        (x, y) = self._selected_cell
+        x = max(0, min(self._board_width - 1, x + x_offset))
+        y = max(0, min(self._board_height - 1, y + y_offset))
+        if self._selected_cell == (x, y):
+            return False
+        else:
+            self._invalidate_selection(self._selected_cell)
+            self._selected_cell = (x, y)
+            self._invalidate_selection(self._selected_cell)
             return True
-        # Ignore key presses while animating.
-        if self._animation_mode != ANIMATE_NONE:
-            return False
-        if not self._board_is_valid():
-            self._selected_cell = None
-            return False
-        else:
-            if self._selected_cell is None:
-                self.select_center_cell()
-                return True
-            else:
-                if action == 'select':
-                    self.emit('piece-selected', *self._selected_cell)
-                    return True
-                elif action == 'undo':
-                    self.emit('undo-key-pressed', 0)
-                    return True
-                elif action == 'redo':
-                    self.emit('redo-key-pressed', 0)
-                    return True
-                else:
-                    (x, y) = self._selected_cell
-                    if action == 'up':
-                        y = min(self._board_height - 1, y + 1)
-                    elif action == 'down':
-                        y = max(0, y - 1)
-                    elif action == 'left':
-                        x = max(0, x - 1)
-                    elif action == 'right':
-                        x = min(self._board_width - 1, x + 1)
-                    if self._selected_cell != (x, y):
-                        self._invalidate_selection(self._selected_cell)
-                        self._selected_cell = (x, y)
-                        self._invalidate_selection(self._selected_cell)
-                        return True
-                    else:
-                        return False
 
-    @_log_errors
-    def do_motion_notify_event(self, event):
-        if event.is_hint:
-            (x, y, state) = event.window.get_pointer()
-        else:
-            x = event.x
-            y = event.y
-            state = event.state
-        self._set_mouse_selection(x, y)
-
-    def _set_mouse_selection(self, x, y):
-        if not self._board_is_valid():
+    def set_mouse_selection(self, x, y):
+        # Sets the mouse selection to the block corresponding to the given x
+        # and y coordinates.
+        if not self.board_is_valid():
             self._selected_cell = None
             return
         old_selection = self._selected_cell
@@ -330,18 +455,16 @@ class GridWidget(gtk.DrawingArea):
         max_x2 = math.ceil( max(pt1[0], pt2[0])) + 1
         min_y2 = math.floor(min(pt1[1], pt2[1])) - 1
         max_y2 = math.ceil( max(pt1[1], pt2[1])) + 1
-        if self.window:
-            rect = gtk.gdk.Rectangle(int(min_x2),
-                                     int(min_y2),
-                                     int(max_x2 - min_x2),
-                                     int(max_y2 - min_y2))
-            self.window.invalidate_rect(rect, True)
+        rect = gtk.gdk.Rectangle(int(min_x2),
+                                 int(min_y2),
+                                 int(max_x2 - min_x2),
+                                 int(max_y2 - min_y2))
+        self._invalidate_rect_func(rect)
 
     def _invalidate_board(self):
-        if self.window:
-            alloc = self.allocation
-            rect = gtk.gdk.Rectangle(0, 0, alloc.width, alloc.height)
-            self.window.invalidate_rect(rect, True)
+        (width, height) = self._get_size_func()
+        rect = gtk.gdk.Rectangle(0, 0, width, height)
+        self._invalidate_rect_func(rect)
 
     def _display_to_cell(self, x, y):
         # Converts from display coordinate to a cell coordinate.
@@ -361,8 +484,8 @@ class GridWidget(gtk.DrawingArea):
         self._win_length = self._get_win_length()
         self._win_size = (width, height)
         self._win_color = r.randint(1, 5)
-        self._recalc_win_transform(self.allocation.width,
-                                   self.allocation.height)
+        (width, height) = self._get_size_func()
+        self._recalc_win_transform(width, height)
 
     def _get_win_tiles(self):
         # Returns a list of ending tile coordinates making up the smiley face,
@@ -446,7 +569,7 @@ class GridWidget(gtk.DrawingArea):
         return (len(self._win_starts) + 8)
 
     def _recalc_game_animation_frames(self):
-        if not self._board_is_valid():
+        if not self.board_is_valid():
             self._animation_frames = {}
             return
 
@@ -520,7 +643,7 @@ class GridWidget(gtk.DrawingArea):
             zooming_transform = self._board_transform
             lengths[ANIMATE_ZOOM] = 0.0
         else:
-            (width, height) = self.window.get_size()
+            (width, height) = self._get_size_func()
             zooming_transform = _BoardTransform()
             zooming_transform.setup(width,
                                     height,
@@ -536,7 +659,7 @@ class GridWidget(gtk.DrawingArea):
         if self._animation_mode == ANIMATE_WIN:
             self._recalc_win_animation_coords()
             self._invalidate_board() # XXX Limit to win animation?
-        elif self._animation_mode == ANIMATE_NONE or not self._board_is_valid():
+        elif self._animation_mode == ANIMATE_NONE or not self.board_is_valid():
             self._animation_coords = []
         else:
             self._recalc_game_animation_coords()
@@ -590,24 +713,8 @@ class GridWidget(gtk.DrawingArea):
         else:
             self._board_transform.tween(start_transform, end_transform, w)
 
-    @_log_errors
-    def do_expose_event(self, event):
-        cr = self.window.cairo_create()
-        cr.rectangle(event.area.x,
-                     event.area.y,
-                     event.area.width,
-                     event.area.height)
-        cr.clip()
-        (width, height) = self.window.get_size()
-        self._draw(cr, width, height)
-
-    @_log_errors
-    def do_size_allocate(self, allocation):
-        super(GridWidget, self).do_size_allocate(self, allocation)
-        self._init_board_layout(allocation.width, allocation.height)
-
-    def _init_board_layout(self, width, height):
-        if not self._board_is_valid():
+    def init_board_layout(self, width, height):
+        if not self.board_is_valid():
             self._board_transform = _BoardTransform()
         else:
             self._board_transform = _BoardTransform()
@@ -626,7 +733,7 @@ class GridWidget(gtk.DrawingArea):
                                   self._win_size[0],
                                   self._win_size[1])
 
-    def _draw(self, cr, width, height):
+    def draw(self, cr, width, height):
         # Draws the widget.
 
         cr.set_source_rgb(*_BG_COLOR)
@@ -634,26 +741,23 @@ class GridWidget(gtk.DrawingArea):
         cr.fill()
 
         cr.save()
-        self._board_transform.set_up_cairo(cr)
         if self._animation_mode == ANIMATE_NONE:
-            self._draw_board(cr)
+            if self._win_draw_flag:
+                self._win_transform.set_up_cairo(cr)
+                self._draw_win(cr)
+            else:
+                self._board_transform.set_up_cairo(cr)
+                self._draw_board(cr)
         elif self._animation_mode in (ANIMATE_SHRINK,
                                       ANIMATE_FALL,
                                       ANIMATE_SLIDE,
                                       ANIMATE_ZOOM):
+            self._board_transform.set_up_cairo(cr)
             self._animate_board(cr)
-        cr.restore()
-
-        if self._win_draw_flag:
-            cr.save()
-            self._win_transform.set_up_cairo(cr)
-            self._draw_win(cr)
-            cr.restore()
         elif self._animation_mode == ANIMATE_WIN:
-            cr.save()
             self._win_transform.set_up_cairo(cr)
             self._draw_animated_win(cr)
-            cr.restore()
+        cr.restore()
 
     def _animate_board(self, cr):
         self._animate_blocks(cr)
@@ -682,7 +786,7 @@ class GridWidget(gtk.DrawingArea):
                 self._draw_scaled_block(cr, x, y, value, scale)
 
     def _draw_blocks(self, cr):
-        if not self._board_is_valid():
+        if not self.board_is_valid():
             return
 
         value_map = self._board.get_value_map()
@@ -735,19 +839,109 @@ class GridWidget(gtk.DrawingArea):
         cr.fill()
 
     def _recalc_board_dimensions(self):
-        if self._board_is_valid():
+        if self.board_is_valid():
             self._board_width  = self._board.width
             self._board_height = self._board.height
         else:
             self._board_width  = 1
             self._board_height = 1
 
-    def _board_is_valid(self):
+    def board_is_valid(self):
         # Returns True if the board is set and has valid dimensions (>=1).
         return (self._board is not None
                 and not self._board.is_empty())
 
+
+class WinAnim(object):
+    """Manages the animation of a winning smiley."""
+    def __init__(self, grid, end_anim_func):
+        self._grid = grid
+        self._end_anim_func = end_anim_func
+        self._start_time = 0
+        self._animating = False
+
+    def start(self):
+        self._start_time = time.time()
+        self._animating = True
+        self._grid.set_animation_mode(ANIMATE_WIN)
+        self._grid.set_animation_percent(0.0)
+        gobject.timeout_add(_TIMER_INTERVAL, self._timer)
+
+    def stop(self):
+        if self._animating:
+            self._end_anim(anim_stopped=True)
+
+    def _timer(self):
+        if not self._animating:
+            return False
+        delta = time.time() - self._start_time
+        total = _WIN_ANIM_TIME * self._grid.get_animation_length()
+        if total > 0:
+            percent = float(delta) / total
+            if percent < 1.0:
+                self._grid.set_animation_percent(percent)
+                return True
+        self._end_anim(anim_stopped=False)
+        return False
+
+    def _end_anim(self, anim_stopped):
+        self._animating = False
+        self._grid.set_animation_mode(ANIMATE_NONE)
+        self._end_anim_func(anim_stopped=anim_stopped)
+
+
+class RemovalAnim(object):
+    """Manages the animation of removing a piece."""
+    def __init__(self, grid, end_anim_func, contiguous):
+        self._grid = grid
+        self._end_anim_func = end_anim_func
+        self._start_time = 0
+        self._animation_mode = 0
+        self._animating = False
+        self._contiguous = contiguous
+
+    def start(self):
+        self._start_time = time.time()
+        self._animation_mode = 0
+        self._grid.set_removal_block_set(self._contiguous)
+        self._grid.set_animation_mode(_ANIM_MODES[0])
+        self._grid.set_animation_percent(0.0)
+        self._animating = True
+        gobject.timeout_add(_TIMER_INTERVAL, self._timer)
+
+    def stop(self):
+        if self._animating:
+            self._end_anim(anim_stopped=True)
+
+    def _timer(self):
+        if not self._animating:
+            return False
+        delta = time.time() - self._start_time
+        total = (_ANIM_TIMES[_ANIM_MODES[self._animation_mode]]
+                 * self._grid.get_animation_length())
+        if total > 0:
+            percent = float(delta) / total
+            if percent < 1.0:
+                self._grid.set_animation_percent(percent)
+                return True
+        self._animation_mode += 1
+        if self._animation_mode >= len(_ANIM_MODES):
+            self._end_anim(anim_stopped=False)
+            return False
+        else:
+            self._grid.set_animation_mode(_ANIM_MODES[self._animation_mode])
+            self._grid.set_animation_percent(0.0)
+            self._start_time = time.time()
+            return True
+
+    def _end_anim(self, anim_stopped):
+        self._animating = False
+        self._grid.set_animation_mode(ANIMATE_NONE)
+        self._end_anim_func(anim_stopped=anim_stopped)
+
+
 class _BoardTransform(object):
+    # Represents a transformation from board space to screen space.
     def __init__(self):
         self.scale_x = 1
         self.scale_y = 1
@@ -798,6 +992,7 @@ class _BoardTransform(object):
         x1 = int((float(x) - self.offset_x) / self.scale_x)
         y1 = int((float(y) - self.offset_y) / self.scale_y)
         return (x1, y1)
+
 
 def _interleave(*args):
     # From Richard Harris' recipe:
