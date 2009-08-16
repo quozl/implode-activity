@@ -35,7 +35,7 @@ class ImplodeGame(gtk.EventBox):
     def __init__(self, *args, **kwargs):
         super(ImplodeGame, self).__init__(*args, **kwargs)
         self._animate = True
-        self._current_anim = None
+        self._anim = None
 
         self._board = None
         self._undo_stack = []
@@ -45,7 +45,6 @@ class ImplodeGame(gtk.EventBox):
         #self._random.seed(0)
         self._difficulty = 0
         self._size = (8, 6)
-        self._contiguous = None
         self._seed = 0
         self._fragmentation = 0
 
@@ -164,11 +163,15 @@ class ImplodeGame(gtk.EventBox):
         self._stop_animation()
         contiguous = self._board.get_contiguous(x, y)
         if len(contiguous) >= 3:
-            self._contiguous = contiguous
+            def remove_func(anim_stopped=False):
+                self._remove_contiguous(contiguous, anim_stopped)
             if self._animate:
-                self._current_anim = self._grid.start_removal_anim(self._remove_contiguous, contiguous)
+                self._anim = self._grid.get_removal_anim(self._board, 
+                                                         contiguous, 
+                                                         remove_func)
+                self._anim.start()
             else:
-                self._remove_contiguous()
+                remove_func()
 
     def _undo_key_pressed_cb(self, widget, dummy):
         self.undo()
@@ -183,13 +186,14 @@ class ImplodeGame(gtk.EventBox):
             self.new_game()
 
     def _stop_animation(self):
-        if self._current_anim is not None:
-            self._current_anim.stop()
+        if self._anim is not None:
+            self._anim.stop()
 
-    def _remove_contiguous(self, anim_stopped=False):
+    def _remove_contiguous(self, contiguous, anim_stopped=False):
+        # Removes the given set of contiguous blocks from the board.
         self._redo_stack = []
         self._undo_stack.append(self._board.clone())
-        self._board.clear_pieces(self._contiguous)
+        self._board.clear_pieces(contiguous)
         self._board.drop_pieces()
         self._board.remove_empty_columns()
 
@@ -198,12 +202,13 @@ class ImplodeGame(gtk.EventBox):
 
         if self._board.is_empty():
             if self._animate and not anim_stopped:
-                self._current_anim = self._grid.start_win_anim(self._init_win)
+                self._anim = self._grid.get_win_anim(self._init_win)
+                self._anim.start()
             else:
                 self._init_win()
         else:
-            contiguous = self._board.get_all_contiguous()
-            if len(contiguous) == 0:
+            all_contiguous = self._board.get_all_contiguous()
+            if len(all_contiguous) == 0:
                 self._init_lose()
 
     def _init_win(self, anim_stopped=False):
