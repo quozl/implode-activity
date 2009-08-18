@@ -95,14 +95,12 @@ _KEY_MAP = {
 _ANIM_STAGE_NONE = 0
 _ANIM_STAGE_SHRINK = 1
 _ANIM_STAGE_FALL = 2
-_ANIM_STAGE_SLIDE = 3
-_ANIM_STAGE_ZOOM = 4
+_ANIM_STAGE_ZOOM = 3
 
 _ANIM_STAGES = [
   _ANIM_STAGE_NONE,
   _ANIM_STAGE_SHRINK,
   _ANIM_STAGE_FALL,
-  _ANIM_STAGE_SLIDE,
   _ANIM_STAGE_ZOOM,
 ]
 
@@ -588,7 +586,7 @@ class RemovalDrawer(object):
         self._anim_lengths = {}
 
         # Drawing offset and scale.
-        self._board_transform = None
+        self._board_transform = _BoardTransform()
 
         # Callback functions set by owner.
         self._get_size_func = get_size_func
@@ -597,11 +595,10 @@ class RemovalDrawer(object):
     def init(self, board, removal_block_set):
         self._board = board
         self._recalc_board_dimensions()
-        (width, height) = self._get_size_func()
-        self.resize(width, height)
         self._removal_block_set = removal_block_set
-        self._recalc_game_anim_frames()
         self._anim_stage = _ANIM_STAGE_SHRINK
+        self._recalc_game_anim_frames()
+        self._recalc_anim_coords()
         self._invalidate_board()
 
     def next_stage(self):
@@ -637,6 +634,13 @@ class RemovalDrawer(object):
             self._anim_lengths = {}
             return
 
+        (width, height) = self._get_size_func()
+        transform = _BoardTransform()
+        transform.setup(width,
+                        height,
+                        self._board_width,
+                        self._board_height)
+
         frames = {}
         lengths = {}
 
@@ -645,7 +649,7 @@ class RemovalDrawer(object):
         value_map = self._board.get_value_map()
         for ((i, j), value) in value_map.items():
             starting_frame.append((i, j, 1.0, value))
-        frames[_ANIM_STAGE_NONE] = (self._board_transform, starting_frame)
+        frames[_ANIM_STAGE_NONE] = (transform, starting_frame)
         lengths[_ANIM_STAGE_NONE] = 0.0
 
         # Calculate shrinking coords.
@@ -655,7 +659,7 @@ class RemovalDrawer(object):
                 shrinking_frame.append((i, j, 0.0, value))
             else:
                 shrinking_frame.append((i, j, scale, value))
-        frames[_ANIM_STAGE_SHRINK] = (self._board_transform, shrinking_frame)
+        frames[_ANIM_STAGE_SHRINK] = (transform, shrinking_frame)
         if len(self._removal_block_set) > 0:
             lengths[_ANIM_STAGE_SHRINK] = 3 * _ANIM_SCALE
         else:
@@ -674,38 +678,29 @@ class RemovalDrawer(object):
             else:
                 falling_frame.append((coord[0], coord[1], scale, value))
                 max_change = max(max_change, j - coord[1])
-        frames[_ANIM_STAGE_FALL] = (self._board_transform, falling_frame)
+        frames[_ANIM_STAGE_FALL] = (transform, falling_frame)
         if max_change > 0:
             lengths[_ANIM_STAGE_FALL] = 3 * _ANIM_SCALE
         else:
             lengths[_ANIM_STAGE_FALL] = 0.0
 
-        # Calculate sliding coords.
-        sliding_frame = []
+        # Calculate sliding/zooming coords.
+        zooming_frame = []
         board2.drop_pieces()
         slide_map = board2.get_slide_map()
         max_change = 0
-        for(i, j, scale, value) in falling_frame:
-            if i in slide_map:
-                sliding_frame.append((slide_map[i], j, scale, value))
-                max_change = max(max_change, i - slide_map[i])
-            else:
-                sliding_frame.append((i, j, scale, value))
-        frames[_ANIM_STAGE_SLIDE] = (self._board_transform, sliding_frame)
-        if max_change > 0:
-            lengths[_ANIM_STAGE_SLIDE] = 3 * _ANIM_SCALE
-        else:
-            lengths[_ANIM_STAGE_SLIDE] = 0.0
-
-        # Calculate zooming coords.
-        zooming_frame = sliding_frame
         board2.remove_empty_columns()
         board_width2  = board2.width
         board_height2 = board2.height
+        for(i, j, scale, value) in falling_frame:
+            if i in slide_map:
+                zooming_frame.append((slide_map[i], j, scale, value))
+                max_change = max(max_change, i - slide_map[i])
+            else:
+                zooming_frame.append((i, j, scale, value))
         if (board_width2 == self._board_width
             and board_height2 == self._board_height):
-            zooming_transform = self._board_transform
-            lengths[_ANIM_STAGE_ZOOM] = 0.0
+            zooming_transform = transform
         else:
             (width, height) = self._get_size_func()
             zooming_transform = _BoardTransform()
@@ -713,13 +708,21 @@ class RemovalDrawer(object):
                                     height,
                                     board_width2,
                                     board_height2)
-            lengths[_ANIM_STAGE_ZOOM] = 3 * _ANIM_SCALE
         frames[_ANIM_STAGE_ZOOM] = (zooming_transform, zooming_frame)
+        if max_change > 0 or (zooming_transform is not transform):
+            lengths[_ANIM_STAGE_ZOOM] = 4 * _ANIM_SCALE
+        else:
+            lengths[_ANIM_STAGE_ZOOM] = 0.0
 
         self._anim_frames = frames
         self._anim_lengths = lengths
 
     def _recalc_anim_coords(self):
+        if not self.board_is_valid():
+            self._anim_coords = []
+            self._board_transform = _BoardTransform()
+            return
+
         stage = self._anim_stage
         prev_stage = _ANIM_STAGES[_ANIM_STAGES.index(stage, 1) - 1]
         (start_transform, start_coords) = self._anim_frames[prev_stage]
@@ -748,17 +751,12 @@ class RemovalDrawer(object):
         if start_transform is end_transform:
             self._board_transform = start_transform
         else:
-            self._board_transform.tween(start_transform, end_transform, w)
+            self._board_transform = _tween(start_transform, end_transform, w)
 
     def resize(self, width, height):
-        if not self.board_is_valid():
-            self._board_transform = _BoardTransform()
-        else:
-            self._board_transform = _BoardTransform()
-            self._board_transform.setup(width,
-                                       height,
-                                       self._board_width,
-                                       self._board_height)
+        self._recalc_game_anim_frames()
+        self._recalc_anim_coords()
+        self._invalidate_board()
 
     def draw(self, cr, width, height):
         # Draws the widget.
@@ -1009,19 +1007,18 @@ class _BoardTransform(object):
         self.scale_y = 1
         self.offset_x = 0
         self.offset_y = 0
+        self.to_center_x = 0
+        self.to_center_y = 0
+        self.from_center_x = 0
+        self.from_center_y = 0
 
     def set_up_cairo(self, cr):
-        cr.translate(self.offset_x,
-                     self.offset_y)
+        cr.translate(self.to_center_x,
+                     self.to_center_y)
         cr.scale(self.scale_x,
                  self.scale_y)
-
-    def tween(self, trans1, trans2, w):
-        inv_w = 1.0 - w
-        self.scale_x  = trans1.scale_x  * inv_w + trans2.scale_x  * w
-        self.scale_y  = trans1.scale_y  * inv_w + trans2.scale_y  * w
-        self.offset_x = trans1.offset_x * inv_w + trans2.offset_x * w
-        self.offset_y = trans1.offset_y * inv_w + trans2.offset_y * w
+        cr.translate(self.from_center_x,
+                     self.from_center_y)
 
     def setup(self, width, height, cells_across, cells_down):
         if cells_across == 0 or cells_down == 0:
@@ -1045,6 +1042,11 @@ class _BoardTransform(object):
         self.offset_x =          (width - cells_across * scale) / 2
         self.offset_y = height - (height - cells_down * scale) / 2
 
+        self.to_center_x = float(width) / 2
+        self.to_center_y = self.offset_y
+        self.from_center_x = -float(cells_across) / 2
+        self.from_center_y = 0
+
     def transform(self, x, y):
         x1 = int(float(x) * self.scale_x + self.offset_x)
         y1 = int(float(y) * self.scale_y + self.offset_y)
@@ -1055,6 +1057,19 @@ class _BoardTransform(object):
         y1 = int((float(y) - self.offset_y) / self.scale_y)
         return (x1, y1)
 
+
+def _tween(trans1, trans2, w):
+    t = _BoardTransform()
+    inv_w = 1.0 - w
+    t.scale_x  = trans1.scale_x  * inv_w + trans2.scale_x  * w
+    t.scale_y  = trans1.scale_y  * inv_w + trans2.scale_y  * w
+    t.offset_x = trans1.offset_x * inv_w + trans2.offset_x * w
+    t.offset_y = trans1.offset_y * inv_w + trans2.offset_y * w
+    t.to_center_x = trans1.to_center_x * inv_w + trans2.to_center_x * w
+    t.to_center_y = trans1.to_center_y * inv_w + trans2.to_center_y * w
+    t.from_center_x = trans1.from_center_x * inv_w + trans2.from_center_x * w
+    t.from_center_y = trans1.from_center_y * inv_w + trans2.from_center_y * w
+    return t
 
 def _interleave(*args):
     # From Richard Harris' recipe:
