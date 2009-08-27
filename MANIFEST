@@ -4,6 +4,7 @@ board.py
 boardgen.py
 color.py
 gridwidget.py
+helpwidget.py
 icons/easy-level.svg
 icons/edit-redo.svg
 icons/edit-undo.svg
@@ -11,6 +12,7 @@ icons/hard-level.svg
 icons/medium-level.svg
 icons/new-game.svg
 icons/replay-game.svg
+icons/help.svg
 implodeactivity.py
 implodegame.py
 po/Implode.pot

@@ -22,8 +22,12 @@
 import pygtk
 pygtk.require('2.0')
 import gtk
+import gobject
+
+import os
 
 import implodegame
+from helpwidget import HelpWidget
 
 class ImplodeWindow(gtk.Window):
     def __init__(self):
@@ -73,6 +77,13 @@ class ImplodeWindow(gtk.Window):
         for button in radio_buttons[1:]:
             button.set_group(radio_buttons[0])
 
+        separator = gtk.SeparatorToolItem()
+        separator.set_expand(True)
+        separator.set_draw(False)
+        toolbar.add(separator)
+
+        add_button(gtk.STOCK_HELP, self._help_clicked)
+
         main_box = gtk.VBox(False, 0)
         main_box.pack_start(toolbar, False)
         main_box.pack_start(self.game, True, True, 0)
@@ -86,13 +97,101 @@ class ImplodeWindow(gtk.Window):
         return False
 
     def _easy_clicked(self):
-        print "Easy"
+        self.game.set_level(0)
 
     def _medium_clicked(self):
-        print "Medium"
+        self.game.set_level(1)
 
     def _hard_clicked(self):
-        print "Hard"
+        self.game.set_level(2)
+
+    def _help_clicked(self):
+        help_window = _HelpWindow()
+        help_window.set_transient_for(self.get_toplevel())
+        help_window.show_all()
+
+
+class _HelpWindow(gtk.Window):
+    def __init__(self):
+        super(_HelpWindow, self).__init__()
+
+        self.set_size_request(640, 480)
+        self.set_position(gtk.WIN_POS_CENTER_ON_PARENT) 
+        self.set_modal(True)
+
+        vbox = gtk.VBox()
+        self.add(vbox)
+        
+        self._help_widget = HelpWidget(self._icon_file)
+        vbox.pack_start(self._help_widget)
+        
+        self._help_nav_bar = _HelpNavBar()
+        vbox.pack_end(self._help_nav_bar,
+                      expand=False)
+        
+        for (signal_name, callback) in [
+                ('forward-clicked', self._forward_clicked_cb),
+                ('reload-clicked', self._reload_clicked_cb),
+                ('back-clicked', self._back_clicked_cb)]:
+            self._help_nav_bar.connect(signal_name, callback)
+
+        self._update_prev_next()
+
+    def _stop_clicked_cb(self, source):
+        self.destroy()
+
+    def _forward_clicked_cb(self, source):
+        self._help_widget.next_stage()
+        self._update_prev_next()
+
+    def _back_clicked_cb(self, source):
+        self._help_widget.prev_stage()
+        self._update_prev_next()
+
+    def _reload_clicked_cb(self, source):
+        self._help_widget.replay_stage()
+
+    def _icon_file(self, icon_name):
+        return os.path.join('icons', icon_name + '.svg')
+
+    def _update_prev_next(self):
+        hw = self._help_widget
+        self._help_nav_bar.set_can_prev_stage(hw.can_prev_stage())
+        self._help_nav_bar.set_can_next_stage(hw.can_next_stage())
+
+
+class _HelpNavBar(gtk.HButtonBox):
+    __gsignals__ = {
+        'forward-clicked' : (gobject.SIGNAL_RUN_LAST, None, ()),
+        'back-clicked'    : (gobject.SIGNAL_RUN_LAST, None, ()),
+        'reload-clicked'  : (gobject.SIGNAL_RUN_LAST, None, ()),
+    }
+
+    def __init__(self):
+        super(_HelpNavBar, self).__init__()
+
+        self.set_layout(gtk.BUTTONBOX_SPREAD)
+
+        def add_button(id, signal_name):
+            button = gtk.Button(stock=id)
+            self.add(button)
+
+            def callback(source):
+                self.emit(signal_name)
+            button.connect('clicked', callback)
+
+            return button
+
+        self._back_button = add_button(gtk.STOCK_GO_BACK, 'back-clicked')
+        add_button(gtk.STOCK_MEDIA_PLAY, 'reload-clicked')
+        self._forward_button = add_button(gtk.STOCK_GO_FORWARD, 'forward-clicked')
+
+    def set_can_prev_stage(self, can_prev_stage):
+        self._back_button.set_sensitive(can_prev_stage)
+
+    def set_can_next_stage(self, can_next_stage):
+        self._forward_button.set_sensitive(can_next_stage)
+
 
 
 def main():

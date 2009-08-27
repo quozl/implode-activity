@@ -441,6 +441,12 @@ class BoardDrawer(object):
         self._invalidate_selection(old_selection)
         self._invalidate_selection(self._selected_cell)
 
+    def get_block_coord(self, x, y):
+        if not self.board_is_valid():
+            return (0, 0)
+        (block_x, block_y) = self._cell_to_display(x + 0.5, y + 0.5)
+        return (block_x, block_y)
+
     def _invalidate_board(self):
         (width, height) = self._get_size_func()
         rect = gtk.gdk.Rectangle(0, 0, width, height)
@@ -1053,6 +1059,8 @@ class _BoardTransform(object):
         return (x1, y1)
 
     def inverse_transform(self, x, y):
+        if self.scale_x == 0 or self.scale_y == 0:
+            return (0, 0)
         x1 = int((float(x) - self.offset_x) / self.scale_x)
         y1 = int((float(y) - self.offset_y) / self.scale_y)
         return (x1, y1)
