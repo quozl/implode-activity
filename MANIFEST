@@ -12,7 +12,7 @@ icons/hard-level.svg
 icons/medium-level.svg
 icons/new-game.svg
 icons/replay-game.svg
-icons/help.svg
+icons/help-icon.svg
 implodeactivity.py
 implodegame.py
 po/Implode.pot
