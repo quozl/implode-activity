@@ -119,7 +119,6 @@ class ImplodeActivity(Activity):
         help_window = _HelpWindow()
         help_window.set_transient_for(self.get_toplevel())
         help_window.show_all()
-        self.present()
 
 
 class _Toolbox(ActivityToolbox):
