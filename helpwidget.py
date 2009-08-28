@@ -690,7 +690,6 @@ class _PreviewWidget(gtk.DrawingArea):
         self._draw(cr, width, height)
 
     def _draw(self, cr, width, height):
-        cr.set_antialias(cairo.ANTIALIAS_NONE)
         cr.set_source_rgb(*_BG_COLOR)
         cr.rectangle(0, 0, width, height)
         cr.fill()

@@ -264,7 +264,6 @@ class GridWidget(gtk.DrawingArea):
                      event.area.width,
                      event.area.height)
         cr.clip()
-        cr.set_antialias(cairo.ANTIALIAS_NONE)
         (width, height) = self.window.get_size()
         self._current_drawer.draw(cr, width, height)
 
