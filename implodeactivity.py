@@ -21,11 +21,13 @@ _logger = logging.getLogger('implode-activity')
 
 from gettext import gettext as _
 
-from sugar.activity.activity import Activity, ActivityToolbox, get_bundle_path
+from sugar.activity.activity import Activity, get_bundle_path
 from sugar.graphics import style
 from sugar.graphics.icon import Icon
 from sugar.graphics.radiotoolbutton import RadioToolButton
 from sugar.graphics.toolbutton import ToolButton
+from sugar.activity.widgets import ActivityToolbarButton, StopButton
+from sugar.graphics.toolbarbox import ToolbarBox, ToolbarButton
 
 from implodegame import ImplodeGame
 from helpwidget import HelpWidget
@@ -41,10 +43,6 @@ from StringIO import StringIO
 import gtk
 import gobject
 
-_EASY = 0
-_MEDIUM = 1
-_HARD = 2
-
 class ImplodeActivity(Activity):
     def hello(self, widget, data=None):
         logging.info("Hello World")
@@ -53,29 +51,10 @@ class ImplodeActivity(Activity):
         super(ImplodeActivity, self).__init__(handle)
 
         _logger.debug('Starting implode activity...')
-        
+
         self._game = ImplodeGame()
 
-        toolbox = _Toolbox(self)
-        self.set_toolbox(toolbox)
-        toolbox.show()
-
-        for (signal, func) in (('new-game-clicked'   , self._game.new_game),
-                               ('replay-game-clicked', self._game.replay_game),
-                               ('undo-clicked'       , self._game.undo),
-                               ('redo-clicked'       , self._game.redo)):
-            def callback(source, func=func):
-                func()
-            toolbox.connect(signal, callback)
-
-        for (signal, level) in (('easy-clicked'  , 0),
-                                ('medium-clicked', 1),
-                                ('hard-clicked'  , 2)):
-            def callback(source, level=level):
-                self._game.set_level(level)
-            toolbox.connect(signal, callback)
-
-        toolbox.connect('help-clicked', self._help_clicked_cb)
+        self._configure_toolbars()
 
         self.set_canvas(self._game)
         self.show_all()
@@ -101,6 +80,8 @@ class ImplodeActivity(Activity):
         (file_type, version, game_data) = file_data
         if file_type == 'Implode save game' and version <= [1, 0]:
             self._game.set_game_state(game_data)
+            # Ensure that the visual display matches the game state. <MS>
+            self._levels_buttons[game_data['difficulty']].props.active = True
 
     def write_file(self, file_path):
         # Writes the game state to a file.
@@ -115,80 +96,88 @@ class ImplodeActivity(Activity):
             f.write(content)
             f.close()
 
-    def _help_clicked_cb(self, source):
-        help_window = _HelpWindow()
-        help_window.set_transient_for(self.get_toplevel())
-        help_window.show_all()
+    def _add_expander(self, toolbar):
+        """Insert a toolbar item which will expand to fill the available
+        space."""
+        separator = gtk.SeparatorToolItem()
+        separator.props.draw = False
+        separator.set_expand(True)
+        toolbar.insert(separator, -1)
+        separator.show()
 
+    def _configure_toolbars(self):
+        """Create, set, and show a new-style toolbar box with an activity
+        button, game controls, difficulty selector, help button, and stop
+        button. All callbacks are locally defined."""
 
-class _Toolbox(ActivityToolbox):
-    __gsignals__ = {
-        'new-game-clicked'   : (gobject.SIGNAL_RUN_LAST, None, ()),
-        'replay-game-clicked': (gobject.SIGNAL_RUN_LAST, None, ()),
-        'undo-clicked'       : (gobject.SIGNAL_RUN_LAST, None, ()),
-        'redo-clicked'       : (gobject.SIGNAL_RUN_LAST, None, ()),
-        'easy-clicked'       : (gobject.SIGNAL_RUN_LAST, None, ()),
-        'medium-clicked'     : (gobject.SIGNAL_RUN_LAST, None, ()),
-        'hard-clicked'       : (gobject.SIGNAL_RUN_LAST, None, ()),
-        'help-clicked'       : (gobject.SIGNAL_RUN_LAST, None, ()),
-    }
+        self.toolbar_box = toolbar_box = ToolbarBox()
 
-    def __init__(self, activity):
-        super(_Toolbox, self).__init__(activity)
-   
-        toolbar = gtk.Toolbar()
+        activity_button = ActivityToolbarButton(self)
+        toolbar_box.toolbar.insert(activity_button, 0)
+        activity_button.show()
 
-        def add_button(icon_name, tooltip, signal_name):
-            button = ToolButton(icon_name)
-            toolbar.add(button)
-            
+        self._add_expander(toolbar_box.toolbar)
+
+        def add_button(icon_name, tooltip, func):
             def callback(source):
-                self.emit(signal_name)
+                func()
+            button = ToolButton(icon_name)
+            toolbar_box.toolbar.add(button)
             button.connect('clicked', callback)
             button.set_tooltip(tooltip)
 
-            return button
+        toolbar_box.toolbar.add(gtk.SeparatorToolItem())
 
-        add_button('new-game'   , _("New")   , 'new-game-clicked')
-        add_button('replay-game', _("Replay"), 'replay-game-clicked')
-        add_button('edit-undo'  , _("Undo")  , 'undo-clicked')
-        add_button('edit-redo'  , _("Redo")  , 'redo-clicked')
+        add_button('new-game'   , _("New")   , self._game.new_game)
+        add_button('replay-game', _("Replay"), self._game.replay_game)
+        add_button('edit-undo'  , _("Undo")  , self._game.undo)
+        add_button('edit-redo'  , _("Redo")  , self._game.redo)
 
-        toolbar.add(gtk.SeparatorToolItem())
+        toolbar_box.toolbar.add(gtk.SeparatorToolItem())
 
-        levels = []
-        def add_level_button(icon_name, tooltip, signal_name):
-            if levels:
-                button = RadioToolButton(named_icon=icon_name, group=levels[0])
+        self._levels_buttons = []
+        def add_level_button(icon_name, tooltip, numeric_level):
+            if self._levels_buttons:
+                button = RadioToolButton(named_icon=icon_name,
+                                         group=self._levels_buttons[0])
             else:
                 button = RadioToolButton(named_icon=icon_name)
-            levels.append(button)
-            toolbar.add(button)
+            self._levels_buttons.append(button)
+            toolbar_box.toolbar.add(button)
 
             def callback(source):
                 if source.get_active():
-                    self.emit(signal_name)
+                    self._game.set_level(numeric_level)
+
             button.connect('clicked', callback)
             button.set_tooltip(tooltip)
 
-        add_level_button('easy-level'  , _("Easy")  , 'easy-clicked')
-        add_level_button('medium-level', _("Medium"), 'medium-clicked')
-        add_level_button('hard-level'  , _("Hard")  , 'hard-clicked')
+        add_level_button('easy-level'  , _("Easy")  , 0)
+        add_level_button('medium-level', _("Medium"), 1)
+        add_level_button('hard-level'  , _("Hard")  , 2)
 
-        separator = gtk.SeparatorToolItem()
-        separator.set_expand(True)
-        separator.set_draw(False)
-        toolbar.add(separator)
+        toolbar_box.toolbar.add(gtk.SeparatorToolItem())
+
+        self._add_expander(toolbar_box.toolbar)
+
+        def _help_clicked_cb():
+            help_window = _HelpWindow()
+            help_window.set_transient_for(self.get_toplevel())
+            help_window.show_all()
 
         # NOTE: Naming the icon "help" instead of "help-icon" seems to use a
         # GTK stock icon instead of our custom help; the stock icon may be more
         # desireable in the future.  It doesn't seem to be themed for Sugar
         # right now, however.
-        add_button('help-icon', _("Help"), 'help-clicked')
+        add_button('help-icon', _("Help"), _help_clicked_cb)
 
-        self.add_toolbar(_("Game"), toolbar)
-        self.set_current_toolbar(1)
+        stop_button = StopButton(self)
+        stop_button.props.accelerator = '<Ctrl><Shift>Q'
+        toolbar_box.toolbar.insert(stop_button, -1)
+        stop_button.show()
 
+        self.set_toolbar_box(toolbar_box)
+        toolbar_box.show()
 
 class _HelpWindow(gtk.Window):
     def __init__(self):
@@ -199,7 +188,7 @@ class _HelpWindow(gtk.Window):
         width = gtk.gdk.screen_width() - offset * 2
         height = gtk.gdk.screen_height() - offset * 2
         self.set_size_request(width, height)
-        self.set_position(gtk.WIN_POS_CENTER_ALWAYS) 
+        self.set_position(gtk.WIN_POS_CENTER_ALWAYS)
         self.set_decorated(False)
         self.set_resizable(False)
         self.set_modal(True)
@@ -326,5 +315,3 @@ class _HelpNavBar(gtk.HButtonBox):
 
     def set_can_next_stage(self, can_next_stage):
         self._forward_button.set_sensitive(can_next_stage)
-
-
