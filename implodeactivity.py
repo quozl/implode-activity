@@ -26,8 +26,16 @@ from sugar.graphics import style
 from sugar.graphics.icon import Icon
 from sugar.graphics.radiotoolbutton import RadioToolButton
 from sugar.graphics.toolbutton import ToolButton
-from sugar.activity.widgets import ActivityToolbarButton, StopButton
-from sugar.graphics.toolbarbox import ToolbarBox, ToolbarButton
+
+try:
+    # 0.86+ toolbar widgets
+    from sugar.activity.widgets import ActivityToolbarButton, StopButton
+    from sugar.graphics.toolbarbox import ToolbarBox, ToolbarButton
+    _USE_OLD_TOOLBARS = False
+except ImportError:
+    # Pre-0.86 toolbar widgets
+    from sugar.activity.activity import ActivityToolbox
+    _USE_OLD_TOOLBARS = True
 
 from implodegame import ImplodeGame
 from helpwidget import HelpWidget
@@ -96,44 +104,40 @@ class ImplodeActivity(Activity):
             f.write(content)
             f.close()
 
-    def _add_expander(self, toolbar):
-        """Insert a toolbar item which will expand to fill the available
-        space."""
-        separator = gtk.SeparatorToolItem()
-        separator.props.draw = False
-        separator.set_expand(True)
-        toolbar.insert(separator, -1)
-        separator.show()
-
     def _configure_toolbars(self):
-        """Create, set, and show a new-style toolbar box with an activity
-        button, game controls, difficulty selector, help button, and stop
-        button. All callbacks are locally defined."""
+        """Create, set, and show a toolbar box with an activity button, game
+        controls, difficulty selector, help button, and stop button. All
+        callbacks are locally defined."""
 
-        self.toolbar_box = toolbar_box = ToolbarBox()
+        if _USE_OLD_TOOLBARS:
+            toolbox = ActivityToolbox(self)
+            toolbar = gtk.Toolbar()
+        else:
+            toolbar_box = ToolbarBox()
+            toolbar = toolbar_box.toolbar
 
-        activity_button = ActivityToolbarButton(self)
-        toolbar_box.toolbar.insert(activity_button, 0)
-        activity_button.show()
+            activity_button = ActivityToolbarButton(self)
+            toolbar_box.toolbar.insert(activity_button, 0)
+            activity_button.show()
 
-        self._add_expander(toolbar_box.toolbar)
+            self._add_expander(toolbar_box.toolbar)
+
+            toolbar.add(gtk.SeparatorToolItem())
 
         def add_button(icon_name, tooltip, func):
             def callback(source):
                 func()
             button = ToolButton(icon_name)
-            toolbar_box.toolbar.add(button)
+            toolbar.add(button)
             button.connect('clicked', callback)
             button.set_tooltip(tooltip)
-
-        toolbar_box.toolbar.add(gtk.SeparatorToolItem())
 
         add_button('new-game'   , _("New")   , self._game.new_game)
         add_button('replay-game', _("Replay"), self._game.replay_game)
         add_button('edit-undo'  , _("Undo")  , self._game.undo)
         add_button('edit-redo'  , _("Redo")  , self._game.redo)
 
-        toolbar_box.toolbar.add(gtk.SeparatorToolItem())
+        toolbar.add(gtk.SeparatorToolItem())
 
         self._levels_buttons = []
         def add_level_button(icon_name, tooltip, numeric_level):
@@ -143,7 +147,7 @@ class ImplodeActivity(Activity):
             else:
                 button = RadioToolButton(named_icon=icon_name)
             self._levels_buttons.append(button)
-            toolbar_box.toolbar.add(button)
+            toolbar.add(button)
 
             def callback(source):
                 if source.get_active():
@@ -156,9 +160,7 @@ class ImplodeActivity(Activity):
         add_level_button('medium-level', _("Medium"), 1)
         add_level_button('hard-level'  , _("Hard")  , 2)
 
-        toolbar_box.toolbar.add(gtk.SeparatorToolItem())
-
-        self._add_expander(toolbar_box.toolbar)
+        self._add_expander(toolbar)
 
         def _help_clicked_cb():
             help_window = _HelpWindow()
@@ -171,13 +173,30 @@ class ImplodeActivity(Activity):
         # right now, however.
         add_button('help-icon', _("Help"), _help_clicked_cb)
 
-        stop_button = StopButton(self)
-        stop_button.props.accelerator = '<Ctrl><Shift>Q'
-        toolbar_box.toolbar.insert(stop_button, -1)
-        stop_button.show()
+        if _USE_OLD_TOOLBARS:
+            toolbox.add_toolbar(_("Game"), toolbar)
+            toolbox.set_current_toolbar(1)
 
-        self.set_toolbar_box(toolbar_box)
-        toolbar_box.show()
+            self.set_toolbox(toolbox)
+            toolbox.show()
+        else:
+            stop_button = StopButton(self)
+            stop_button.props.accelerator = '<Ctrl><Shift>Q'
+            toolbar_box.toolbar.insert(stop_button, -1)
+            stop_button.show()
+
+            self.set_toolbar_box(toolbar_box)
+            toolbar_box.show()
+
+    def _add_expander(self, toolbar):
+        """Insert a toolbar item which will expand to fill the available
+        space."""
+        separator = gtk.SeparatorToolItem()
+        separator.props.draw = False
+        separator.set_expand(True)
+        toolbar.insert(separator, -1)
+        separator.show()
+
 
 class _HelpWindow(gtk.Window):
     def __init__(self):
