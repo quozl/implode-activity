@@ -45,6 +45,11 @@
   - Combined sliding/zooming animation.
   - Version 6 released.
 
+2009/11/01
+
+  - Updated toolbars (Michael Stone).
+  - Version 7 released.
+
 TODO: 
 - The game could detect a loss and display a "Try again" graphic?
 - Rectangle invalidation could be improved.
