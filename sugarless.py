@@ -146,7 +146,7 @@ class _StuckWindow(gtk.Window):
 
             return button
 
-        add_button(gtk.STOCK_UNDO, "Undo", game.undo)
+        add_button(gtk.STOCK_UNDO, "Undo", game.undo_to_solvable_state)
         add_button(gtk.STOCK_NEW, "New game", game.new_game)
 
 

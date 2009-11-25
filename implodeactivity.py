@@ -272,8 +272,8 @@ class _StuckWindow(_DialogWindow):
 
             return button
 
-        add_button('edit-undo'  , _("Undo")      , game.undo)
-        add_button('new-game'   , _("New game")  , game.new_game)
+        add_button('edit-undo', _("Undo")    , game.undo_to_solvable_state)
+        add_button('new-game' , _("New game"), game.new_game)
 
 
 class _HelpWindow(_DialogWindow):

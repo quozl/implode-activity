@@ -27,22 +27,28 @@ def generate_board(seed=0,
                    max_colors=5,
                    max_size=(30,20)):
     """Generates a new board of the given properties using the given random
-       seed as a starting point."""
+       seed as a starting point.  Returns both the board and the list of
+       moves needed to solve it."""
     r = random.Random(seed)
     piece_sizes = _get_piece_sizes(r, fragmentation, fill, max_size)
     b = board.Board()
+    winning_moves = []
     for piece_size in piece_sizes:
-        b = _try_add_piece(b, r, piece_size, max_colors, max_size)
-    return b
+        (b, move) = _try_add_piece(b, r, piece_size, max_colors, max_size)
+        if move is not None:
+            winning_moves.insert(0, move)
+    return (b, winning_moves)
 
 def _try_add_piece(b, r, piece_size, max_colors, max_size):
     # Tries to add a piece of the given size to the board.  Returns the
     # modified board on success or the original board on failure.
+    # Also returns the lowest coordinate of the added piece (i.e. the canonical
+    # move to remove it) or None if no piece added.
     b2 = b.clone()
     change = _get_starting_change(b2, r, max_colors, max_size)
     if change is None:
         # If there are no valid starting points, return the original board.
-        return b
+        return (b, None)
     _make_change(b2, change)
     total_added_cells = 1
     while total_added_cells < piece_size:
@@ -56,9 +62,10 @@ def _try_add_piece(b, r, piece_size, max_colors, max_size):
                 break
             else:
                 #print "Aborted piece add."
-                return b
+                return (b, None)
+    piece = _get_new_piece_coords(b2)
     _color_piece_random(b2, r, max_colors)
-    return b2
+    return (b2, min(piece))
 
 def _get_starting_change(b, r, max_colors, max_size):
     # Gets a valid initial change that adds a one-cell colorable piece to the

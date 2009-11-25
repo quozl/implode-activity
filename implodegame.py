@@ -43,8 +43,10 @@ class ImplodeGame(gtk.EventBox):
         self._anim = None
 
         self._board = None
+        # Undo and redo stacks are pairs of (board state, subsequent move).
         self._undo_stack = []
         self._redo_stack = []
+        self._winning_moves = []
 
         self._random = random.Random()
         #self._random.seed(0)
@@ -67,7 +69,6 @@ class ImplodeGame(gtk.EventBox):
         self._grid.select_center_cell()
 
     def new_game(self):
-        _logger.debug('New game.')
         self._stop_animation()
         self._seed = self._random.randint(0, 99999)
         size_frag_dict = {
@@ -80,21 +81,55 @@ class ImplodeGame(gtk.EventBox):
 
     def replay_game(self):
         self._stop_animation()
-        _logger.debug('Replay game.')
         self._reset_board()
 
     def undo(self):
-        _logger.debug('Undo.')
         self._stop_animation()
         if len(self._undo_stack) == 0:
             return
 
-        self._redo_stack.append(self._board)
-        self._board = self._undo_stack.pop()
+        self._undo_last_move()
 
         # Force board refresh.
         self._grid.set_board(self._board)
         self._grid.set_win_draw_flag(False)
+
+    def undo_to_solvable_state(self):
+        # Undoes the player's moves until the puzzle is in a solvable state.
+        #
+        # Actually, we undo moves until the player's moves so far match the
+        # beginning of a list of moves known to solve the puzzle, as given by
+        # the puzzle generator.  Since each puzzle can potentially be solved
+        # through many different sequences of moves, we will almost certainly
+        # be undoing more moves than we need to.  One possible improvement
+        # would be to write a generic puzzle solver that can test some of the
+        # player's later board states for solvability, so that we don't need to
+        # undo as many moves.
+        #
+        # Another possible improvement: Show each undo with a delay between.
+
+        self._stop_animation()
+        if len(self._undo_stack) == 0:
+            return
+
+        moves = self._get_moves_so_far()
+        while moves != self._winning_moves[:len(moves)]:
+            self._undo_last_move()
+            moves = self._get_moves_so_far()
+
+        # Force board refresh.
+        self._grid.set_board(self._board)
+        self._grid.set_win_draw_flag(False)
+
+    def _get_moves_so_far(self):
+        # Returns a list of the moves so far.
+        return [move for (board, move) in self._undo_stack]
+
+    def _undo_last_move(self):
+        # Undoes the most recent move and stores the state on the undo stack.
+        (board, move) = self._undo_stack.pop()
+        self._redo_stack.append((self._board, move))
+        self._board = board
 
     def redo(self):
         _logger.debug('Redo.')
@@ -102,8 +137,9 @@ class ImplodeGame(gtk.EventBox):
         if len(self._redo_stack) == 0:
             return
 
-        self._undo_stack.append(self._board)
-        self._board = self._redo_stack.pop()
+        (board, move) = self._redo_stack.pop()
+        self._undo_stack.append((self._board, move))
+        self._board = board
 
         # Force board refresh.
         self._grid.set_board(self._board)
@@ -113,51 +149,68 @@ class ImplodeGame(gtk.EventBox):
 
     def get_game_state(self):
         # Returns a dictionary containing the game state, in atomic subobjects.
-        def encode_board(b):
-            (w, h) = (b.width, b.height)
+        def encode_board(board, move):
+            # Encodes the given board and move to a state array.
+            (w, h) = (board.width, board.height)
             data = []
             for i in range(h):
                 for j in range(w):
-                    data.append(b.get_value(j, i))
-            return [w, h] + data
+                    data.append(board.get_value(j, i))
+            if move is not None:
+                return [w, h] + data + list(move)
+            else:
+                return [w, h] + data
         return {
             'difficulty' : self._difficulty,
             'seed' : self._seed,
             'size' : self._size,
             'fragmentation' : self._fragmentation,
-            'board' : encode_board(self._board),
-            'undo_stack': [encode_board(b) for b in self._undo_stack],
-            'redo_stack': [encode_board(b) for b in self._redo_stack],
+            'board' : encode_board(self._board, None),
+            'undo_stack': [encode_board(b,m) for b,m in self._undo_stack],
+            'redo_stack': [encode_board(b,m) for b,m in self._redo_stack],
             'win_draw_flag': self._grid.get_win_draw_flag(),
             'win_color': self._grid.get_win_color(),
+            'winning_moves' : self._winning_moves
         }
 
     def set_game_state(self, state):
         # Sets the game state using a dictionary of atomic subobjects.
         self._stop_animation()
         def decode_board(state):
+            # Decodes a board (and maybe an appended move) from the given state
+            # array.
             b = board.Board()
             (w, h) = (state[0], state[1])
             data = state[2:]
             for i in range(h):
                 for j in range(w):
                     b.set_value(j, i, data.pop(0))
-            return b
+            if len(data) == 2:
+                # Return appended move.
+                return b, tuple(data)
+            else:
+                return b, None
         self._difficulty = state['difficulty']
         self._seed = state['seed']
         self._size = state['size']
         self._fragmentation = state['fragmentation']
-        self._board = decode_board(state['board'])
+        (self._board, dummy) = decode_board(state['board'])
         self._undo_stack = [decode_board(x) for x in state['undo_stack']]
         self._redo_stack = [decode_board(x) for x in state['redo_stack']]
         self._grid.set_board(self._board)
         self._grid.set_win_state(state['win_draw_flag'], state['win_color'])
+        if 'winning_moves' in state:
+            # Prior to version 8, we didn't store the list of winning moves.
+            self._winning_moves = [tuple(x) for x in state['winning_moves']]
+        else:
+            self._winning_moves = []
 
     def _reset_board(self):
         # Regenerates the board with the current seed.
-        self._board = boardgen.generate_board(seed=self._seed,
-                                              fragmentation=self._fragmentation,
-                                              max_size=self._size)
+        (self._board, self._winning_moves) = \
+                boardgen.generate_board(seed=self._seed,
+                                        fragmentation=self._fragmentation,
+                                        max_size=self._size)
         self._grid.set_board(self._board)
         self._grid.set_win_draw_flag(False)
         self._undo_stack = []
@@ -197,7 +250,10 @@ class ImplodeGame(gtk.EventBox):
     def _remove_contiguous(self, contiguous, anim_stopped=False):
         # Removes the given set of contiguous blocks from the board.
         self._redo_stack = []
-        self._undo_stack.append(self._board.clone())
+        # We save the player's move as the lexographically smallest coordinate
+        # of the piece.
+        move = min(contiguous)
+        self._undo_stack.append((self._board.clone(), move))
         self._board.clear_pieces(contiguous)
         self._board.drop_pieces()
         self._board.remove_empty_columns()
