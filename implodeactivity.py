@@ -61,6 +61,7 @@ class ImplodeActivity(Activity):
         _logger.debug('Starting implode activity...')
 
         self._game = ImplodeGame()
+        self._game.connect('stuck', self._stuck_cb)
 
         self._configure_toolbars()
 
@@ -103,6 +104,11 @@ class ImplodeActivity(Activity):
             content = io.getvalue()
             f.write(content)
             f.close()
+
+    def _stuck_cb(self, state):
+        stuck_window = _StuckWindow(self._game)
+        stuck_window.set_transient_for(self.get_toplevel())
+        stuck_window.show_all()
 
     def _configure_toolbars(self):
         """Create, set, and show a toolbar box with an activity button, game
@@ -198,14 +204,15 @@ class ImplodeActivity(Activity):
         separator.show()
 
 
-class _HelpWindow(gtk.Window):
-    def __init__(self):
-        super(_HelpWindow, self).__init__()
+class _DialogWindow(gtk.Window):
+    # A base class for a modal dialog window.
+    def __init__(self, icon_name, title):
+        super(_DialogWindow, self).__init__()
 
         self.set_border_width(style.LINE_WIDTH)
         offset = style.GRID_CELL_SIZE
-        width = gtk.gdk.screen_width() - offset * 2
-        height = gtk.gdk.screen_height() - offset * 2
+        width = gtk.gdk.screen_width() / 2
+        height = gtk.gdk.screen_height() / 2
         self.set_size_request(width, height)
         self.set_position(gtk.WIN_POS_CENTER_ALWAYS)
         self.set_decorated(False)
@@ -215,18 +222,77 @@ class _HelpWindow(gtk.Window):
         vbox = gtk.VBox()
         self.add(vbox)
 
-        toolbar = _HelpToolbar()
+        toolbar = _DialogToolbar(icon_name, title)
         toolbar.connect('stop-clicked', self._stop_clicked_cb)
-
         vbox.pack_start(toolbar, False)
 
+        self.content_vbox = gtk.VBox()
+        self.content_vbox.set_border_width(style.DEFAULT_SPACING)
+        vbox.add(self.content_vbox)
+
+        self.connect('realize', self._realize_cb)
+
+    def _stop_clicked_cb(self, source):
+        self.destroy()
+
+    def _realize_cb(self, source):
+        self.window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
+        self.window.set_accept_focus(True)
+
+
+class _StuckWindow(_DialogWindow):
+    # A dialog window to prompt the user when a game can't be finished.
+    def __init__(self, game):
+        super(_StuckWindow, self).__init__('help-icon', _("Stuck"))
+
+        width = gtk.gdk.screen_width() / 2
+        height = gtk.gdk.screen_height() / 2
+        self.set_size_request(width, height)
+
+        label = gtk.Label(_("Stuck?  You can still solve the puzzle."))
+        label.set_line_wrap(True)
+        self.content_vbox.pack_start(label,
+                                     expand=False,
+                                     padding=style.DEFAULT_SPACING)
+
+        def add_button(icon_name, label, func):
+            icon = Icon()
+            icon.set_from_icon_name(icon_name, gtk.ICON_SIZE_LARGE_TOOLBAR)
+            button = gtk.Button()
+            button.set_image(icon)
+            button.set_label(label)
+            self.content_vbox.pack_start(button,
+                                         expand=True,
+                                         padding=style.DEFAULT_SPACING)
+
+            def callback(source):
+                self.destroy()
+                func()
+            button.connect('clicked', callback)
+
+            return button
+
+        add_button('edit-undo'  , _("Undo")      , game.undo)
+        add_button('new-game'   , _("New game")  , game.new_game)
+
+
+class _HelpWindow(_DialogWindow):
+    # A dialog window to display the game instructions.
+    def __init__(self):
+        super(_HelpWindow, self).__init__('help-icon', _("Help"))
+
+        offset = style.GRID_CELL_SIZE
+        width = gtk.gdk.screen_width() - offset * 2
+        height = gtk.gdk.screen_height() - offset * 2
+        self.set_size_request(width, height)
+
         self._help_widget = HelpWidget(self._icon_file)
-        vbox.pack_start(self._help_widget)
+        self.content_vbox.pack_start(self._help_widget)
 
         self._help_nav_bar = _HelpNavBar()
-        vbox.pack_end(self._help_nav_bar,
-                      expand=False,
-                      padding=style.DEFAULT_SPACING)
+        self.content_vbox.pack_end(self._help_nav_bar,
+                                   expand=False,
+                                   padding=style.DEFAULT_SPACING)
 
         for (signal_name, callback) in [
                 ('forward-clicked', self._forward_clicked_cb),
@@ -235,9 +301,6 @@ class _HelpWindow(gtk.Window):
             self._help_nav_bar.connect(signal_name, callback)
 
         self._update_prev_next()
-
-    def _stop_clicked_cb(self, source):
-        self.destroy()
 
     def _forward_clicked_cb(self, source):
         self._help_widget.next_stage()
@@ -261,20 +324,21 @@ class _HelpWindow(gtk.Window):
         self._help_nav_bar.set_can_next_stage(hw.can_next_stage())
 
 
-class _HelpToolbar(gtk.Toolbar):
+class _DialogToolbar(gtk.Toolbar):
+    # Displays a dialog window's toolbar, with title, icon, and close box.
     __gsignals__ = {
         'stop-clicked'       : (gobject.SIGNAL_RUN_LAST, None, ()),
     }
-    def __init__(self):
-        super(_HelpToolbar, self).__init__()
+    def __init__(self, icon_name, title):
+        super(_DialogToolbar, self).__init__()
 
         icon = Icon()
-        icon.set_from_icon_name('help-icon', gtk.ICON_SIZE_LARGE_TOOLBAR)
+        icon.set_from_icon_name(icon_name, gtk.ICON_SIZE_LARGE_TOOLBAR)
         self._add_widget(icon)
 
         self._add_separator()
 
-        label = gtk.Label(_("Help"))
+        label = gtk.Label(title)
         self._add_widget(label)
 
         self._add_separator(expand=True)
@@ -300,6 +364,8 @@ class _HelpToolbar(gtk.Toolbar):
 
 
 class _HelpNavBar(gtk.HButtonBox):
+    # A widget to display the navigation controls at the bottom of the help
+    # dialog.
     __gsignals__ = {
         'forward-clicked' : (gobject.SIGNAL_RUN_LAST, None, ()),
         'back-clicked'    : (gobject.SIGNAL_RUN_LAST, None, ()),

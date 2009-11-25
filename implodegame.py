@@ -22,6 +22,7 @@ _logger = logging.getLogger('implode-activity.implodegame')
 from gettext import gettext as _
 
 import gtk
+import gobject
 import random
 
 import board
@@ -31,6 +32,10 @@ import gridwidget
 
 class ImplodeGame(gtk.EventBox):
     """Gtk widget for playing the implode game."""
+
+    __gsignals__ = {
+        'stuck' : (gobject.SIGNAL_RUN_LAST, None, ())
+    }
 
     def __init__(self, *args, **kwargs):
         super(ImplodeGame, self).__init__(*args, **kwargs)
@@ -218,4 +223,4 @@ class ImplodeGame(gtk.EventBox):
         self._undo_stack = []
 
     def _init_lose(self):
-        pass
+        self.emit('stuck')

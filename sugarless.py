@@ -29,6 +29,8 @@ import os
 import implodegame
 from helpwidget import HelpWidget
 
+_DEFAULT_SPACING = 15
+
 class ImplodeWindow(gtk.Window):
     def __init__(self):
         super(ImplodeWindow, self).__init__(gtk.WINDOW_TOPLEVEL)
@@ -89,6 +91,8 @@ class ImplodeWindow(gtk.Window):
         main_box.pack_start(self.game, True, True, 0)
         self.add(main_box)
 
+        self.game.connect('stuck', self._stuck_cb)
+
         self.show_all()
         self.game.grab_focus()
 
@@ -109,6 +113,41 @@ class ImplodeWindow(gtk.Window):
         help_window = _HelpWindow()
         help_window.set_transient_for(self.get_toplevel())
         help_window.show_all()
+
+    def _stuck_cb(self, state):
+        stuck_window = _StuckWindow(self.game)
+        stuck_window.set_transient_for(self.get_toplevel())
+        stuck_window.show_all()
+
+
+class _StuckWindow(gtk.Window):
+    def __init__(self, game):
+        super(_StuckWindow, self).__init__()
+
+        self.set_size_request(320, 240)
+        self.set_position(gtk.WIN_POS_CENTER_ON_PARENT) 
+        self.set_modal(True)
+
+        vbox = gtk.VBox()
+        self.add(vbox)
+
+        label = gtk.Label("Stuck?  You can still solve the puzzle.")
+        label.set_line_wrap(True)
+        vbox.pack_start(label, expand=False, padding=_DEFAULT_SPACING)
+
+        def add_button(id, label, func):
+            button = gtk.Button(stock=id, label=label)
+            vbox.pack_start(button, expand=True, padding=_DEFAULT_SPACING)
+
+            def callback(source):
+                self.destroy()
+                func()
+            button.connect('clicked', callback)
+
+            return button
+
+        add_button(gtk.STOCK_UNDO, "Undo", game.undo)
+        add_button(gtk.STOCK_NEW, "New game", game.new_game)
 
 
 class _HelpWindow(gtk.Window):
