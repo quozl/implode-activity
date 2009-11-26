@@ -182,10 +182,10 @@ class GridWidget(gtk.DrawingArea):
             return True
         # Ignore key presses while animating.
         if self._is_animating():
-            return False
+            return action is not None
         if not self._board_drawer.board_is_valid():
             self._board_drawer.set_selected_cell(None)
-            return False
+            return action is not None
         else:
             selected_cell = self._board_drawer.get_selected_cell()
             if selected_cell is None:
@@ -194,13 +194,10 @@ class GridWidget(gtk.DrawingArea):
             else:
                 if action == 'select':
                     self.emit('piece-selected', *selected_cell)
-                    return True
                 elif action == 'undo':
                     self.emit('undo-key-pressed', 0)
-                    return True
                 elif action == 'redo':
                     self.emit('redo-key-pressed', 0)
-                    return True
                 else:
                     offsets = {'up'    : ( 0,  1),
                                'down'  : ( 0, -1),
@@ -208,9 +205,8 @@ class GridWidget(gtk.DrawingArea):
                                'right' : ( 1,  0)}
                     if action in offsets:
                         offset = offsets[action]
-                        return self._board_drawer.move_selected_cell(*offset)
-                    else:
-                        return False
+                        self._board_drawer.move_selected_cell(*offset)
+                return action is not None
 
     @_log_errors
     def do_motion_notify_event(self, event):
