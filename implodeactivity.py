@@ -51,6 +51,8 @@ from StringIO import StringIO
 import gtk
 import gobject
 
+from keymap import KEY_MAP
+
 class ImplodeActivity(Activity):
     def hello(self, widget, data=None):
         logging.info("Hello World")
@@ -272,9 +274,12 @@ class _StuckWindow(_DialogWindow):
 
             return button
 
-        add_button('edit-undo', _("Undo")    , game.undo_to_solvable_state)
-        add_button('new-game' , _("New game"), game.new_game)
+        undo = add_button('edit-undo', _("Undo"), game.undo_to_solvable_state)
+        new = add_button('new-game', _("New game"), game.new_game)
 
+        _add_button_nav_override(new, undo)
+        _add_button_nav_override(undo, new)
+        undo.grab_focus()
 
 class _HelpWindow(_DialogWindow):
     # A dialog window to display the game instructions.
@@ -400,3 +405,26 @@ class _HelpNavBar(gtk.HButtonBox):
 
     def set_can_next_stage(self, can_next_stage):
         self._forward_button.set_sensitive(can_next_stage)
+
+# It is important that the "stuck" window buttons be navigable with the keypad,
+# so that the bulk of the game can be played in tablet mode on the XO.  To
+# facilitate this, we add a key press override for one button to:
+#   - Make it switch focus to the other button on a directional keypress
+#   - Make it activate the button on a select keypress.
+#
+# There is probably a better way to do this... I have tried a number of
+# different key capture/focus approaches, and the gtk in my Sugar emulator so
+# far has not cooperated... which is odd, since the gtk on my desktop does the
+# right thing by default.
+def _add_button_nav_override(button, other_button):
+    def key_press_event_cb(widget, event, data=None):
+        action = KEY_MAP.get(event.keyval, None)
+        if action in ('left', 'right', 'up', 'down'):
+            other_button.grab_focus()
+            return True
+        if action == 'select':
+            button.activate()
+            return True
+        return False
+    button.connect('key-press-event', key_press_event_cb)
+

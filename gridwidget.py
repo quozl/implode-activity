@@ -28,6 +28,7 @@ import time
 
 import color
 
+from keymap import KEY_MAP
 from anim import Anim
 
 # Color of the background.
@@ -61,37 +62,6 @@ _SMILEY = """
     .x......x.
     ..xxxxxx..
 """
-
-_KEY_MAP = {
-    gtk.keysyms.KP_Up        : 'up',
-    gtk.keysyms.KP_Down      : 'down',
-    gtk.keysyms.KP_Left      : 'left',
-    gtk.keysyms.KP_Right     : 'right',
-
-    gtk.keysyms.Up           : 'up',
-    gtk.keysyms.Down         : 'down',
-    gtk.keysyms.Left         : 'left',
-    gtk.keysyms.Right        : 'right',
-
-    gtk.keysyms.uparrow      : 'up',
-    gtk.keysyms.downarrow    : 'down',
-    gtk.keysyms.leftarrow    : 'left',
-    gtk.keysyms.rightarrow   : 'right',
-
-    gtk.keysyms.Return       : 'select',
-    gtk.keysyms.KP_Space     : 'select',
-    gtk.keysyms.KP_Enter     : 'select',
-    gtk.keysyms.space        : 'select',
-    gtk.keysyms.End          : 'select',
-    gtk.keysyms.KP_End       : 'select',
-
-    gtk.keysyms.Home         : 'new',
-    gtk.keysyms.KP_Home      : 'new',
-    gtk.keysyms.Page_Down    : 'redo',
-    gtk.keysyms.KP_Page_Down : 'redo',
-    gtk.keysyms.Page_Up      : 'undo',
-    gtk.keysyms.KP_Page_Up   : 'undo',
-}
 
 # Removal animation stages.
 _ANIM_STAGE_NONE = 0
@@ -206,7 +176,7 @@ class GridWidget(gtk.DrawingArea):
 
     @_log_errors
     def do_key_press_event(self, event):
-        action = _KEY_MAP.get(event.keyval, None)
+        action = KEY_MAP.get(event.keyval, None)
         if action == 'new':
             self.emit('new-key-pressed', 0)
             return True

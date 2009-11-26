@@ -16,6 +16,7 @@ icons/replay-game.svg
 icons/help-icon.svg
 implodeactivity.py
 implodegame.py
+keymap.py
 po/Implode.pot
 po/ar.po
 po/es.po
