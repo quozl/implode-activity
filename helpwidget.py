@@ -29,7 +29,8 @@ import rsvg
 import time
 
 import board
-from gridwidget import Anim, BoardDrawer, RemovalDrawer, WinDrawer
+from anim import Anim
+from gridwidget import BoardDrawer, RemovalDrawer, WinDrawer
 
 if 'SUGAR_BUNDLE_PATH' in os.environ:
     from sugar.graphics import style

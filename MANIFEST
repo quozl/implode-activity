@@ -1,5 +1,6 @@
 activity/activity-implode.svg
 activity/activity.info
+anim.py
 board.py
 boardgen.py
 color.py

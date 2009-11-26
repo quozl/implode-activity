@@ -24,11 +24,20 @@ from gettext import gettext as _
 import gtk
 import gobject
 import random
+import time
 
+from anim import Anim
 import board
 import boardgen
 import gridwidget
 
+# Amount of time to wait after the player is stuck to display the "stuck"
+# dialog, in seconds.
+_STUCK_DELAY = 1.5
+
+# Amount of time to wait between undos when undoing the board to a solvable
+# state after the player gets stuck, in seconds.
+_UNDO_DELAY = 0.3
 
 class ImplodeGame(gtk.EventBox):
     """Gtk widget for playing the implode game."""
@@ -90,10 +99,6 @@ class ImplodeGame(gtk.EventBox):
 
         self._undo_last_move()
 
-        # Force board refresh.
-        self._grid.set_board(self._board)
-        self._grid.set_win_draw_flag(False)
-
     def undo_to_solvable_state(self):
         # Undoes the player's moves until the puzzle is in a solvable state.
         #
@@ -105,21 +110,32 @@ class ImplodeGame(gtk.EventBox):
         # would be to write a generic puzzle solver that can test some of the
         # player's later board states for solvability, so that we don't need to
         # undo as many moves.
-        #
-        # Another possible improvement: Show each undo with a delay between.
 
         self._stop_animation()
         if len(self._undo_stack) == 0:
             return
 
-        moves = self._get_moves_so_far()
-        while moves != self._winning_moves[:len(moves)]:
-            self._undo_last_move()
-            moves = self._get_moves_so_far()
+        start_time = time.time()
 
-        # Force board refresh.
-        self._grid.set_board(self._board)
-        self._grid.set_win_draw_flag(False)
+        def update_func(start_time_ref = [start_time]):
+            delta = time.time() - start_time_ref[0]
+            if delta > _UNDO_DELAY:
+                self._undo_last_move()
+                moves = self._get_moves_so_far()
+                if moves == self._winning_moves[:len(moves)]:
+                    return False
+                start_time_ref[0] = time.time()
+            return True
+
+        def end_anim_func(anim_stopped):
+            moves = self._get_moves_so_far()
+            while moves != self._winning_moves[:len(moves)]:
+                self._undo_last_move()
+                moves = self._get_moves_so_far()
+
+        self._anim = Anim(update_func, end_anim_func)
+        self._anim.start()
+
 
     def _get_moves_so_far(self):
         # Returns a list of the moves so far.
@@ -130,6 +146,11 @@ class ImplodeGame(gtk.EventBox):
         (board, move) = self._undo_stack.pop()
         self._redo_stack.append((self._board, move))
         self._board = board
+
+        # Force board refresh.
+        self._grid.set_board(self._board)
+        self._grid.set_win_draw_flag(False)
+
 
     def redo(self):
         _logger.debug('Redo.')
@@ -279,4 +300,17 @@ class ImplodeGame(gtk.EventBox):
         self._undo_stack = []
 
     def _init_lose(self):
-        self.emit('stuck')
+        # If the player is stuck, wait a little while, then signal the activity
+        # to display the stuck dialog.
+        start_time = time.time()
+
+        def update_func():
+            delta = time.time() - start_time
+            return (delta <= _STUCK_DELAY)
+
+        def end_anim_func(anim_stopped):
+            if not anim_stopped:
+                self.emit('stuck')
+
+        self._anim = Anim(update_func, end_anim_func)
+        self._anim.start()
