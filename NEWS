@@ -50,8 +50,12 @@
   - Updated toolbars (Michael Stone).
   - Version 7 released.
 
+2009/11/25
+
+  - Added stuck window to let player try again.
+  - Version 8 released.
+
 TODO: 
-- The game could detect a loss and display a "Try again" graphic?
 - Rectangle invalidation could be improved.
 - The code documentation and organization could be improved. Some
   calculations are repeated.
