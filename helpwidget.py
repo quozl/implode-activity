@@ -36,7 +36,7 @@ if 'SUGAR_BUNDLE_PATH' in os.environ:
     from sugar.graphics import style
     _DEFAULT_SPACING = style.DEFAULT_SPACING
     _DEFAULT_PADDING = style.DEFAULT_PADDING
-    _BG_COLOR = tuple(style.COLOR_PANEL_GREY.get_rgba()[:3])
+    _BG_COLOR = tuple(style.COLOR_SELECTION_GREY.get_rgba()[:3])
     _TOOLBAR_COLOR = tuple(style.COLOR_TOOLBAR_GREY.get_rgba()[:3])
 else:
     # Fallbacks for non-Sugar testing.
