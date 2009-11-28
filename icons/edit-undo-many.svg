@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="55px" height="55px">
+  <path
+     style="fill:none;stroke:#ffffff;stroke-width:3;stroke-linejoin:round;stroke-linecap:round"
+     d="M 19,27 L 15,21 L 19,15
+        M 15,21 h 5 c 6,0 6.5,4 6.5,8.5 s -0.5,8.5 -6.5,8.5 h -2
+        M 33,27 L 29,21 L 33,15
+        M 29,21 h 5 c 6,0 6.5,4 6.5,8.5 s -0.5,8.5 -6.5,8.5 h -2"/>
+</svg>

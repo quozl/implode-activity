@@ -182,7 +182,7 @@ class GridWidget(gtk.DrawingArea):
             return True
         # Ignore key presses while animating.
         if self._is_animating():
-            return action is not None
+            return False
         if not self._board_drawer.board_is_valid():
             self._board_drawer.set_selected_cell(None)
             return action is not None
@@ -205,8 +205,9 @@ class GridWidget(gtk.DrawingArea):
                                'right' : ( 1,  0)}
                     if action in offsets:
                         offset = offsets[action]
-                        self._board_drawer.move_selected_cell(*offset)
-                return action is not None
+                        return self._board_drawer.move_selected_cell(*offset)
+                    else:
+                        return False
 
     @_log_errors
     def do_motion_notify_event(self, event):

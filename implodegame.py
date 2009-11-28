@@ -33,7 +33,7 @@ import gridwidget
 
 # Amount of time to wait after the player is stuck to display the "stuck"
 # dialog, in seconds.
-_STUCK_DELAY = 1.5
+_STUCK_DELAY = 0.5
 
 # Amount of time to wait between undos when undoing the board to a solvable
 # state after the player gets stuck, in seconds.
@@ -43,7 +43,7 @@ class ImplodeGame(gtk.EventBox):
     """Gtk widget for playing the implode game."""
 
     __gsignals__ = {
-        'stuck' : (gobject.SIGNAL_RUN_LAST, None, ())
+        'show-stuck': (gobject.SIGNAL_RUN_LAST, None, (int,)),
     }
 
     def __init__(self, *args, **kwargs):
@@ -75,9 +75,10 @@ class ImplodeGame(gtk.EventBox):
 
     def grab_focus(self):
         self._grid.grab_focus()
-        self._grid.select_center_cell()
+        #self._grid.select_center_cell()
 
     def new_game(self):
+        self._hide_stuck()
         self._stop_animation()
         self._seed = self._random.randint(0, 99999)
         size_frag_dict = {
@@ -89,10 +90,12 @@ class ImplodeGame(gtk.EventBox):
         self._reset_board()
 
     def replay_game(self):
+        self._hide_stuck()
         self._stop_animation()
         self._reset_board()
 
     def undo(self):
+        self._hide_stuck()
         self._stop_animation()
         if len(self._undo_stack) == 0:
             return
@@ -111,6 +114,7 @@ class ImplodeGame(gtk.EventBox):
         # player's later board states for solvability, so that we don't need to
         # undo as many moves.
 
+        self._hide_stuck()
         self._stop_animation()
         if len(self._undo_stack) == 0:
             return
@@ -136,7 +140,6 @@ class ImplodeGame(gtk.EventBox):
         self._anim = Anim(update_func, end_anim_func)
         self._anim.start()
 
-
     def _get_moves_so_far(self):
         # Returns a list of the moves so far.
         return [move for (board, move) in self._undo_stack]
@@ -151,9 +154,8 @@ class ImplodeGame(gtk.EventBox):
         self._grid.set_board(self._board)
         self._grid.set_win_draw_flag(False)
 
-
     def redo(self):
-        _logger.debug('Redo.')
+        self._hide_stuck()
         self._stop_animation()
         if len(self._redo_stack) == 0:
             return
@@ -164,6 +166,8 @@ class ImplodeGame(gtk.EventBox):
 
         # Force board refresh.
         self._grid.set_board(self._board)
+
+        self._check_for_lose_state()
 
     def set_level(self, level):
         self._difficulty = level
@@ -196,6 +200,7 @@ class ImplodeGame(gtk.EventBox):
 
     def set_game_state(self, state):
         # Sets the game state using a dictionary of atomic subobjects.
+        self._hide_stuck()
         self._stop_animation()
         def decode_board(state):
             # Decodes a board (and maybe an appended move) from the given state
@@ -226,6 +231,8 @@ class ImplodeGame(gtk.EventBox):
         else:
             self._winning_moves = []
 
+        self._check_for_lose_state()
+
     def _reset_board(self):
         # Regenerates the board with the current seed.
         (self._board, self._winning_moves) = \
@@ -239,7 +246,17 @@ class ImplodeGame(gtk.EventBox):
 
     def _piece_selected_cb(self, widget, x, y):
         # Handles piece selection.
+
+        # We check contiguous before stopping the animation because we don't
+        # want a click on the game board in a losing state to stop the "stuck"
+        # animation.
+        if len(self._board.get_contiguous(x, y)) < 3:
+            return
+
+        self._hide_stuck()
         self._stop_animation()
+        # We recalc contiguous here because _stop_animation may modify board
+        # contents (e.g. the undo-many animation).
         contiguous = self._board.get_contiguous(x, y)
         if len(contiguous) >= 3:
             def remove_func(anim_stopped=False):
@@ -289,6 +306,10 @@ class ImplodeGame(gtk.EventBox):
             else:
                 self._init_win()
         else:
+            self._check_for_lose_state()
+
+    def _check_for_lose_state(self):
+        if not self._board.is_empty():
             all_contiguous = self._board.get_all_contiguous()
             if len(all_contiguous) == 0:
                 self._init_lose()
@@ -310,7 +331,11 @@ class ImplodeGame(gtk.EventBox):
 
         def end_anim_func(anim_stopped):
             if not anim_stopped:
-                self.emit('stuck')
+                self.emit('show-stuck', 1)
 
         self._anim = Anim(update_func, end_anim_func)
         self._anim.start()
+
+    def _hide_stuck(self):
+        self.emit('show-stuck', 0)
+

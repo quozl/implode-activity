@@ -54,21 +54,29 @@ import gobject
 from keymap import KEY_MAP
 
 class ImplodeActivity(Activity):
-    def hello(self, widget, data=None):
-        logging.info("Hello World")
-
     def __init__(self, handle):
         super(ImplodeActivity, self).__init__(handle)
 
         _logger.debug('Starting implode activity...')
 
         self._game = ImplodeGame()
-        self._game.connect('stuck', self._stuck_cb)
+
+        game_box = gtk.VBox()
+        game_box.pack_start(self._game)
+        self._stuck_strip = _StuckStrip()
 
         self._configure_toolbars()
 
-        self.set_canvas(self._game)
+        self.set_canvas(game_box)
+
+        # Show everything except the stuck strip.
         self.show_all()
+        game_box.pack_end(self._stuck_strip, expand=False)
+
+        self._game.connect('show-stuck', self._show_stuck_cb)
+        self._stuck_strip.connect('undo-clicked', self._stuck_undo_cb)
+        game_box.connect('key-press-event', self._key_press_event_cb)
+
         self._game.grab_focus()
 
         last_game_path = self._get_last_game_path()
@@ -107,10 +115,35 @@ class ImplodeActivity(Activity):
             f.write(content)
             f.close()
 
-    def _stuck_cb(self, state):
-        stuck_window = _StuckWindow(self._game)
-        stuck_window.set_transient_for(self.get_toplevel())
-        stuck_window.show_all()
+    def _show_stuck_cb(self, state, data=None):
+        if data:
+            self._stuck_strip.show_all()
+        else:
+            if self._stuck_strip.focus_child:
+                self._game.grab_focus()
+            self._stuck_strip.hide()
+
+    def _stuck_undo_cb(self, state, data=None):
+        self._game.undo_to_solvable_state()
+
+    def _key_press_event_cb(self, source, event):
+        # Make the game navigable by keypad controls.
+        action = KEY_MAP.get(event.keyval, None)
+        if action is None:
+            return False
+        if not self._stuck_strip.flags() & gtk.VISIBLE:
+            return True
+        if self._game.focus_child:
+            if action == 'down':
+                self._stuck_strip.button.grab_focus()
+            return True
+        elif self._stuck_strip.focus_child:
+            if action == 'up':
+                self._game.grab_focus()
+            elif action == 'select':
+                self._stuck_strip.button.activate()
+            return True
+        return True
 
     def _configure_toolbars(self):
         """Create, set, and show a toolbar box with an activity button, game
@@ -242,45 +275,6 @@ class _DialogWindow(gtk.Window):
         self.window.set_accept_focus(True)
 
 
-class _StuckWindow(_DialogWindow):
-    # A dialog window to prompt the user when a game can't be finished.
-    def __init__(self, game):
-        super(_StuckWindow, self).__init__('help-icon', _("Stuck"))
-
-        width = gtk.gdk.screen_width() / 2
-        height = gtk.gdk.screen_height() / 2
-        self.set_size_request(width, height)
-
-        label = gtk.Label(_("Stuck?  You can still solve the puzzle."))
-        label.set_line_wrap(True)
-        self.content_vbox.pack_start(label,
-                                     expand=False,
-                                     padding=style.DEFAULT_SPACING)
-
-        def add_button(icon_name, label, func):
-            icon = Icon()
-            icon.set_from_icon_name(icon_name, gtk.ICON_SIZE_LARGE_TOOLBAR)
-            button = gtk.Button()
-            button.set_image(icon)
-            button.set_label(label)
-            self.content_vbox.pack_start(button,
-                                         expand=True,
-                                         padding=style.DEFAULT_SPACING)
-
-            def callback(source):
-                self.destroy()
-                func()
-            button.connect('clicked', callback)
-
-            return button
-
-        undo = add_button('edit-undo', _("Undo"), game.undo_to_solvable_state)
-        new = add_button('new-game', _("New game"), game.new_game)
-
-        _add_button_nav_override(new, undo)
-        _add_button_nav_override(undo, new)
-        undo.grab_focus()
-
 class _HelpWindow(_DialogWindow):
     # A dialog window to display the game instructions.
     def __init__(self):
@@ -406,25 +400,36 @@ class _HelpNavBar(gtk.HButtonBox):
     def set_can_next_stage(self, can_next_stage):
         self._forward_button.set_sensitive(can_next_stage)
 
-# It is important that the "stuck" window buttons be navigable with the keypad,
-# so that the bulk of the game can be played in tablet mode on the XO.  To
-# facilitate this, we add a key press override for one button to:
-#   - Make it switch focus to the other button on a directional keypress
-#   - Make it activate the button on a select keypress.
-#
-# There is probably a better way to do this... I have tried a number of
-# different key capture/focus approaches, and the gtk in my Sugar emulator so
-# far has not cooperated... which is odd, since the gtk on my desktop does the
-# right thing by default.
-def _add_button_nav_override(button, other_button):
-    def key_press_event_cb(widget, event, data=None):
-        action = KEY_MAP.get(event.keyval, None)
-        if action in ('left', 'right', 'up', 'down'):
-            other_button.grab_focus()
-            return True
-        if action == 'select':
-            button.activate()
-            return True
-        return False
-    button.connect('key-press-event', key_press_event_cb)
+
+class _StuckStrip(gtk.HBox):
+    __gsignals__ = {
+        'undo-clicked' : (gobject.SIGNAL_RUN_LAST, None, ()),
+    }
+    def __init__(self, *args, **kwargs):
+        super(_StuckStrip, self).__init__(*args, **kwargs)
+
+        spacer1 = gtk.Label('')
+        self.pack_start(spacer1, expand=True)
+
+        spacer2 = gtk.Label('')
+        self.pack_end(spacer2, expand=True)
+
+        self.set_spacing(10)
+
+        self.set_border_width(10)
+
+        label = gtk.Label(_("Stuck?  You can still solve the puzzle."))
+        self.pack_start(label, expand=False)
+
+        icon = Icon()
+        icon.set_from_icon_name('edit-undo-many', gtk.ICON_SIZE_LARGE_TOOLBAR)
+        self.button = gtk.Button(stock=gtk.STOCK_UNDO)
+        self.button.set_image(icon)
+        self.button.set_label(_("Undo some moves"))
+        self.pack_end(self.button, expand=False)
+
+        def callback(source):
+            self.emit('undo-clicked')
+        self.button.connect('clicked', callback)
+
 

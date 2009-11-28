@@ -28,6 +28,7 @@ import os
 
 import implodegame
 from helpwidget import HelpWidget
+from keymap import KEY_MAP
 
 _DEFAULT_SPACING = 15
 
@@ -86,15 +87,28 @@ class ImplodeWindow(gtk.Window):
 
         add_button(gtk.STOCK_HELP, self._help_clicked)
 
-        main_box = gtk.VBox(False, 0)
-        main_box.pack_start(toolbar, False)
-        main_box.pack_start(self.game, True, True, 0)
+        self._stuck_strip = _StuckStrip()
+
+        game_box = gtk.VBox()
+        game_box.pack_start(self.game)
+        game_box.pack_end(self._stuck_strip, expand=False)
+
+        main_box = gtk.VBox()
+        main_box.pack_start(toolbar, expand=False)
+        main_box.pack_end(game_box)
         self.add(main_box)
 
-        self.game.connect('stuck', self._stuck_cb)
+        # Show everything except the stuck strip.
+        main_box.show_all()
+        self._stuck_strip.hide()
 
-        self.show_all()
+        self.game.connect('show-stuck', self._show_stuck_cb)
+        self._stuck_strip.connect('undo-clicked', self._stuck_undo_cb)
+        game_box.connect('key-press-event', self._key_press_event_cb)
+
         self.game.grab_focus()
+
+        self.show()
 
     def _delete_event_cb(self, window, event):
         gtk.main_quit()
@@ -114,41 +128,35 @@ class ImplodeWindow(gtk.Window):
         help_window.set_transient_for(self.get_toplevel())
         help_window.show_all()
 
-    def _stuck_cb(self, state):
-        stuck_window = _StuckWindow(self.game)
-        stuck_window.set_transient_for(self.get_toplevel())
-        stuck_window.show_all()
+    def _show_stuck_cb(self, state, data=None):
+        if data:
+            self._stuck_strip.show_all()
+        else:
+            if self._stuck_strip.focus_child:
+                self.game.grab_focus()
+            self._stuck_strip.hide()
 
+    def _stuck_undo_cb(self, state, data=None):
+        self.game.undo_to_solvable_state()
 
-class _StuckWindow(gtk.Window):
-    def __init__(self, game):
-        super(_StuckWindow, self).__init__()
-
-        self.set_size_request(320, 240)
-        self.set_position(gtk.WIN_POS_CENTER_ON_PARENT) 
-        self.set_modal(True)
-
-        vbox = gtk.VBox()
-        self.add(vbox)
-
-        label = gtk.Label("Stuck?  You can still solve the puzzle.")
-        label.set_line_wrap(True)
-        vbox.pack_start(label, expand=False, padding=_DEFAULT_SPACING)
-
-        def add_button(id, label, func):
-            button = gtk.Button(stock=id, label=label)
-            vbox.pack_start(button, expand=True, padding=_DEFAULT_SPACING)
-
-            def callback(source):
-                self.destroy()
-                func()
-            button.connect('clicked', callback)
-
-            return button
-
-        add_button(gtk.STOCK_UNDO, "Undo", game.undo_to_solvable_state)
-        add_button(gtk.STOCK_NEW, "New game", game.new_game)
-
+    def _key_press_event_cb(self, source, event):
+        # Make the game navigable by keypad controls.
+        action = KEY_MAP.get(event.keyval, None)
+        if action is None:
+            return False
+        if not self._stuck_strip.flags() & gtk.VISIBLE:
+            return True
+        if self.game.focus_child:
+            if action == 'down':
+                self._stuck_strip.button.grab_focus()
+            return True
+        elif self._stuck_strip.focus_child:
+            if action == 'up':
+                self.game.grab_focus()
+            elif action == 'select':
+                self._stuck_strip.button.activate()
+            return True
+        return True
 
 class _HelpWindow(gtk.Window):
     def __init__(self):
@@ -232,6 +240,34 @@ class _HelpNavBar(gtk.HButtonBox):
         self._forward_button.set_sensitive(can_next_stage)
 
 
+class _StuckStrip(gtk.HBox):
+    __gsignals__ = {
+        'undo-clicked' : (gobject.SIGNAL_RUN_LAST, None, ()),
+    }
+    def __init__(self, *args, **kwargs):
+        super(_StuckStrip, self).__init__(*args, **kwargs)
+
+        spacer1 = gtk.Label('')
+        self.pack_start(spacer1, expand=True)
+
+        spacer2 = gtk.Label('')
+        self.pack_end(spacer2, expand=True)
+
+        self.set_spacing(10)
+
+        self.set_border_width(10)
+
+        label = gtk.Label("Stuck?  You can still solve the puzzle.")
+        self.pack_start(label, expand=False)
+
+        self.button = gtk.Button(stock=gtk.STOCK_UNDO)
+        self.button.set_label("Undo some moves")
+        self.pack_end(self.button, expand=False)
+
+        def callback(source):
+            self.emit('undo-clicked')
+        self.button.connect('clicked', callback)
+
 
 def main():
     w = ImplodeWindow()
@@ -239,3 +275,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
