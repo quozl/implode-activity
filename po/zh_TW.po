@@ -1,0 +1,54 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-02-29 20:42+0200\n"
+"PO-Revision-Date: 2009-12-22 08:31-0400\n"
+"Last-Translator: Yuan Chao <yuanchao@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Pootle 1.2.1\n"
+
+#: activity/activity.info:2
+msgid "Implode"
+msgstr "爆破大樓"
+
+#: implodeactivity.py:98
+msgid "New"
+msgstr "開始新遊戲"
+
+#: implodeactivity.py:99
+msgid "Replay"
+msgstr "重播"
+
+#: implodeactivity.py:100
+msgid "Undo"
+msgstr "回手"
+
+#: implodeactivity.py:101
+msgid "Redo"
+msgstr "取消復原"
+
+#: implodeactivity.py:120
+msgid "Easy"
+msgstr "簡單"
+
+#: implodeactivity.py:121
+msgid "Medium"
+msgstr "中等"
+
+#: implodeactivity.py:122
+msgid "Hard"
+msgstr "困難"
+
+#: implodeactivity.py:124
+msgid "Game"
+msgstr "遊戲"
