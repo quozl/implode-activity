@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-29 20:42+0200\n"
-"PO-Revision-Date: 2009-12-23 16:13-0400\n"
+"POT-Creation-Date: 2010-01-17 10:59-0500\n"
+"PO-Revision-Date: 2010-02-25 01:00+0200\n"
 "Last-Translator: samy boutayeb <s.boutayeb@free.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: fr\n"
@@ -15,40 +15,90 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Pootle 1.2.1\n"
+"X-Generator: Pootle 2.0.1\n"
 
 #: activity/activity.info:2
 msgid "Implode"
 msgstr "Implosion"
 
-#: implodeactivity.py:98
+#: helpwidget.py:202
+msgid "Goal: Clear the board by removing blocks in groups of 3 or more."
+msgstr "But: Libérer l'espace en supprimant les blocs par groupes de 3 ou plus"
+
+#: helpwidget.py:227
+msgid "You can't remove groups of one or two blocks."
+msgstr "Tu ne peux pas retirer des groupes de un ou deux blocs."
+
+#: helpwidget.py:270
+msgid "Blocks fall to fill empty gaps, and they slide to fill empty columns."
+msgstr ""
+"Les bloc ne parviennent pas à remplir les espaces et ils glissent pour "
+"remplir les colonnes vides."
+
+#: helpwidget.py:293
+msgid "If you get stuck, you can undo to try again."
+msgstr "Si tu es bloqué, tu peux revenir en arrière et réessayer."
+
+#: helpwidget.py:341
+msgid "There is always a way to clear the board."
+msgstr "Il est toujours possible d'effacer le jeu."
+
+#: implodeactivity.py:176
 msgid "New"
 msgstr "Nouveau"
 
-#: implodeactivity.py:99
+#: implodeactivity.py:177
 msgid "Replay"
 msgstr "Rejouer"
 
-#: implodeactivity.py:100
+#: implodeactivity.py:178
 msgid "Undo"
 msgstr "Reprendre"
 
-#: implodeactivity.py:101
+#: implodeactivity.py:179
 msgid "Redo"
 msgstr "Refaire"
 
-#: implodeactivity.py:120
+#: implodeactivity.py:200
 msgid "Easy"
 msgstr "Facile"
 
-#: implodeactivity.py:121
+#: implodeactivity.py:201
 msgid "Medium"
 msgstr "Intermédiaire"
 
-#: implodeactivity.py:122
+#: implodeactivity.py:202
 msgid "Hard"
 msgstr "Difficile"
 
-#: implodeactivity.py:124
+#: implodeactivity.py:215 implodeactivity.py:281
+msgid "Help"
+msgstr "Aide"
+
+#: implodeactivity.py:218
 msgid "Game"
 msgstr "Partie"
+
+#: implodeactivity.py:346
+msgid "Done"
+msgstr "Terminé"
+
+#: implodeactivity.py:393
+msgid "Previous"
+msgstr "Précédent"
+
+#: implodeactivity.py:394
+msgid "Again"
+msgstr "Recommencer"
+
+#: implodeactivity.py:395
+msgid "Next"
+msgstr "Suivant"
+
+#: implodeactivity.py:421
+msgid "Stuck?  You can still solve the puzzle."
+msgstr "Bloqué ?  Tu peux toujours résoudre le puzzle"
+
+#: implodeactivity.py:428
+msgid "Undo some moves"
+msgstr "Défaire certains mouvements"
