@@ -1,3 +1,55 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # Spanish translations for PACKAGE package.
 # Copyright (C) 2008 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
@@ -6,15 +58,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-17 10:59-0500\n"
-"PO-Revision-Date: 2010-01-13 12:17-0400\n"
-"Last-Translator: Roger Orellana <rjorellana@gmail.com>\n"
+"PO-Revision-Date: 2010-02-26 00:11+0200\n"
+"Last-Translator: Aliosh <aliosh2006@gmail.com>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 1.2.1\n"
+"X-Generator: Pootle 2.0.1\n"
 
 #: activity/activity.info:2
 msgid "Implode"
@@ -22,23 +74,25 @@ msgstr "Implosionar"
 
 #: helpwidget.py:202
 msgid "Goal: Clear the board by removing blocks in groups of 3 or more."
-msgstr ""
+msgstr "Objetivo: Limpiar el tablero removiendo bloques en grupos de 3 o más."
 
 #: helpwidget.py:227
 msgid "You can't remove groups of one or two blocks."
-msgstr ""
+msgstr "No puede quitar los grupos de uno o dos bloques."
 
 #: helpwidget.py:270
 msgid "Blocks fall to fill empty gaps, and they slide to fill empty columns."
 msgstr ""
+"Los bloques caen para llenar los huecos y se deslizan para llenar columnas "
+"vacias."
 
 #: helpwidget.py:293
 msgid "If you get stuck, you can undo to try again."
-msgstr ""
+msgstr "Si quedas atrapado, puedes deshacer para intentar otra vez."
 
 #: helpwidget.py:341
 msgid "There is always a way to clear the board."
-msgstr ""
+msgstr "Siempre hay una forma de limpiar el tablero."
 
 #: implodeactivity.py:176
 msgid "New"
@@ -70,7 +124,7 @@ msgstr "Difícil"
 
 #: implodeactivity.py:215 implodeactivity.py:281
 msgid "Help"
-msgstr ""
+msgstr "Ayuda"
 
 #: implodeactivity.py:218
 msgid "Game"
@@ -78,24 +132,24 @@ msgstr "Juego"
 
 #: implodeactivity.py:346
 msgid "Done"
-msgstr ""
+msgstr "Hecho"
 
 #: implodeactivity.py:393
 msgid "Previous"
-msgstr ""
+msgstr "Anterior"
 
 #: implodeactivity.py:394
 msgid "Again"
-msgstr ""
+msgstr "Otra vez"
 
 #: implodeactivity.py:395
 msgid "Next"
-msgstr ""
+msgstr "Siguiente"
 
 #: implodeactivity.py:421
 msgid "Stuck?  You can still solve the puzzle."
-msgstr ""
+msgstr "¿Atascado? Todavía puedes resolverlo."
 
 #: implodeactivity.py:428
 msgid "Undo some moves"
-msgstr ""
+msgstr "Deshacer algunos movimientos"
