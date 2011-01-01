@@ -262,8 +262,8 @@ class ImplodeGame(gtk.EventBox):
             def remove_func(anim_stopped=False):
                 self._remove_contiguous(contiguous, anim_stopped)
             if self._animate:
-                self._anim = self._grid.get_removal_anim(self._board, 
-                                                         contiguous, 
+                self._anim = self._grid.get_removal_anim(self._board,
+                                                         contiguous,
                                                          remove_func)
                 self._anim.start()
             else:
@@ -338,4 +338,3 @@ class ImplodeGame(gtk.EventBox):
 
     def _hide_stuck(self):
         self.emit('show-stuck', 0)
-

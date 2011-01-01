@@ -46,7 +46,7 @@ class ImplodeWindow(gtk.Window):
         def add_button(id, func):
             button = gtk.ToolButton(id)
             toolbar.add(button)
-            
+
             def callback(source):
                 func()
             button.connect('clicked', callback)
@@ -163,19 +163,19 @@ class _HelpWindow(gtk.Window):
         super(_HelpWindow, self).__init__()
 
         self.set_size_request(640, 480)
-        self.set_position(gtk.WIN_POS_CENTER_ON_PARENT) 
+        self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
         self.set_modal(True)
 
         vbox = gtk.VBox()
         self.add(vbox)
-        
+
         self._help_widget = HelpWidget(self._icon_file)
         vbox.pack_start(self._help_widget)
-        
+
         self._help_nav_bar = _HelpNavBar()
         vbox.pack_end(self._help_nav_bar,
                       expand=False)
-        
+
         for (signal_name, callback) in [
                 ('forward-clicked', self._forward_clicked_cb),
                 ('reload-clicked', self._reload_clicked_cb),
@@ -275,4 +275,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

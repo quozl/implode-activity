@@ -161,7 +161,7 @@ def _remove_change(r, cell_h_changes, cell_v_changes, col_changes):
     # Removes a change from cell changes or col changes (less likely) and
     # returns it.
     h_weight = len(cell_h_changes) * 10
-    v_weight = len(cell_v_changes) * 5 
+    v_weight = len(cell_v_changes) * 5
     col_weight = len(col_changes) * 1
     value = r.randint(0, h_weight + v_weight + col_weight - 1)
     if value < h_weight:

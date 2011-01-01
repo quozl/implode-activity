@@ -51,6 +51,3 @@ class Anim(object):
     def _end_anim(self, anim_stopped):
         self._animating = False
         self._end_anim_func(anim_stopped=anim_stopped)
-
-
-

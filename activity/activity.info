@@ -1,8 +1,8 @@
 [Activity]
 name = Implode
 activity_version = 9
-service_name = com.jotaro.ImplodeActivity
+bundle_id = com.jotaro.ImplodeActivity
 icon = activity-implode
-class = implodeactivity.ImplodeActivity
+exec = sugar-activity implodeactivity.ImplodeActivity
 license = GPLv2+
 show_launcher = yes

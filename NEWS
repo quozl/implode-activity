@@ -60,6 +60,10 @@
   - Modified to use stuck strip notification instead of window.
   - Version 9 released.
 
+2010/12/31
+
+  - Packaging improvements suggested by James Cameron.
+
 TODO: 
 - Rectangle invalidation could be improved.
 - The code documentation and organization could be improved. Some

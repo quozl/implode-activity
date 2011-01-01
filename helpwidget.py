@@ -529,17 +529,17 @@ def _show_win(color):
         win_drawer.set_win_state(True, color)
         length = win_drawer.get_anim_length()
         start_time = time.time()
-        
+
         def update_func():
             delta = time.time() - start_time
             win_drawer.set_anim_time(min(delta, length))
             return (delta <= length)
-        
+
         def local_end_anim_func(anim_stopped):
             win_drawer.set_anim_time(length)
             if not anim_stopped:
                 stage.next_action()
-        
+
         stage.anim = Anim(update_func, local_end_anim_func)
         stage.anim.start()
     return action
@@ -628,7 +628,7 @@ class _PreviewWidget(gtk.DrawingArea):
 
     def get_block_coord(self, x, y):
         # Returns the coordinate of the given board block in terms of 4x3 units.
-        if (self._preview_rect.width == 0 
+        if (self._preview_rect.width == 0
             or self._preview_rect.height == 0):
             return (0, 0)
         (drawer_x, drawer_y) = self.board_drawer.get_block_coord(x, y)

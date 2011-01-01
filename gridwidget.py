@@ -899,7 +899,7 @@ class WinDrawer(object):
             return
         self._win_transform = _BoardTransform()
         self._win_transform.setup(width,
-                                  height, 
+                                  height,
                                   self._win_size[0],
                                   self._win_size[1])
 

@@ -431,5 +431,3 @@ class _StuckStrip(gtk.HBox):
         def callback(source):
             self.emit('undo-clicked')
         self.button.connect('clicked', callback)
-
-
