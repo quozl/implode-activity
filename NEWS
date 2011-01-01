@@ -63,6 +63,10 @@
 2010/12/31
 
   - Packaging improvements suggested by James Cameron.
+  - Incorporating new translations from SugarLabs Pootle users: Italian
+    (carlo), Spanish (cjl), French (samybt), Vietnamese (Clytie), German
+    (mschlager), Dutch (Myckel), Tamil (thangam.arunx).
+  - Version 10 released.
 
 TODO: 
 - Rectangle invalidation could be improved.
