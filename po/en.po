@@ -2,12 +2,48 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-29 20:42+0200\n"
+"POT-Creation-Date: 2010-01-17 10:59-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,36 +54,84 @@ msgstr ""
 
 #: activity/activity.info:2
 msgid "Implode"
-msgstr ""
+msgstr "Implode"
 
-#: implodeactivity.py:98
+#: helpwidget.py:202
+msgid "Goal: Clear the board by removing blocks in groups of 3 or more."
+msgstr "Goal: Clear the board by removing blocks in groups of 3 or more."
+
+#: helpwidget.py:227
+msgid "You can't remove groups of one or two blocks."
+msgstr "You can't remove groups of one or two blocks."
+
+#: helpwidget.py:270
+msgid "Blocks fall to fill empty gaps, and they slide to fill empty columns."
+msgstr "Blocks fall to fill empty gaps, and they slide to fill empty columns."
+
+#: helpwidget.py:293
+msgid "If you get stuck, you can undo to try again."
+msgstr "If you get stuck, you can undo to try again."
+
+#: helpwidget.py:341
+msgid "There is always a way to clear the board."
+msgstr "There is always a way to clear the board."
+
+#: implodeactivity.py:176
 msgid "New"
-msgstr ""
+msgstr "New"
 
-#: implodeactivity.py:99
+#: implodeactivity.py:177
 msgid "Replay"
-msgstr ""
+msgstr "Replay"
 
-#: implodeactivity.py:100
+#: implodeactivity.py:178
 msgid "Undo"
-msgstr ""
+msgstr "Undo"
 
-#: implodeactivity.py:101
+#: implodeactivity.py:179
 msgid "Redo"
-msgstr ""
+msgstr "Redo"
 
-#: implodeactivity.py:120
+#: implodeactivity.py:200
 msgid "Easy"
-msgstr ""
+msgstr "Easy"
 
-#: implodeactivity.py:121
+#: implodeactivity.py:201
 msgid "Medium"
-msgstr ""
+msgstr "Medium"
 
-#: implodeactivity.py:122
+#: implodeactivity.py:202
 msgid "Hard"
-msgstr ""
+msgstr "Hard"
 
-#: implodeactivity.py:124
+#: implodeactivity.py:215 implodeactivity.py:281
+msgid "Help"
+msgstr "Help"
+
+#: implodeactivity.py:218
 msgid "Game"
-msgstr ""
+msgstr "Game"
+
+#: implodeactivity.py:346
+msgid "Done"
+msgstr "Done"
+
+#: implodeactivity.py:393
+msgid "Previous"
+msgstr "Previous"
+
+#: implodeactivity.py:394
+msgid "Again"
+msgstr "Again"
+
+#: implodeactivity.py:395
+msgid "Next"
+msgstr "Next"
+
+#: implodeactivity.py:421
+msgid "Stuck?  You can still solve the puzzle."
+msgstr "Stuck?  You can still solve the puzzle."
+
+#: implodeactivity.py:428
+msgid "Undo some moves"
+msgstr "Undo some moves"
