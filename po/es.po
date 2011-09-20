@@ -158,8 +158,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-17 10:59-0500\n"
-"PO-Revision-Date: 2010-02-26 00:11+0200\n"
-"Last-Translator: Aliosh <aliosh2006@gmail.com>\n"
+"PO-Revision-Date: 2011-06-04 08:03+0200\n"
+"Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -248,7 +248,7 @@ msgstr "Siguiente"
 
 #: implodeactivity.py:421
 msgid "Stuck?  You can still solve the puzzle."
-msgstr "¿Atascado? Todavía puedes resolverlo."
+msgstr "¿Atascado?  Todavía puedes resolverlo."
 
 #: implodeactivity.py:428
 msgid "Undo some moves"
