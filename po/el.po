@@ -2,53 +2,137 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-29 20:42+0200\n"
-"PO-Revision-Date: 2009-12-18 00:25-0400\n"
-"Last-Translator: Γιάννης Κασκαμανίδης <ttnfy17@yahoo.gr>\n"
+"POT-Creation-Date: 2010-01-17 10:59-0500\n"
+"PO-Revision-Date: 2010-02-21 17:16+0200\n"
+"Last-Translator: John Sarlis <sarlis@sch.gr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 1.2.1\n"
+"X-Generator: Pootle 2.0.1\n"
 
 #: activity/activity.info:2
 msgid "Implode"
-msgstr "Κατακρήμνιση"
+msgstr "Έκρηξη"
 
-#: implodeactivity.py:98
+#: helpwidget.py:202
+msgid "Goal: Clear the board by removing blocks in groups of 3 or more."
+msgstr ""
+"Σκοπός: καθαρισμός του πίνακα με αφαίρεση των πλαισίων σε ομάδες των 3 ή "
+"περισσότερων."
+
+#: helpwidget.py:227
+msgid "You can't remove groups of one or two blocks."
+msgstr "Δεν μπορείτε να αφαιρέσετε ομάδες ενός ή δύο πλαισίων."
+
+#: helpwidget.py:270
+msgid "Blocks fall to fill empty gaps, and they slide to fill empty columns."
+msgstr ""
+"Τα πλαίσια δεν μπορούν να γεμίσουν τα κενά και θα γλιστρήσουν για να "
+"γεμίσουν κενές στήλες."
+
+#: helpwidget.py:293
+msgid "If you get stuck, you can undo to try again."
+msgstr "Εάν κολλήσετε, μπορείτε να κάνετε αναίρεση και να ξαναπροσπαθήσετε."
+
+#: helpwidget.py:341
+msgid "There is always a way to clear the board."
+msgstr "Υπάρχει πάντα τρόπος για να καθαρίσετε τον πίνακα."
+
+#: implodeactivity.py:176
 msgid "New"
 msgstr "Νέο"
 
-#: implodeactivity.py:99
+#: implodeactivity.py:177
 msgid "Replay"
 msgstr "Επανάληψη"
 
-#: implodeactivity.py:100
+#: implodeactivity.py:178
 msgid "Undo"
 msgstr "Αναίρεση"
 
-#: implodeactivity.py:101
+#: implodeactivity.py:179
 msgid "Redo"
 msgstr "Ακύρωση αναίρεσης"
 
-#: implodeactivity.py:120
+#: implodeactivity.py:200
 msgid "Easy"
 msgstr "Εύκολο"
 
-#: implodeactivity.py:121
+#: implodeactivity.py:201
 msgid "Medium"
 msgstr "Μεσαίο"
 
-#: implodeactivity.py:122
+#: implodeactivity.py:202
 msgid "Hard"
 msgstr "Δύσκολο"
 
-#: implodeactivity.py:124
+#: implodeactivity.py:215 implodeactivity.py:281
+msgid "Help"
+msgstr "Βοήθεια"
+
+#: implodeactivity.py:218
 msgid "Game"
 msgstr "Παιχνίδι"
+
+#: implodeactivity.py:346
+msgid "Done"
+msgstr "Ολοκληρώθηκε"
+
+#: implodeactivity.py:393
+msgid "Previous"
+msgstr "Προηγούμενο"
+
+#: implodeactivity.py:394
+msgid "Again"
+msgstr "Ξανά"
+
+#: implodeactivity.py:395
+msgid "Next"
+msgstr "Επόμενο"
+
+#: implodeactivity.py:421
+msgid "Stuck?  You can still solve the puzzle."
+msgstr "Κολλήσατε;  Μπορείτε ακόμα να λύσετε τον γρίφο."
+
+#: implodeactivity.py:428
+msgid "Undo some moves"
+msgstr "Αναίρεση μερικών κινήσεων"
