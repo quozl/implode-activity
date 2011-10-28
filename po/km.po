@@ -2,52 +2,101 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-29 20:42+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-01-17 10:59-0500\n"
+"PO-Revision-Date: 2011-04-10 15:16+0200\n"
+"Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: km\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Translate Toolkit 1.3.0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Pootle 2.0.1\n"
 
 #: activity/activity.info:2
 msgid "Implode"
+msgstr "ធ្វើ​ឲ្យ​ផ្ទុះ​ខាង​ក្នុង"
+
+#: helpwidget.py:202
+msgid "Goal: Clear the board by removing blocks in groups of 3 or more."
 msgstr ""
 
-#: implodeactivity.py:98
+#: helpwidget.py:227
+msgid "You can't remove groups of one or two blocks."
+msgstr ""
+
+#: helpwidget.py:270
+msgid "Blocks fall to fill empty gaps, and they slide to fill empty columns."
+msgstr ""
+
+#: helpwidget.py:293
+msgid "If you get stuck, you can undo to try again."
+msgstr ""
+
+#: helpwidget.py:341
+msgid "There is always a way to clear the board."
+msgstr ""
+
+#: implodeactivity.py:176
 msgid "New"
-msgstr ""
+msgstr "ថ្មី"
 
-#: implodeactivity.py:99
+#: implodeactivity.py:177
 msgid "Replay"
-msgstr ""
+msgstr "ចាក់​ឡើង​វិញ"
 
-#: implodeactivity.py:100
+#: implodeactivity.py:178
 msgid "Undo"
-msgstr ""
+msgstr "មិនធ្វើ​វិញ"
 
-#: implodeactivity.py:101
+#: implodeactivity.py:179
 msgid "Redo"
-msgstr ""
+msgstr "ធ្វើ​វិញ"
 
-#: implodeactivity.py:120
+#: implodeactivity.py:200
 msgid "Easy"
-msgstr ""
+msgstr "ងាយស្រួល"
 
-#: implodeactivity.py:121
+#: implodeactivity.py:201
 msgid "Medium"
-msgstr ""
+msgstr "មធ្យម"
 
-#: implodeactivity.py:122
+#: implodeactivity.py:202
 msgid "Hard"
+msgstr "ពិបាក"
+
+#: implodeactivity.py:215 implodeactivity.py:281
+msgid "Help"
+msgstr "ជំនួយ"
+
+#: implodeactivity.py:218
+msgid "Game"
+msgstr "ល្បែង"
+
+#: implodeactivity.py:346
+msgid "Done"
+msgstr "ធ្វើ​រួច"
+
+#: implodeactivity.py:393
+msgid "Previous"
+msgstr "ទៅ​ក្រោយ"
+
+#: implodeactivity.py:394
+msgid "Again"
+msgstr "ម្ដង​ទៀត"
+
+#: implodeactivity.py:395
+msgid "Next"
+msgstr "បន្ទាប់"
+
+#: implodeactivity.py:421
+msgid "Stuck?  You can still solve the puzzle."
 msgstr ""
 
-#: implodeactivity.py:124
-msgid "Game"
+#: implodeactivity.py:428
+msgid "Undo some moves"
 msgstr ""
