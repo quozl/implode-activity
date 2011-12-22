@@ -27,15 +27,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-17 10:59-0500\n"
-"PO-Revision-Date: 2011-01-21 11:42+0200\n"
-"Last-Translator: rubina <rubina@aua.am>\n"
+"PO-Revision-Date: 2011-12-22 15:31+0200\n"
+"Last-Translator: anush.mkrtchyan <anush.mkrtchyan@ca1492.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: hy\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Pootle 2.0.3\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Pootle 2.0.5\n"
 
 #: activity/activity.info:2
 msgid "Implode"
@@ -43,16 +43,19 @@ msgstr "Պայթյուն"
 
 #: helpwidget.py:202
 msgid "Goal: Clear the board by removing blocks in groups of 3 or more."
-msgstr "Նպատակ՝ Մաքրել տախտակը ջնջելով 3 կամ ավելից կազմված կապանները:"
+msgstr ""
+"Նպատակը. Մաքրել տախտակը` հեռացնելով 3 կամ ավելի խմբերից բաղկացած "
+"խորանարդիկները:"
 
 #: helpwidget.py:227
 msgid "You can't remove groups of one or two blocks."
-msgstr "Դուք չեք կարող ջնջել խումբ, որը կազմված է 1 կամ 2-ից"
+msgstr "Դուք չեք կարող հեռացնել մեկ կամ երկու խորանարդիկներից բաղկացած խմբերը:"
 
 #: helpwidget.py:270
 msgid "Blocks fall to fill empty gaps, and they slide to fill empty columns."
 msgstr ""
-"Կապանները ընկնում են դատարկ ճեղքերը և սահում մինչև լցնեն դատարկ սյունակները"
+"Խորանարդիկները ընկնում են դատարկ ճեղքերը և սահում մինչև լցնեն դատարկ "
+"սյունակները"
 
 #: helpwidget.py:293
 msgid "If you get stuck, you can undo to try again."
@@ -60,7 +63,7 @@ msgstr "Եթե դուք կանգ եք առել, դուք կարող եք չեղ�
 
 #: helpwidget.py:341
 msgid "There is always a way to clear the board."
-msgstr "Միշտ գոյություն ունի տարբերակ, որ մաքրում է տախտակը:"
+msgstr "Միշտ գոյություն ունի տախտակը մաքրելու որևէ եղանակ:"
 
 #: implodeactivity.py:176
 msgid "New"
@@ -72,11 +75,11 @@ msgstr "Կրկնել խաղը"
 
 #: implodeactivity.py:178
 msgid "Undo"
-msgstr "Չեղյալ հայտարարել"
+msgstr "Չեղյալ համարել"
 
 #: implodeactivity.py:179
 msgid "Redo"
-msgstr "Կրկնել"
+msgstr "Կրկին կատարել"
 
 #: implodeactivity.py:200
 msgid "Easy"
