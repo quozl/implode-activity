@@ -27,7 +27,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-17 10:59-0500\n"
-"PO-Revision-Date: 2011-12-22 20:46+0200\n"
+"PO-Revision-Date: 2011-12-22 20:50+0200\n"
 "Last-Translator: Jasmine <udea_jasmine@yahoo.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: hy\n"
@@ -104,7 +104,7 @@ msgstr "Խաղ"
 
 #: implodeactivity.py:346
 msgid "Done"
-msgstr "Արված է"
+msgstr "Պատրաստ է:"
 
 #: implodeactivity.py:393
 msgid "Previous"
@@ -120,8 +120,8 @@ msgstr "Հաջորդ"
 
 #: implodeactivity.py:421
 msgid "Stuck?  You can still solve the puzzle."
-msgstr "Դուք դեռ կարող եք լուծել գլուխկոտրուկը"
+msgstr "Այլևս քայլ չունե՞ք: Դուք դեռ կարող եք լուծել գլուխկոտրուկը"
 
 #: implodeactivity.py:428
 msgid "Undo some moves"
-msgstr "Չեղյալ հայտարարել որոշ քայլերը"
+msgstr "Ետարկել մի քանի քայլեր:"
