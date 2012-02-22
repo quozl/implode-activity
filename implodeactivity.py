@@ -161,8 +161,6 @@ class ImplodeActivity(Activity):
             toolbar_box.toolbar.insert(activity_button, 0)
             activity_button.show()
 
-            self._add_expander(toolbar_box.toolbar)
-
             toolbar.add(gtk.SeparatorToolItem())
 
         def add_button(icon_name, tooltip, func):
@@ -229,12 +227,12 @@ class ImplodeActivity(Activity):
             self.set_toolbar_box(toolbar_box)
             toolbar_box.show()
 
-    def _add_expander(self, toolbar):
+    def _add_expander(self, toolbar, expand=True):
         """Insert a toolbar item which will expand to fill the available
         space."""
         separator = gtk.SeparatorToolItem()
         separator.props.draw = False
-        separator.set_expand(True)
+        separator.set_expand(expand)
         toolbar.insert(separator, -1)
         separator.show()
 
