@@ -59,6 +59,8 @@ class ImplodeActivity(Activity):
 
         _logger.debug('Starting implode activity...')
 
+        self.max_participants = 1
+
         self._game = ImplodeGame()
 
         game_box = gtk.VBox()
