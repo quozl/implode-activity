@@ -35,8 +35,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-17 10:59-0500\n"
-"PO-Revision-Date: 2011-11-19 08:42+0200\n"
-"Last-Translator: fah <ifah.fah22@hotmail.com>\n"
+"PO-Revision-Date: 2012-03-09 06:27+0200\n"
+"Last-Translator: Meechai <malaku38@hotmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: th\n"
 "MIME-Version: 1.0\n"
@@ -47,31 +47,32 @@ msgstr ""
 
 #: activity/activity.info:2
 msgid "Implode"
-msgstr ""
+msgstr "Implode"
 
 #: helpwidget.py:202
 msgid "Goal: Clear the board by removing blocks in groups of 3 or more."
 msgstr ""
+"เป้าหมาย: ทำกระดานให้ว่างโดยการเอาบล็อกออกครั้งละ 3 บล็อกหรือมากกว่านั้น"
 
 #: helpwidget.py:227
 msgid "You can't remove groups of one or two blocks."
-msgstr ""
+msgstr "คุณไม่สามารถลบกลุ่มของ 1 หรือ 2 บล็อก"
 
 #: helpwidget.py:270
 msgid "Blocks fall to fill empty gaps, and they slide to fill empty columns."
-msgstr ""
+msgstr "บล็อกตกลงมาเติมให้เต็มช่องว่างและมันเลื่อนไปเติมในคอลัมน์ที่ว่างเปล่า"
 
 #: helpwidget.py:293
 msgid "If you get stuck, you can undo to try again."
-msgstr ""
+msgstr "ถ้าเหลือเศษ คุณสามารถเลิกเพื่อลองใหม่อีกครั้ง"
 
 #: helpwidget.py:341
 msgid "There is always a way to clear the board."
-msgstr ""
+msgstr "มันมีวิธีทำให้กระดานว่างเสมอ"
 
 #: implodeactivity.py:176
 msgid "New"
-msgstr "จดหมายใหม่"
+msgstr "เริ่มใหม่"
 
 #: implodeactivity.py:177
 msgid "Replay"
@@ -79,7 +80,7 @@ msgstr "เล่นซ้ำ"
 
 #: implodeactivity.py:178
 msgid "Undo"
-msgstr "เลิกทำ"
+msgstr "ทำกลับ"
 
 #: implodeactivity.py:179
 msgid "Redo"
@@ -123,8 +124,8 @@ msgstr "ถัดไป"
 
 #: implodeactivity.py:421
 msgid "Stuck?  You can still solve the puzzle."
-msgstr ""
+msgstr "ติดขัดอยู่หรือไม่? คุณยังสามารถแก้ไขปริศนาได้"
 
 #: implodeactivity.py:428
 msgid "Undo some moves"
-msgstr "ยกเลิกทำบางอย่าง"
+msgstr "ยกเลิกบางการเคลื่อนย้าย"
