@@ -175,6 +175,9 @@ class ImplodeActivity(Activity):
 
         add_button('new-game'   , _("New")   , self._game.new_game)
         add_button('replay-game', _("Replay"), self._game.replay_game)
+
+        toolbar.add(gtk.SeparatorToolItem())
+
         add_button('edit-undo'  , _("Undo")  , self._game.undo)
         add_button('edit-redo'  , _("Redo")  , self._game.redo)
 
@@ -422,7 +425,7 @@ class _StuckStrip(gtk.HBox):
         self.pack_start(label, expand=False)
 
         icon = Icon()
-        icon.set_from_icon_name('edit-undo-many', gtk.ICON_SIZE_LARGE_TOOLBAR)
+        icon.set_from_icon_name('edit-undo', gtk.ICON_SIZE_LARGE_TOOLBAR)
         self.button = gtk.Button(stock=gtk.STOCK_UNDO)
         self.button.set_image(icon)
         self.button.set_label(_("Undo some moves"))
