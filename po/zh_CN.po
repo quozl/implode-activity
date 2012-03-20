@@ -2,52 +2,133 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#, fuzzy
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-29 20:42+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-01-17 10:59-0500\n"
+"PO-Revision-Date: 2011-12-23 18:49+0200\n"
+"Last-Translator: lite <litekok@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Translate Toolkit 1.3.0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Pootle 2.0.5\n"
 
 #: activity/activity.info:2
 msgid "Implode"
-msgstr ""
+msgstr "内爆"
 
-#: implodeactivity.py:98
+#: helpwidget.py:202
+msgid "Goal: Clear the board by removing blocks in groups of 3 or more."
+msgstr "游戏目标∶移走3个或以上一组的同色方块以清理游戏板。"
+
+#: helpwidget.py:227
+msgid "You can't remove groups of one or two blocks."
+msgstr "你不能移走只有 1个或 2个一组的方块。"
+
+#: helpwidget.py:270
+msgid "Blocks fall to fill empty gaps, and they slide to fill empty columns."
+msgstr "方块会下落或滑动以填补空隙。"
+
+#: helpwidget.py:293
+msgid "If you get stuck, you can undo to try again."
+msgstr "如果遇上不能清除的情况，可以撤消再试一次。"
+
+#: helpwidget.py:341
+msgid "There is always a way to clear the board."
+msgstr "总有一种方法可以清除所有方块。"
+
+#: implodeactivity.py:176
 msgid "New"
-msgstr ""
+msgstr "开始新游戏"
 
-#: implodeactivity.py:99
+#: implodeactivity.py:177
 msgid "Replay"
-msgstr ""
+msgstr "再玩一次"
 
-#: implodeactivity.py:100
+#: implodeactivity.py:178
 msgid "Undo"
-msgstr ""
+msgstr "撤销"
 
-#: implodeactivity.py:101
+#: implodeactivity.py:179
 msgid "Redo"
-msgstr ""
+msgstr "回复"
 
-#: implodeactivity.py:120
+#: implodeactivity.py:200
 msgid "Easy"
-msgstr ""
+msgstr "简易"
 
-#: implodeactivity.py:121
+#: implodeactivity.py:201
 msgid "Medium"
-msgstr ""
+msgstr "中等难度"
 
-#: implodeactivity.py:122
+#: implodeactivity.py:202
 msgid "Hard"
-msgstr ""
+msgstr "高难度"
 
-#: implodeactivity.py:124
+#: implodeactivity.py:215 implodeactivity.py:281
+msgid "Help"
+msgstr "帮助"
+
+#: implodeactivity.py:218
 msgid "Game"
-msgstr ""
+msgstr "游戏"
+
+#: implodeactivity.py:346
+msgid "Done"
+msgstr "完成"
+
+#: implodeactivity.py:393
+msgid "Previous"
+msgstr "上一頁"
+
+#: implodeactivity.py:394
+msgid "Again"
+msgstr "重覆一次"
+
+#: implodeactivity.py:395
+msgid "Next"
+msgstr "下一頁"
+
+#: implodeactivity.py:421
+msgid "Stuck?  You can still solve the puzzle."
+msgstr "不能如何清理所有方块？您仍然可以解决这一难题。"
+
+#: implodeactivity.py:428
+msgid "Undo some moves"
+msgstr "重玩"
