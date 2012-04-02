@@ -35,7 +35,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-17 10:59-0500\n"
-"PO-Revision-Date: 2012-01-23 02:28+0200\n"
+"PO-Revision-Date: 2012-03-16 06:57+0200\n"
 "Last-Translator: Eduardo H. <hoboprimate@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: pt\n"
@@ -51,7 +51,7 @@ msgstr "Implodir"
 
 #: helpwidget.py:202
 msgid "Goal: Clear the board by removing blocks in groups of 3 or more."
-msgstr "Objectivo: Limpa o tabuleiro removendo blocos em grupos de 3 ou mais."
+msgstr "Objetivo: Limpa o tabuleiro removendo blocos em grupos de 3 ou mais."
 
 #: helpwidget.py:227
 msgid "You can't remove groups of one or two blocks."
@@ -65,7 +65,7 @@ msgstr ""
 
 #: helpwidget.py:293
 msgid "If you get stuck, you can undo to try again."
-msgstr "Se ficares preso, podes refazer para tentar de novo."
+msgstr "Se ficares bloqueado, podes desfazer para tentar de novo."
 
 #: helpwidget.py:341
 msgid "There is always a way to clear the board."
@@ -77,7 +77,7 @@ msgstr "Novo"
 
 #: implodeactivity.py:177
 msgid "Replay"
-msgstr "Jogar de novo"
+msgstr "Jogar do início"
 
 #: implodeactivity.py:178
 msgid "Undo"
@@ -109,7 +109,7 @@ msgstr "Jogo"
 
 #: implodeactivity.py:346
 msgid "Done"
-msgstr "Feito"
+msgstr "Concluído"
 
 #: implodeactivity.py:393
 msgid "Previous"
@@ -117,7 +117,7 @@ msgstr "Anterior"
 
 #: implodeactivity.py:394
 msgid "Again"
-msgstr "De novo"
+msgstr "Novamente"
 
 #: implodeactivity.py:395
 msgid "Next"
@@ -125,7 +125,7 @@ msgstr "Seguinte"
 
 #: implodeactivity.py:421
 msgid "Stuck?  You can still solve the puzzle."
-msgstr "Preso?  Ainda podes resolver o puzzle."
+msgstr "Bloqueado?  Ainda podes resolver o puzzle."
 
 #: implodeactivity.py:428
 msgid "Undo some moves"
