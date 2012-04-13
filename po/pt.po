@@ -35,7 +35,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-17 10:59-0500\n"
-"PO-Revision-Date: 2012-03-16 06:57+0200\n"
+"PO-Revision-Date: 2012-04-13 07:18+0200\n"
 "Last-Translator: Eduardo H. <hoboprimate@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: pt\n"
@@ -60,7 +60,7 @@ msgstr "Não podes remover grupos de um ou dois blocos."
 #: helpwidget.py:270
 msgid "Blocks fall to fill empty gaps, and they slide to fill empty columns."
 msgstr ""
-"Os blocos caiem para preencher espaços vazios, e deslizam para preencher "
+"Os blocos caiem para preencher lacunas vazias, e deslizam para preencher "
 "colunas vazias."
 
 #: helpwidget.py:293
