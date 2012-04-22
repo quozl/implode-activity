@@ -2,19 +2,20 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-17 10:59-0500\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2012-03-06 07:11+0200\n"
+"Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: son\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Translate Toolkit 1.7.0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Pootle 2.0.5\n"
 
 #: activity/activity.info:2
 msgid "Implode"
@@ -41,20 +42,23 @@ msgid "There is always a way to clear the board."
 msgstr ""
 
 #: implodeactivity.py:176
+#, fuzzy
 msgid "New"
-msgstr ""
+msgstr "Taaga"
 
 #: implodeactivity.py:177
 msgid "Replay"
 msgstr ""
 
 #: implodeactivity.py:178
+#, fuzzy
 msgid "Undo"
-msgstr ""
+msgstr "Taafeeri"
 
 #: implodeactivity.py:179
+#, fuzzy
 msgid "Redo"
-msgstr ""
+msgstr "Tee koyne"
 
 #: implodeactivity.py:200
 msgid "Easy"
@@ -69,28 +73,33 @@ msgid "Hard"
 msgstr ""
 
 #: implodeactivity.py:215 implodeactivity.py:281
+#, fuzzy
 msgid "Help"
-msgstr ""
+msgstr "Faaba"
 
 #: implodeactivity.py:218
+#, fuzzy
 msgid "Game"
-msgstr ""
+msgstr "Hooray"
 
 #: implodeactivity.py:346
+#, fuzzy
 msgid "Done"
-msgstr ""
+msgstr "Tee ka ben"
 
 #: implodeactivity.py:393
+#, fuzzy
 msgid "Previous"
-msgstr ""
+msgstr "Bisante"
 
 #: implodeactivity.py:394
 msgid "Again"
 msgstr ""
 
 #: implodeactivity.py:395
+#, fuzzy
 msgid "Next"
-msgstr ""
+msgstr "Jine"
 
 #: implodeactivity.py:421
 msgid "Stuck?  You can still solve the puzzle."

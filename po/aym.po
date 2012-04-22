@@ -1,3 +1,7 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
@@ -13,33 +17,26 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.0.5\n"
 
-#  "Implosionar"
 #: activity/activity.info:2
 msgid "Implode"
 msgstr ""
 
-#  "Objetivo: Limpiar el tablero removiendo bloques en grupos de 3 o más."
 #: helpwidget.py:202
 msgid "Goal: Clear the board by removing blocks in groups of 3 or more."
 msgstr ""
 
-#  "No puede quitar los grupos de uno o dos bloques."
 #: helpwidget.py:227
 msgid "You can't remove groups of one or two blocks."
 msgstr ""
 
-#  "Los bloques caen para llenar los huecos y se deslizan para llenar columnas "
-#  "vacias."
 #: helpwidget.py:270
 msgid "Blocks fall to fill empty gaps, and they slide to fill empty columns."
 msgstr ""
 
-#  "Si quedas atrapado, puedes deshacer para intentar otra vez."
 #: helpwidget.py:293
 msgid "If you get stuck, you can undo to try again."
 msgstr ""
 
-#  "Siempre hay una forma de limpiar el tablero."
 #: helpwidget.py:341
 msgid "There is always a way to clear the board."
 msgstr ""
@@ -49,7 +46,6 @@ msgstr ""
 msgid "New"
 msgstr "Machaqa"
 
-#  "Repetir"
 #: implodeactivity.py:177
 msgid "Replay"
 msgstr ""
@@ -64,17 +60,14 @@ msgstr "Jani wali lurjaña"
 msgid "Redo"
 msgstr "Wasitata luraña"
 
-#  "Fácil"
 #: implodeactivity.py:200
 msgid "Easy"
 msgstr ""
 
-#  "Medio"
 #: implodeactivity.py:201
 msgid "Medium"
 msgstr ""
 
-#  "Difícil"
 #: implodeactivity.py:202
 msgid "Hard"
 msgstr ""
@@ -89,7 +82,6 @@ msgstr "Yanapt'awi"
 msgid "Game"
 msgstr "Anataña"
 
-#  "Hecho"
 #: implodeactivity.py:346
 msgid "Done"
 msgstr ""
@@ -99,7 +91,6 @@ msgstr ""
 msgid "Previous"
 msgstr "Nayrankiri"
 
-#  "Otra vez"
 #: implodeactivity.py:394
 msgid "Again"
 msgstr ""
@@ -109,12 +100,10 @@ msgstr ""
 msgid "Next"
 msgstr "Jutiri"
 
-#  "¿Atascado?  Todavía puedes resolverlo."
 #: implodeactivity.py:421
 msgid "Stuck?  You can still solve the puzzle."
 msgstr ""
 
-#  "Deshacer algunos movimientos"
 #: implodeactivity.py:428
 msgid "Undo some moves"
 msgstr ""

@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-17 10:59-0500\n"
-"PO-Revision-Date: 2011-08-19 07:53+0200\n"
+"PO-Revision-Date: 2011-08-29 03:23+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: hus\n"
@@ -19,36 +19,36 @@ msgstr ""
 
 #: activity/activity.info:2
 msgid "Implode"
-msgstr "petnal tin al"
+msgstr "Petnal tin al"
 
 #: helpwidget.py:202
 msgid "Goal: Clear the board by removing blocks in groups of 3 or more."
 msgstr ""
-"xi le' ki bajuw: ka t'okdha an pek'at aknixtalab ani ka xaluw k'al ox "
+"Xi le' ki bajuw: ka t'okdha an pek'at aknixtalab ani ka xaluw k'al ox "
 "pejechik ani k'al yan."
 
 #: helpwidget.py:227
 msgid "You can't remove groups of one or two blocks."
-msgstr "Yab éjtidh ka tixk'á jun ani tsab i mudhel péjechik"
+msgstr "Yab éjtidh ka tixk'á jun ani tsab i mudhel péjechik."
 
 #: helpwidget.py:270
 msgid "Blocks fall to fill empty gaps, and they slide to fill empty columns."
 msgstr ""
-"Pejechik u ijkanal abal ka t'uchich juti jólat ani ka ne'edha'  abal ka "
-"t'uchich an k'elab xi jolat"
+"Pejechik u ijkanal abal ka t'uchich juti jólat ani ka ne'edha' abal ka "
+"t'uchich an k'elab xi jolat."
 
 #: helpwidget.py:293
 msgid "If you get stuck, you can undo to try again."
-msgstr "max kit jilk'on t'ok'badh, ka wichk'ow junilak'ij"
+msgstr "Max kit jilk'on t'ok'badh, ka wichk'ow junilak'ij."
 
 #: helpwidget.py:341
 msgid "There is always a way to clear the board."
-msgstr "Ets'ey wa'ats jant'odha ka t'okedha'  aknixtalab"
+msgstr "Ets'ey wa'ats jant'odha ka t'okedha' aknixtalab."
 
 # ítej (algo nuevo)
 #: implodeactivity.py:176
 msgid "New"
-msgstr "it"
+msgstr "It"
 
 #: implodeactivity.py:177
 msgid "Replay"
@@ -56,7 +56,7 @@ msgstr "Tsabk'wajbá"
 
 #: implodeactivity.py:178
 msgid "Undo"
-msgstr "wichk'ów"
+msgstr "Wichk'ów"
 
 #: implodeactivity.py:179
 msgid "Redo"
@@ -80,7 +80,7 @@ msgstr "Tólmix"
 
 #: implodeactivity.py:218
 msgid "Game"
-msgstr "ubat'intalab"
+msgstr "Ubat'intalab"
 
 #: implodeactivity.py:346
 msgid "Done"
@@ -100,7 +100,7 @@ msgstr "Xi júnakej"
 
 #: implodeactivity.py:421
 msgid "Stuck?  You can still solve the puzzle."
-msgstr "Tonk'in? a wit'alej  ka ts'ejka"
+msgstr "Tonk'in? a wit'alej  ka ts'ejka."
 
 #: implodeactivity.py:428
 msgid "Undo some moves"
