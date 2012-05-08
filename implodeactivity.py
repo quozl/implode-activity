@@ -316,9 +316,9 @@ class _HelpWindow(_DialogWindow):
         self._help_widget.replay_stage()
 
     def _icon_file(self, icon_name):
-        activity_path = get_bundle_path()
-        file_path = os.path.join(activity_path, 'icons', icon_name + '.svg')
-        return file_path
+        theme = gtk.icon_theme_get_default()
+        info = theme.lookup_icon(icon_name, 0, 0)
+        return info.get_filename()
 
     def _update_prev_next(self):
         hw = self._help_widget
