@@ -20,8 +20,9 @@ import logging
 _logger = logging.getLogger('implode-activity.gridwidget')
 
 import cairo
-import gobject
-import gtk
+from gi.repository import GObject
+from gi.repository import Gtk
+from gi.repository import Gdk
 import math
 import random
 import time
@@ -93,39 +94,38 @@ _ANIM_SCALE = 0.04
 def _log_errors(func):
     return func
 
-class GridWidget(gtk.DrawingArea):
+class GridWidget(Gtk.DrawingArea):
     """Gtk widget for rendering the game board."""
 
     __gsignals__ = {
-        'piece-selected'  : (gobject.SIGNAL_RUN_LAST, None, (int, int)),
-        'undo-key-pressed': (gobject.SIGNAL_RUN_LAST, None, (int,)),
-        'redo-key-pressed': (gobject.SIGNAL_RUN_LAST, None, (int,)),
-        'new-key-pressed' : (gobject.SIGNAL_RUN_LAST, None, (int,)),
-        'button-press-event': 'override',
-        'key-press-event': 'override',
-        'expose-event': 'override',
-        'size-allocate': 'override',
-        'motion-notify-event': 'override',
+        'piece-selected': (GObject.SignalFlags.RUN_LAST, None, (int, int)),
+        'undo-key-pressed': (GObject.SignalFlags.RUN_LAST, None, (int,)),
+        'redo-key-pressed': (GObject.SignalFlags.RUN_LAST, None, (int,)),
+        'new-key-pressed': (GObject.SignalFlags.RUN_LAST, None, (int,)),
     }
 
     def __init__(self, *args, **kwargs):
         super(GridWidget, self).__init__(*args, **kwargs)
-        self.set_events(gtk.gdk.BUTTON_PRESS_MASK
-                        | gtk.gdk.POINTER_MOTION_MASK
-                        | gtk.gdk.KEY_PRESS_MASK)
-        self.set_flags(gtk.CAN_FOCUS)
+        self.set_events(Gdk.EventMask.BUTTON_PRESS_MASK
+                        | Gdk.EventMask.POINTER_MOTION_MASK
+                        | Gdk.EventMask.KEY_PRESS_MASK)
+        self.set_can_focus(True)
 
         self._board_drawer = BoardDrawer(self._get_size, self._invalidate_rect)
         self._win_drawer = WinDrawer(self._get_size, self._invalidate_rect)
         self._removal_drawer = RemovalDrawer(self._get_size, self._invalidate_rect)
         self._set_current_drawer(self._board_drawer)
 
+        self.connect('draw', self._draw_event_cb)
+        self.connect('configure-event', self._configure_event_cb)
+        self.connect('button-press-event', self._button_press_event_cb)
+
     def _get_size(self):
-        return (self.allocation.width, self.allocation.height)
+        return (self.get_allocated_width(), self.get_allocated_height())
 
     def _invalidate_rect(self, rect):
-        if self.window:
-            self.window.invalidate_rect(rect, True)
+        if self.get_window():
+            self.get_window().invalidate_rect(rect, True)
 
     def set_board(self, board):
         self._board_drawer.set_board(board)
@@ -141,7 +141,9 @@ class GridWidget(gtk.DrawingArea):
 
     def _invalidate_board(self):
         (width, height) = self._get_size()
-        self._invalidate_rect(gtk.gdk.Rectangle(0, 0, width, height))
+        rect = Gdk.Rectangle()
+        rect.x, rect.y, rect.width, rect.height = (0, 0, width, height)
+        self._invalidate_rect(rect)
 
     def get_win_draw_flag(self):
         return (self._current_drawer is self._win_drawer)
@@ -160,12 +162,12 @@ class GridWidget(gtk.DrawingArea):
         self._board_drawer.select_center_cell()
 
     @_log_errors
-    def do_button_press_event(self, event):
+    def _button_press_event_cb(self, widget, event):
         # Ignore mouse clicks while animating.
         if self._is_animating():
             return True
         # Ignore double- and triple-clicks.
-        if event.type != gtk.gdk.BUTTON_PRESS:
+        if event.type != Gdk.EventType.BUTTON_PRESS:
             return True
         self.grab_focus()
         self._board_drawer.set_mouse_selection(event.x, event.y)
@@ -219,24 +221,16 @@ class GridWidget(gtk.DrawingArea):
         else:
             x = event.x
             y = event.y
-            state = event.state
+            state = event.get_state()
         self._board_drawer.set_mouse_selection(x, y)
 
-    @_log_errors
-    def do_expose_event(self, event):
-        cr = self.window.cairo_create()
-        cr.rectangle(event.area.x,
-                     event.area.y,
-                     event.area.width,
-                     event.area.height)
-        cr.clip()
-        (width, height) = self.window.get_size()
-        self._current_drawer.draw(cr, width, height)
+    def _draw_event_cb(self, widget, cr):
+        alloc = self.get_allocation()
+        self._current_drawer.draw(cr, alloc.width, alloc.height)
 
     @_log_errors
-    def do_size_allocate(self, allocation):
-        super(GridWidget, self).do_size_allocate(self, allocation)
-        self._current_drawer.resize(allocation.width, allocation.height)
+    def _configure_event_cb(self, widget, event):
+        self._current_drawer.resize(event.width, event.height)
 
     def _set_current_drawer(self, drawer):
         self._current_drawer = drawer
@@ -382,7 +376,8 @@ class BoardDrawer(object):
 
     def _invalidate_board(self):
         (width, height) = self._get_size_func()
-        rect = gtk.gdk.Rectangle(0, 0, width, height)
+        rect = Gdk.Rectangle()
+        rect.x, rect.y, rect.width, rect.height = (0, 0, width, height)
         self._invalidate_rect_func(rect)
 
     def _invalidate_selection(self, selection_coord):
@@ -407,10 +402,10 @@ class BoardDrawer(object):
         max_x2 = math.ceil( max(pt1[0], pt2[0])) + 1
         min_y2 = math.floor(min(pt1[1], pt2[1])) - 1
         max_y2 = math.ceil( max(pt1[1], pt2[1])) + 1
-        rect = gtk.gdk.Rectangle(int(min_x2),
-                                 int(min_y2),
-                                 int(max_x2 - min_x2),
-                                 int(max_y2 - min_y2))
+        rect = Gdk.Rectangle()
+        rect.x, rect.y, rect.width, rect.height = (
+            int(min_x2), int(min_y2),
+            int(max_x2 - min_x2), int(max_y2 - min_y2))
         self._invalidate_rect_func(rect)
 
     def _display_to_cell(self, x, y):
@@ -426,10 +421,8 @@ class BoardDrawer(object):
             self._board_transform = _BoardTransform()
         else:
             self._board_transform = _BoardTransform()
-            self._board_transform.setup(width,
-                                       height,
-                                       self._board_width,
-                                       self._board_height)
+            self._board_transform.setup(width, height, self._board_width,
+                                        self._board_height)
 
     def draw(self, cr, width, height):
         # Draws the widget.
@@ -564,7 +557,8 @@ class RemovalDrawer(object):
 
     def _invalidate_board(self):
         (width, height) = self._get_size_func()
-        rect = gtk.gdk.Rectangle(0, 0, width, height)
+        rect = Gdk.Rectangle()
+        rect.x, rect.y, rect.width, rect.height = (0, 0, width, height)
         self._invalidate_rect_func(rect)
 
     def _recalc_game_anim_frames(self):
@@ -810,7 +804,8 @@ class WinDrawer(object):
 
     def _invalidate_board(self):
         (width, height) = self._get_size_func()
-        rect = gtk.gdk.Rectangle(0, 0, width, height)
+        rect = Gdk.Rectangle()
+        rect.x, rect.y, rect.width, rect.height = (0, 0, width, height)
         self._invalidate_rect_func(rect)
 
     def _get_win_tiles(self):

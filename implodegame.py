@@ -21,8 +21,8 @@ _logger = logging.getLogger('implode-activity.implodegame')
 
 from gettext import gettext as _
 
-import gtk
-import gobject
+from gi.repository import Gtk
+from gi.repository import GObject
 import random
 import time
 
@@ -39,11 +39,11 @@ _STUCK_DELAY = 0.5
 # state after the player gets stuck, in seconds.
 _UNDO_DELAY = 0.3
 
-class ImplodeGame(gtk.EventBox):
+class ImplodeGame(Gtk.EventBox):
     """Gtk widget for playing the implode game."""
 
     __gsignals__ = {
-        'show-stuck': (gobject.SIGNAL_RUN_LAST, None, (int,)),
+        'show-stuck': (GObject.SignalFlags.RUN_LAST, None, (int,)),
     }
 
     def __init__(self, *args, **kwargs):

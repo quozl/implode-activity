@@ -16,7 +16,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import gobject
+from gi.repository import GObject
 
 # Animation timer interval (in msec)
 _TIMER_INTERVAL = 20
@@ -34,7 +34,7 @@ class Anim(object):
     def start(self):
         self._animating = True
         self._update_func()
-        gobject.timeout_add(_TIMER_INTERVAL, self._timer)
+        GObject.timeout_add(_TIMER_INTERVAL, self._timer)
 
     def stop(self):
         if self._animating:

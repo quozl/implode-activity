@@ -21,11 +21,13 @@ from __future__ import with_statement
 from gettext import gettext as _
 
 import cairo
-import gobject
-import gtk
+
+from gi.repository import Gtk
+from gi.repository import Gdk
+from gi.repository import Rsvg
+
 import math
 import os
-import rsvg
 import time
 
 import board
@@ -33,7 +35,7 @@ from anim import Anim
 from gridwidget import BoardDrawer, RemovalDrawer, WinDrawer
 
 if 'SUGAR_BUNDLE_PATH' in os.environ:
-    from sugar.graphics import style
+    from sugar3.graphics import style
     _DEFAULT_SPACING = style.DEFAULT_SPACING
     _DEFAULT_PADDING = style.DEFAULT_PADDING
     _BG_COLOR = tuple(style.COLOR_SELECTION_GREY.get_rgba()[:3])
@@ -75,11 +77,11 @@ _CLICK_SPEED = 0.2
 # Speed of the mouse, in units (4x3 per screen) per second.
 _MOUSE_SPEED = 0.5
 
-class HelpWidget(gtk.EventBox):
+class HelpWidget(Gtk.EventBox):
     def __init__(self, icon_file_func, *args, **kwargs):
         super(HelpWidget, self).__init__(*args, **kwargs)
 
-        vbox = gtk.VBox()
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.add(vbox)
 
         self._stages = [
@@ -90,11 +92,11 @@ class HelpWidget(gtk.EventBox):
             _HelpStage5(icon_file_func),
         ]
         self._stage_index = 0
-        self._notebook = gtk.Notebook()
+        self._notebook = Gtk.Notebook()
         self._notebook.set_show_tabs(False)
         for stage in self._stages:
-            self._notebook.append_page(stage)
-        vbox.pack_start(self._notebook)
+            self._notebook.append_page(stage, None)
+        vbox.pack_start(self._notebook, True, True, 0)
 
         self._reset_current_stage()
 
@@ -128,24 +130,27 @@ class HelpWidget(gtk.EventBox):
         self._stages[self._stage_index].reset()
 
 
-class _HelpStage(gtk.EventBox):
+class _HelpStage(Gtk.EventBox):
     # An abstract parent class for objects that represent an animated help
     # screen widget with a description.
     def __init__(self, icon_file_func, *args, **kwargs):
         super(_HelpStage, self).__init__(*args, **kwargs)
 
-        hbox = gtk.HBox()
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self.add(hbox)
 
-        vbox = gtk.VBox()
-        hbox.pack_start(vbox, expand=True, padding=_DEFAULT_SPACING)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        hbox.pack_start(vbox, expand=True, fill=True,
+                        padding=_DEFAULT_SPACING)
 
         self.preview = _PreviewWidget(icon_file_func)
-        vbox.pack_start(self.preview, expand=True, padding=_DEFAULT_PADDING)
+        vbox.pack_start(self.preview, expand=True, fill=False,
+                        padding=_DEFAULT_PADDING)
 
-        label = gtk.Label(self.get_message())
+        label = Gtk.Label(label=self.get_message())
         label.set_line_wrap(True)
-        vbox.pack_start(label, expand=False, padding=_DEFAULT_PADDING)
+        vbox.pack_start(label, expand=False, fill=False,
+                        padding=_DEFAULT_PADDING)
 
         self.board = None
         self.undo_stack = []
@@ -552,12 +557,7 @@ def _undo():
         stage.next_action()
     return action
 
-class _PreviewWidget(gtk.DrawingArea):
-    __gsignals__ = {
-        'expose-event': 'override',
-        'size-allocate': 'override',
-    }
-
+class _PreviewWidget(Gtk.DrawingArea):
     def __init__(self, icon_file_func, *args, **kwargs):
         super(_PreviewWidget, self).__init__(*args, **kwargs)
 
@@ -573,9 +573,17 @@ class _PreviewWidget(gtk.DrawingArea):
 
         self._icon_file_func = icon_file_func
 
-        self._preview_rect = gtk.gdk.Rectangle(0, 0, 0, 0)
-        self._toolbar_rect = gtk.gdk.Rectangle(0, 0, 0, 0)
-        self._drawer_rect = gtk.gdk.Rectangle(0, 0, 0, 0)
+        self._preview_rect = Gdk.Rectangle()
+        self._preview_rect.x = self._preview_rect.y = \
+            self._preview_rect.width = self._preview_rect.height = 0
+
+        self._toolbar_rect = Gdk.Rectangle()
+        self._toolbar_rect.x = self._toolbar_rect.y = \
+            self._toolbar_rect.width = self._toolbar_rect.height = 0
+
+        self._drawer_rect = Gdk.Rectangle()
+        self._drawer_rect.x = self._drawer_rect.y = \
+            self._drawer_rect.width = self._drawer_rect.height = 0
 
         self._drawer = self.board_drawer
 
@@ -589,17 +597,20 @@ class _PreviewWidget(gtk.DrawingArea):
         self._click_visible = False
         self._cursor_visible = False
 
+        self.connect('draw', self._draw_event_cb)
+        self.connect('configure-event', self._configure_event_cb)
+        # self.connect('size-allocate', self._configure_event_cb)
+
     def _get_drawer_size(self):
         return (self._drawer_rect.width, self._drawer_rect.height)
 
     def _invalidate_drawer_rect(self, rect):
-        if self.window:
+        if self.get_window():
             (x, y) = (self._drawer_rect.x, self._drawer_rect.y)
-            offset_rect = gtk.gdk.Rectangle(rect.x + x,
-                                            rect.y + y,
-                                            rect.width,
-                                            rect.height)
-            self.window.invalidate_rect(offset_rect, True)
+            offset_rect = Gdk.Rectangle()
+            offset_rect.x, offset_rect.y, = (rect.x + x, rect.y + y)
+            offset_rect.width, offset_rect.height = (rect.width, rect.height)
+            self.get_window().invalidate_rect(offset_rect, True)
 
     def set_drawer(self, drawer):
         self._drawer = drawer
@@ -667,28 +678,29 @@ class _PreviewWidget(gtk.DrawingArea):
         self._invalidate_client_rect(pixel_x - r, pixel_y - r, r2, r2)
 
     def _invalidate_client_rect(self, x, y, width, height):
-        if self.window:
-            rect = gtk.gdk.Rectangle(
+        if self.get_window():
+            rect = Gdk.Rectangle()
+            rect.x, rect.y, rect.width, rect.height = (
                 int(math.floor(x)) + self._preview_rect.x,
                 int(math.floor(y)) + self._preview_rect.y,
                 int(math.ceil(width)) + 1,
                 int(math.ceil(height)) + 1)
-            self.window.invalidate_rect(rect, True)
+
+            self.get_window().invalidate_rect(rect, True)
 
     def _update_mouse_position(self):
         (pixel_x, pixel_y) = self._get_cursor_pixel_coords()
         (x, y) = (pixel_x, pixel_y - self._toolbar_rect.height)
         self.board_drawer.set_mouse_selection(x, y)
 
-    def do_expose_event(self, event):
-        cr = self.window.cairo_create()
-        cr.rectangle(event.area.x,
-                     event.area.y,
-                     event.area.width,
-                     event.area.height)
-        cr.clip()
-        (width, height) = self.window.get_size()
-        self._draw(cr, width, height)
+    def _size_allocate_cb(self, widget, rect):
+        self.width = rect.width
+        self.height = rect.height
+
+    def _draw_event_cb(self, widget, cr):
+        alloc = self.get_allocation()
+        cr.rectangle(0, 0, alloc.width, alloc.height)
+        self._draw(cr, alloc.width, alloc.height)
 
     def _draw(self, cr, width, height):
         cr.set_source_rgb(*_BG_COLOR)
@@ -737,7 +749,8 @@ class _PreviewWidget(gtk.DrawingArea):
     def _draw_grid(self, cr):
         cr.save()
         cr.translate(self._drawer_rect.x, self._drawer_rect.y)
-        self._drawer.draw(cr, self._drawer_rect.width, self._drawer_rect.height)
+        self._drawer.draw(cr, self._drawer_rect.width,
+                          self._drawer_rect.height)
         cr.restore()
 
     def _draw_click(self, cr):
@@ -803,22 +816,13 @@ class _PreviewWidget(gtk.DrawingArea):
 
         cr.restore()
 
-    def do_size_allocate(self, allocation):
-        super(_PreviewWidget, self).do_size_allocate(self, allocation)
-        (width, height) = (allocation.width, allocation.height)
+    def _configure_event_cb(self, widget, event):
+        (width, height) = (event.width, event.height)
 
-        avail_width = width - _DEFAULT_SPACING * 2
-        other_height = avail_width * 3 / 4
+        actual_width = width - style.GRID_CELL_SIZE * 4
+        actual_height = actual_width * 3 / 4
 
-        avail_height = height - _DEFAULT_SPACING * 2
-        other_width = avail_height * 4 / 3
-
-        if other_height < avail_height:
-            actual_width = avail_width
-            actual_height = other_height
-        else:
-            actual_width = other_width
-            actual_height = avail_height
+        self.set_size_request(actual_width, actual_height)
 
         icon_height = int(math.ceil(actual_height * _ICON_HEIGHT))
         board_height = actual_height - icon_height
@@ -826,21 +830,24 @@ class _PreviewWidget(gtk.DrawingArea):
         x_offset = (width - actual_width) / 2
         y_offset = (height - actual_height) / 2
 
-        old_width = self._preview_rect.width
-        old_height = self._preview_rect.height
+        self._preview_rect = Gdk.Rectangle()
+        self._preview_rect.x = x_offset
+        self._preview_rect.y = y_offset
+        self._preview_rect.width = actual_width
+        self._preview_rect.height = actual_height
 
-        self._preview_rect = gtk.gdk.Rectangle(x_offset,
-                                               y_offset,
-                                               actual_width,
-                                               actual_height)
-        self._toolbar_rect = gtk.gdk.Rectangle(x_offset,
-                                               y_offset,
-                                               actual_width,
-                                               icon_height)
-        self._drawer_rect = gtk.gdk.Rectangle(x_offset,
-                                              y_offset + icon_height,
-                                              actual_width,
-                                              board_height)
+        self._toolbar_rect = Gdk.Rectangle()
+        self._toolbar_rect.x = x_offset
+        self._toolbar_rect.y = y_offset
+        self._toolbar_rect.width = actual_width
+        self._toolbar_rect.height = icon_height
+
+        self._drawer_rect = Gdk.Rectangle()
+        self._drawer_rect.x = x_offset
+        self._drawer_rect.y = y_offset + icon_height
+        self._drawer_rect.width = actual_width
+        self._drawer_rect.height = board_height
+
         self.board_drawer.resize(actual_width, board_height)
         self.removal_drawer.resize(actual_width, board_height)
         self.win_drawer.resize(actual_width, board_height)
@@ -886,6 +893,6 @@ def _get_icon_handle(file_path):
     if file_path not in _icon_handles:
         with open(file_path, 'r') as f:
             data = f.read()
-        _icon_handles[file_path] = rsvg.Handle(data=data)
+        _icon_handles[file_path] = Rsvg.Handle.new_from_data(data)
 
     return _icon_handles[file_path]

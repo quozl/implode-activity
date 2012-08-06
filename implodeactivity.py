@@ -21,35 +21,25 @@ _logger = logging.getLogger('implode-activity')
 
 from gettext import gettext as _
 
-from sugar.activity.activity import Activity, get_bundle_path
-from sugar.graphics import style
-from sugar.graphics.icon import Icon
-from sugar.graphics.radiotoolbutton import RadioToolButton
-from sugar.graphics.toolbutton import ToolButton
+from sugar3.activity.activity import Activity, get_bundle_path
+from sugar3.graphics import style
+from sugar3.graphics.icon import Icon
+from sugar3.graphics.radiotoolbutton import RadioToolButton
+from sugar3.graphics.toolbutton import ToolButton
 
-try:
-    # 0.86+ toolbar widgets
-    from sugar.activity.widgets import ActivityToolbarButton, StopButton
-    from sugar.graphics.toolbarbox import ToolbarBox, ToolbarButton
-    _USE_OLD_TOOLBARS = False
-except ImportError:
-    # Pre-0.86 toolbar widgets
-    from sugar.activity.activity import ActivityToolbox
-    _USE_OLD_TOOLBARS = True
+from sugar3.activity.widgets import ActivityToolbarButton, StopButton
+from sugar3.graphics.toolbarbox import ToolbarBox, ToolbarButton
 
 from implodegame import ImplodeGame
 from helpwidget import HelpWidget
 
 import os
 
-try:
-    import json
-    json.dumps
-except (ImportError, AttributeError):
-    import simplejson as json
+import json
 from StringIO import StringIO
-import gtk
-import gobject
+from gi.repository import Gtk
+from gi.repository import GObject
+from gi.repository import Gdk
 
 from keymap import KEY_MAP
 
@@ -63,8 +53,8 @@ class ImplodeActivity(Activity):
 
         self._game = ImplodeGame()
 
-        game_box = gtk.VBox()
-        game_box.pack_start(self._game)
+        game_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        game_box.pack_start(self._game, True, True, 0)
         self._stuck_strip = _StuckStrip()
 
         self._configure_toolbars()
@@ -73,7 +63,7 @@ class ImplodeActivity(Activity):
 
         # Show everything except the stuck strip.
         self.show_all()
-        game_box.pack_end(self._stuck_strip, expand=False)
+        game_box.pack_end(self._stuck_strip, expand=False, fill=False, padding=0)
 
         self._game.connect('show-stuck', self._show_stuck_cb)
         self._stuck_strip.connect('undo-clicked', self._stuck_undo_cb)
@@ -96,8 +86,8 @@ class ImplodeActivity(Activity):
         file_data = json.load(io)
         f.close()
 
-        print file_data
-        _logger.debug(file_data)
+        # print file_data
+        # _logger.debug(file_data)
         (file_type, version, game_data) = file_data
         if file_type == 'Implode save game' and version <= [1, 0]:
             self._game.set_game_state(game_data)
@@ -121,7 +111,7 @@ class ImplodeActivity(Activity):
         if data:
             self._stuck_strip.show_all()
         else:
-            if self._stuck_strip.focus_child:
+            if self._stuck_strip.get_focus_child():
                 self._game.grab_focus()
             self._stuck_strip.hide()
 
@@ -133,13 +123,13 @@ class ImplodeActivity(Activity):
         action = KEY_MAP.get(event.keyval, None)
         if action is None:
             return False
-        if not self._stuck_strip.flags() & gtk.VISIBLE:
+        if not self._stuck_strip.get_state_flags() & Gtk.AccelFlags.VISIBLE:
             return True
-        if self._game.focus_child:
+        if self._game.get_focus_child():
             if action == 'down':
                 self._stuck_strip.button.grab_focus()
             return True
-        elif self._stuck_strip.focus_child:
+        elif self._stuck_strip.get_focus_child():
             if action == 'up':
                 self._game.grab_focus()
             elif action == 'select':
@@ -152,18 +142,14 @@ class ImplodeActivity(Activity):
         controls, difficulty selector, help button, and stop button. All
         callbacks are locally defined."""
 
-        if _USE_OLD_TOOLBARS:
-            toolbox = ActivityToolbox(self)
-            toolbar = gtk.Toolbar()
-        else:
-            toolbar_box = ToolbarBox()
-            toolbar = toolbar_box.toolbar
+        toolbar_box = ToolbarBox()
+        toolbar = toolbar_box.toolbar
 
-            activity_button = ActivityToolbarButton(self)
-            toolbar_box.toolbar.insert(activity_button, 0)
-            activity_button.show()
+        activity_button = ActivityToolbarButton(self)
+        toolbar_box.toolbar.insert(activity_button, 0)
+        activity_button.show()
 
-            toolbar.add(gtk.SeparatorToolItem())
+        toolbar.add(Gtk.SeparatorToolItem())
 
         def add_button(icon_name, tooltip, func):
             def callback(source):
@@ -176,12 +162,12 @@ class ImplodeActivity(Activity):
         add_button('new-game'   , _("New")   , self._game.new_game)
         add_button('replay-game', _("Replay"), self._game.replay_game)
 
-        toolbar.add(gtk.SeparatorToolItem())
+        toolbar.add(Gtk.SeparatorToolItem())
 
         add_button('edit-undo'  , _("Undo")  , self._game.undo)
         add_button('edit-redo'  , _("Redo")  , self._game.redo)
 
-        toolbar.add(gtk.SeparatorToolItem())
+        toolbar.add(Gtk.SeparatorToolItem())
 
         self._levels_buttons = []
         def add_level_button(icon_name, tooltip, numeric_level):
@@ -217,54 +203,47 @@ class ImplodeActivity(Activity):
         # right now, however.
         add_button('help-icon', _("Help"), _help_clicked_cb)
 
-        if _USE_OLD_TOOLBARS:
-            toolbox.add_toolbar(_("Game"), toolbar)
-            toolbox.set_current_toolbar(1)
+        stop_button = StopButton(self)
+        stop_button.props.accelerator = '<Ctrl><Shift>Q'
+        toolbar_box.toolbar.insert(stop_button, -1)
+        stop_button.show()
 
-            self.set_toolbox(toolbox)
-            toolbox.show()
-        else:
-            stop_button = StopButton(self)
-            stop_button.props.accelerator = '<Ctrl><Shift>Q'
-            toolbar_box.toolbar.insert(stop_button, -1)
-            stop_button.show()
-
-            self.set_toolbar_box(toolbar_box)
-            toolbar_box.show()
+        self.set_toolbar_box(toolbar_box)
+        toolbar_box.show()
 
     def _add_expander(self, toolbar, expand=True):
         """Insert a toolbar item which will expand to fill the available
         space."""
-        separator = gtk.SeparatorToolItem()
+        separator = Gtk.SeparatorToolItem()
         separator.props.draw = False
         separator.set_expand(expand)
         toolbar.insert(separator, -1)
         separator.show()
 
 
-class _DialogWindow(gtk.Window):
+class _DialogWindow(Gtk.Window):
     # A base class for a modal dialog window.
     def __init__(self, icon_name, title):
         super(_DialogWindow, self).__init__()
 
         self.set_border_width(style.LINE_WIDTH)
         offset = style.GRID_CELL_SIZE
-        width = gtk.gdk.screen_width() / 2
-        height = gtk.gdk.screen_height() / 2
+        width = Gdk.Screen.width() / 2
+        height = Gdk.Screen.height() / 2
         self.set_size_request(width, height)
-        self.set_position(gtk.WIN_POS_CENTER_ALWAYS)
+        self.set_position(Gtk.WindowPosition.CENTER_ALWAYS)
         self.set_decorated(False)
         self.set_resizable(False)
         self.set_modal(True)
 
-        vbox = gtk.VBox()
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.add(vbox)
 
         toolbar = _DialogToolbar(icon_name, title)
         toolbar.connect('stop-clicked', self._stop_clicked_cb)
-        vbox.pack_start(toolbar, False)
+        vbox.pack_start(toolbar, expand=False, fill=False, padding=0)
 
-        self.content_vbox = gtk.VBox()
+        self.content_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.content_vbox.set_border_width(style.DEFAULT_SPACING)
         vbox.add(self.content_vbox)
 
@@ -274,8 +253,8 @@ class _DialogWindow(gtk.Window):
         self.destroy()
 
     def _realize_cb(self, source):
-        self.window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
-        self.window.set_accept_focus(True)
+        self.set_type_hint(Gdk.WindowTypeHint.DIALOG)
+        self.get_window().set_accept_focus(True)
 
 
 class _HelpWindow(_DialogWindow):
@@ -284,17 +263,16 @@ class _HelpWindow(_DialogWindow):
         super(_HelpWindow, self).__init__('help-icon', _("Help"))
 
         offset = style.GRID_CELL_SIZE
-        width = gtk.gdk.screen_width() - offset * 2
-        height = gtk.gdk.screen_height() - offset * 2
+        width = Gdk.Screen.width() - offset * 2
+        height = Gdk.Screen.height() - offset * 2
         self.set_size_request(width, height)
 
         self._help_widget = HelpWidget(self._icon_file)
-        self.content_vbox.pack_start(self._help_widget)
+        self.content_vbox.pack_start(self._help_widget, True, True, 0)
 
         self._help_nav_bar = _HelpNavBar()
-        self.content_vbox.pack_end(self._help_nav_bar,
-                                   expand=False,
-                                   padding=style.DEFAULT_SPACING)
+        self.content_vbox.pack_end(self._help_nav_bar, expand=False,
+                                   fill=False, padding=style.DEFAULT_SPACING)
 
         for (signal_name, callback) in [
                 ('forward-clicked', self._forward_clicked_cb),
@@ -316,7 +294,7 @@ class _HelpWindow(_DialogWindow):
         self._help_widget.replay_stage()
 
     def _icon_file(self, icon_name):
-        theme = gtk.icon_theme_get_default()
+        theme = Gtk.IconTheme.get_default()
         info = theme.lookup_icon(icon_name, 0, 0)
         return info.get_filename()
 
@@ -326,21 +304,21 @@ class _HelpWindow(_DialogWindow):
         self._help_nav_bar.set_can_next_stage(hw.can_next_stage())
 
 
-class _DialogToolbar(gtk.Toolbar):
+class _DialogToolbar(Gtk.Toolbar):
     # Displays a dialog window's toolbar, with title, icon, and close box.
     __gsignals__ = {
-        'stop-clicked'       : (gobject.SIGNAL_RUN_LAST, None, ()),
+        'stop-clicked'       : (GObject.SignalFlags.RUN_LAST, None, ()),
     }
     def __init__(self, icon_name, title):
         super(_DialogToolbar, self).__init__()
 
         icon = Icon()
-        icon.set_from_icon_name(icon_name, gtk.ICON_SIZE_LARGE_TOOLBAR)
+        icon.set_from_icon_name(icon_name, Gtk.IconSize.LARGE_TOOLBAR)
         self._add_widget(icon)
 
         self._add_separator()
 
-        label = gtk.Label(title)
+        label = Gtk.Label(label=title)
         self._add_widget(label)
 
         self._add_separator(expand=True)
@@ -351,13 +329,13 @@ class _DialogToolbar(gtk.Toolbar):
         self.add(stop)
 
     def _add_separator(self, expand=False):
-        separator = gtk.SeparatorToolItem()
+        separator = Gtk.SeparatorToolItem()
         separator.set_expand(expand)
         separator.set_draw(False)
         self.add(separator)
 
     def _add_widget(self, widget):
-        tool_item = gtk.ToolItem()
+        tool_item = Gtk.ToolItem()
         tool_item.add(widget)
         self.add(tool_item)
 
@@ -365,24 +343,24 @@ class _DialogToolbar(gtk.Toolbar):
         self.emit('stop-clicked')
 
 
-class _HelpNavBar(gtk.HButtonBox):
+class _HelpNavBar(Gtk.HButtonBox):
     # A widget to display the navigation controls at the bottom of the help
     # dialog.
     __gsignals__ = {
-        'forward-clicked' : (gobject.SIGNAL_RUN_LAST, None, ()),
-        'back-clicked'    : (gobject.SIGNAL_RUN_LAST, None, ()),
-        'reload-clicked'  : (gobject.SIGNAL_RUN_LAST, None, ()),
+        'forward-clicked' : (GObject.SignalFlags.RUN_LAST, None, ()),
+        'back-clicked'    : (GObject.SignalFlags.RUN_LAST, None, ()),
+        'reload-clicked'  : (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     def __init__(self):
         super(_HelpNavBar, self).__init__()
 
-        self.set_layout(gtk.BUTTONBOX_SPREAD)
+        self.set_layout(Gtk.ButtonBoxStyle.SPREAD)
 
         def add_button(icon_name, tooltip, signal_name):
             icon = Icon()
-            icon.set_from_icon_name(icon_name, gtk.ICON_SIZE_LARGE_TOOLBAR)
-            button = gtk.Button()
+            icon.set_from_icon_name(icon_name, Gtk.IconSize.LARGE_TOOLBAR)
+            button = Gtk.Button()
             button.set_image(icon)
             button.set_tooltip_text(tooltip)
             self.add(button)
@@ -404,32 +382,34 @@ class _HelpNavBar(gtk.HButtonBox):
         self._forward_button.set_sensitive(can_next_stage)
 
 
-class _StuckStrip(gtk.HBox):
+class _StuckStrip(Gtk.Box):
     __gsignals__ = {
-        'undo-clicked' : (gobject.SIGNAL_RUN_LAST, None, ()),
+        'undo-clicked' : (GObject.SignalFlags.RUN_LAST, None, ()),
     }
     def __init__(self, *args, **kwargs):
         super(_StuckStrip, self).__init__(*args, **kwargs)
 
-        spacer1 = gtk.Label('')
-        self.pack_start(spacer1, expand=True)
+        self.orientation = Gtk.Orientation.HORIZONTAL
 
-        spacer2 = gtk.Label('')
-        self.pack_end(spacer2, expand=True)
+        spacer1 = Gtk.Label(label='')
+        self.pack_start(spacer1, True, True, 0)
+
+        spacer2 = Gtk.Label(label='')
+        self.pack_end(spacer2, expand=True, fill=False, padding=0)
 
         self.set_spacing(10)
 
         self.set_border_width(10)
 
-        label = gtk.Label(_("Stuck?  You can still solve the puzzle."))
-        self.pack_start(label, expand=False)
+        label = Gtk.Label(label=_("Stuck?  You can still solve the puzzle."))
+        self.pack_start(label, False, True, 0)
 
         icon = Icon()
-        icon.set_from_icon_name('edit-undo', gtk.ICON_SIZE_LARGE_TOOLBAR)
-        self.button = gtk.Button(stock=gtk.STOCK_UNDO)
+        icon.set_from_icon_name('edit-undo', Gtk.IconSize.LARGE_TOOLBAR)
+        self.button = Gtk.Button(stock=Gtk.STOCK_UNDO)
         self.button.set_image(icon)
         self.button.set_label(_("Undo some moves"))
-        self.pack_end(self.button, expand=False)
+        self.pack_end(self.button, expand=False, fill=False, padding=0)
 
         def callback(source):
             self.emit('undo-clicked')
