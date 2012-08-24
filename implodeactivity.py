@@ -182,6 +182,7 @@ class ImplodeActivity(Activity):
             def callback(source):
                 if source.get_active():
                     self._game.set_level(numeric_level)
+                    self._game.new_game()
 
             button.connect('clicked', callback)
             button.set_tooltip(tooltip)
