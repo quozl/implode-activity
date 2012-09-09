@@ -38,7 +38,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-17 10:59-0500\n"
+"POT-Creation-Date: 2012-08-09 00:33-0400\n"
 "PO-Revision-Date: 2010-02-21 17:16+0200\n"
 "Last-Translator: John Sarlis <sarlis@sch.gr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,86 +53,85 @@ msgstr ""
 msgid "Implode"
 msgstr "Έκρηξη"
 
-#: helpwidget.py:202
+#: helpwidget.py:207
 msgid "Goal: Clear the board by removing blocks in groups of 3 or more."
 msgstr ""
 "Σκοπός: καθαρισμός του πίνακα με αφαίρεση των πλαισίων σε ομάδες των 3 ή "
 "περισσότερων."
 
-#: helpwidget.py:227
+#: helpwidget.py:232
 msgid "You can't remove groups of one or two blocks."
 msgstr "Δεν μπορείτε να αφαιρέσετε ομάδες ενός ή δύο πλαισίων."
 
-#: helpwidget.py:270
+#: helpwidget.py:275
 msgid "Blocks fall to fill empty gaps, and they slide to fill empty columns."
 msgstr ""
 "Τα πλαίσια δεν μπορούν να γεμίσουν τα κενά και θα γλιστρήσουν για να "
 "γεμίσουν κενές στήλες."
 
-#: helpwidget.py:293
+#: helpwidget.py:298
 msgid "If you get stuck, you can undo to try again."
 msgstr "Εάν κολλήσετε, μπορείτε να κάνετε αναίρεση και να ξαναπροσπαθήσετε."
 
-#: helpwidget.py:341
+#: helpwidget.py:346
 msgid "There is always a way to clear the board."
 msgstr "Υπάρχει πάντα τρόπος για να καθαρίσετε τον πίνακα."
 
-#: implodeactivity.py:176
+#: implodeactivity.py:162
 msgid "New"
 msgstr "Νέο"
 
-#: implodeactivity.py:177
+#: implodeactivity.py:163
 msgid "Replay"
 msgstr "Επανάληψη"
 
-#: implodeactivity.py:178
+#: implodeactivity.py:167
 msgid "Undo"
 msgstr "Αναίρεση"
 
-#: implodeactivity.py:179
+#: implodeactivity.py:168
 msgid "Redo"
 msgstr "Ακύρωση αναίρεσης"
 
-#: implodeactivity.py:200
+#: implodeactivity.py:189
 msgid "Easy"
 msgstr "Εύκολο"
 
-#: implodeactivity.py:201
+#: implodeactivity.py:190
 msgid "Medium"
 msgstr "Μεσαίο"
 
-#: implodeactivity.py:202
+#: implodeactivity.py:191
 msgid "Hard"
 msgstr "Δύσκολο"
 
-#: implodeactivity.py:215 implodeactivity.py:281
+#: implodeactivity.py:204 implodeactivity.py:263
 msgid "Help"
 msgstr "Βοήθεια"
 
-#: implodeactivity.py:218
-msgid "Game"
-msgstr "Παιχνίδι"
-
-#: implodeactivity.py:346
+#: implodeactivity.py:327
 msgid "Done"
 msgstr "Ολοκληρώθηκε"
 
-#: implodeactivity.py:393
+#: implodeactivity.py:374
 msgid "Previous"
 msgstr "Προηγούμενο"
 
-#: implodeactivity.py:394
+#: implodeactivity.py:375
 msgid "Again"
 msgstr "Ξανά"
 
-#: implodeactivity.py:395
+#: implodeactivity.py:376
 msgid "Next"
 msgstr "Επόμενο"
 
-#: implodeactivity.py:421
+#: implodeactivity.py:404
 msgid "Stuck?  You can still solve the puzzle."
 msgstr "Κολλήσατε;  Μπορείτε ακόμα να λύσετε τον γρίφο."
 
-#: implodeactivity.py:428
+#: implodeactivity.py:411
 msgid "Undo some moves"
 msgstr "Αναίρεση μερικών κινήσεων"
+
+#~ msgid "Game"
+#~ msgstr "Παιχνίδι"
