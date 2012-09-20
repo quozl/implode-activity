@@ -191,7 +191,7 @@ class ImplodeActivity(Activity):
         add_level_button('medium-level', _("Medium"), 1)
         add_level_button('hard-level'  , _("Hard")  , 2)
 
-        self._add_expander(toolbar)
+        toolbar.add(Gtk.SeparatorToolItem())
 
         def _help_clicked_cb():
             help_window = _HelpWindow()
@@ -203,6 +203,8 @@ class ImplodeActivity(Activity):
         # desireable in the future.  It doesn't seem to be themed for Sugar
         # right now, however.
         add_button('help-icon', _("Help"), _help_clicked_cb)
+
+        self._add_expander(toolbar)
 
         stop_button = StopButton(self)
         stop_button.props.accelerator = '<Ctrl><Shift>Q'
