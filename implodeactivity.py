@@ -172,10 +172,10 @@ class ImplodeActivity(Activity):
         self._levels_buttons = []
         def add_level_button(icon_name, tooltip, numeric_level):
             if self._levels_buttons:
-                button = RadioToolButton(named_icon=icon_name,
+                button = RadioToolButton(icon_name=icon_name,
                                          group=self._levels_buttons[0])
             else:
-                button = RadioToolButton(named_icon=icon_name)
+                button = RadioToolButton(icon_name=icon_name)
             self._levels_buttons.append(button)
             toolbar.add(button)
 
