@@ -202,7 +202,7 @@ class ImplodeActivity(Activity):
         # GTK stock icon instead of our custom help; the stock icon may be more
         # desireable in the future.  It doesn't seem to be themed for Sugar
         # right now, however.
-        add_button('help-icon', _("Help"), _help_clicked_cb)
+        add_button('toolbar-help', _("Help"), _help_clicked_cb)
 
         self._add_expander(toolbar)
 
