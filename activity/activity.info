@@ -1,6 +1,6 @@
 [Activity]
 name = Implode
-activity_version = 14
+activity_version = 15
 bundle_id = com.jotaro.ImplodeActivity
 icon = activity-implode
 exec = sugar-activity implodeactivity.ImplodeActivity
