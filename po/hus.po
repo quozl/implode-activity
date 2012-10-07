@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-17 10:59-0500\n"
+"POT-Creation-Date: 2012-08-09 00:33-0400\n"
 "PO-Revision-Date: 2011-08-29 03:23+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,87 +21,86 @@ msgstr ""
 msgid "Implode"
 msgstr "Petnal tin al"
 
-#: helpwidget.py:202
+#: helpwidget.py:207
 msgid "Goal: Clear the board by removing blocks in groups of 3 or more."
 msgstr ""
 "Xi le' ki bajuw: ka t'okdha an pek'at aknixtalab ani ka xaluw k'al ox "
 "pejechik ani k'al yan."
 
-#: helpwidget.py:227
+#: helpwidget.py:232
 msgid "You can't remove groups of one or two blocks."
 msgstr "Yab éjtidh ka tixk'á jun ani tsab i mudhel péjechik."
 
-#: helpwidget.py:270
+#: helpwidget.py:275
 msgid "Blocks fall to fill empty gaps, and they slide to fill empty columns."
 msgstr ""
 "Pejechik u ijkanal abal ka t'uchich juti jólat ani ka ne'edha' abal ka "
 "t'uchich an k'elab xi jolat."
 
-#: helpwidget.py:293
+#: helpwidget.py:298
 msgid "If you get stuck, you can undo to try again."
 msgstr "Max kit jilk'on t'ok'badh, ka wichk'ow junilak'ij."
 
-#: helpwidget.py:341
+#: helpwidget.py:346
 msgid "There is always a way to clear the board."
 msgstr "Ets'ey wa'ats jant'odha ka t'okedha' aknixtalab."
 
 # ítej (algo nuevo)
-#: implodeactivity.py:176
+#: implodeactivity.py:162
 msgid "New"
 msgstr "It"
 
-#: implodeactivity.py:177
+#: implodeactivity.py:163
 msgid "Replay"
 msgstr "Tsabk'wajbá"
 
-#: implodeactivity.py:178
+#: implodeactivity.py:167
 msgid "Undo"
 msgstr "Wichk'ów"
 
-#: implodeactivity.py:179
+#: implodeactivity.py:168
 msgid "Redo"
 msgstr "Tsáb ts'ejká"
 
-#: implodeactivity.py:200
+#: implodeactivity.py:189
 msgid "Easy"
 msgstr "Ejtidh"
 
-#: implodeactivity.py:201
+#: implodeactivity.py:190
 msgid "Medium"
 msgstr "Ts'ejel"
 
-#: implodeactivity.py:202
+#: implodeactivity.py:191
 msgid "Hard"
 msgstr "K'íbat"
 
-#: implodeactivity.py:215 implodeactivity.py:281
+#: implodeactivity.py:204 implodeactivity.py:263
 msgid "Help"
 msgstr "Tólmix"
 
-#: implodeactivity.py:218
-msgid "Game"
-msgstr "Ubat'intalab"
-
-#: implodeactivity.py:346
+#: implodeactivity.py:327
 msgid "Done"
 msgstr "T'ajadh"
 
-#: implodeactivity.py:393
+#: implodeactivity.py:374
 msgid "Previous"
 msgstr "Ok'xidh"
 
-#: implodeactivity.py:394
+#: implodeactivity.py:375
 msgid "Again"
 msgstr "Junilak'ej"
 
-#: implodeactivity.py:395
+#: implodeactivity.py:376
 msgid "Next"
 msgstr "Xi júnakej"
 
-#: implodeactivity.py:421
+#: implodeactivity.py:404
 msgid "Stuck?  You can still solve the puzzle."
 msgstr "Tonk'in? a wit'alej  ka ts'ejka."
 
-#: implodeactivity.py:428
+#: implodeactivity.py:411
 msgid "Undo some moves"
 msgstr "Yab ki w'ichk'ow tin yanel an t'ojlab"
+
+#~ msgid "Game"
+#~ msgstr "Ubat'intalab"
