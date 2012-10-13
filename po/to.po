@@ -2,23 +2,19 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-08-09 00:33-0400\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2012-02-27 01:58+0200\n"
+"Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: to\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Translate Toolkit 1.6.0\n"
+"X-Generator: Pootle 2.0.5\n"
 
 #: activity/activity.info:2
 msgid "Implode"
@@ -53,12 +49,14 @@ msgid "Replay"
 msgstr ""
 
 #: implodeactivity.py:167
+#, fuzzy
 msgid "Undo"
-msgstr ""
+msgstr "Vete"
 
 #: implodeactivity.py:168
+#, fuzzy
 msgid "Redo"
-msgstr ""
+msgstr "Toe 'ai"
 
 #: implodeactivity.py:189
 msgid "Easy"
@@ -73,24 +71,27 @@ msgid "Hard"
 msgstr ""
 
 #: implodeactivity.py:204 implodeactivity.py:263
+#, fuzzy
 msgid "Help"
-msgstr ""
+msgstr "Tokoni"
 
 #: implodeactivity.py:327
 msgid "Done"
 msgstr ""
 
 #: implodeactivity.py:374
+#, fuzzy
 msgid "Previous"
-msgstr ""
+msgstr "Kou hili"
 
 #: implodeactivity.py:375
 msgid "Again"
 msgstr ""
 
 #: implodeactivity.py:376
+#, fuzzy
 msgid "Next"
-msgstr ""
+msgstr "Hoko"
 
 #: implodeactivity.py:404
 msgid "Stuck?  You can still solve the puzzle."
@@ -99,3 +100,7 @@ msgstr ""
 #: implodeactivity.py:411
 msgid "Undo some moves"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Game"
+#~ msgstr "Keimi"

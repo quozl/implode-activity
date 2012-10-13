@@ -34,7 +34,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-17 10:59-0500\n"
+"POT-Creation-Date: 2012-08-09 00:33-0400\n"
 "PO-Revision-Date: 2010-08-03 23:12+0200\n"
 "Last-Translator: தங்கமணி <thangam.arunx@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,86 +49,85 @@ msgstr ""
 msgid "Implode"
 msgstr "இம்பலோடு"
 
-#: helpwidget.py:202
+#: helpwidget.py:207
 msgid "Goal: Clear the board by removing blocks in groups of 3 or more."
 msgstr ""
 "நோக்கம்:3 அல்லது அதற்கும் மேற்ப்பட்ட குழுக்கலிருந்து பகுதிகளை நீக்குவதன் "
 "மூலம் பலகையை சுத்தம் செய்யலாம்."
 
-#: helpwidget.py:227
+#: helpwidget.py:232
 msgid "You can't remove groups of one or two blocks."
 msgstr "நீங்கள் ஒன்று அல்லது இரண்டு பகுதிகளை குழுவிலிருந்து நீக்க முடியாது"
 
-#: helpwidget.py:270
+#: helpwidget.py:275
 msgid "Blocks fall to fill empty gaps, and they slide to fill empty columns."
 msgstr ""
 "காலியான இடைவெளிகளை நிரப்பு பிரிவுகளால் இயலவில்லை, மற்றம் அவைகளை நலுவ விட்டு "
 "காலியான நெடுக்குகளை நிரப்புகிறது."
 
-#: helpwidget.py:293
+#: helpwidget.py:298
 msgid "If you get stuck, you can undo to try again."
 msgstr "நீங்கள் தடுக்கினால், செயலை ரத்து செய்து மீண்டும் முயற்சிக்கலாம்."
 
-#: helpwidget.py:341
+#: helpwidget.py:346
 msgid "There is always a way to clear the board."
 msgstr "பலகைகளை நீக்க எப்பொழுதுமே வழி இருக்கிறது."
 
-#: implodeactivity.py:176
+#: implodeactivity.py:162
 msgid "New"
 msgstr "புதிய"
 
-#: implodeactivity.py:177
+#: implodeactivity.py:163
 msgid "Replay"
 msgstr "மறுபடியும் இயக்கு"
 
-#: implodeactivity.py:178
+#: implodeactivity.py:167
 msgid "Undo"
 msgstr "செயலை ரத்து செய்"
 
-#: implodeactivity.py:179
+#: implodeactivity.py:168
 msgid "Redo"
 msgstr "மீழ் செய்"
 
-#: implodeactivity.py:200
+#: implodeactivity.py:189
 msgid "Easy"
 msgstr "சுலபம்"
 
-#: implodeactivity.py:201
+#: implodeactivity.py:190
 msgid "Medium"
 msgstr "இடையில்"
 
-#: implodeactivity.py:202
+#: implodeactivity.py:191
 msgid "Hard"
 msgstr "கடினம்"
 
-#: implodeactivity.py:215 implodeactivity.py:281
+#: implodeactivity.py:204 implodeactivity.py:263
 msgid "Help"
 msgstr "உதவி"
 
-#: implodeactivity.py:218
-msgid "Game"
-msgstr "ஆட்டம்"
-
-#: implodeactivity.py:346
+#: implodeactivity.py:327
 msgid "Done"
 msgstr "முடிந்தது"
 
-#: implodeactivity.py:393
+#: implodeactivity.py:374
 msgid "Previous"
 msgstr "முன்னைய"
 
-#: implodeactivity.py:394
+#: implodeactivity.py:375
 msgid "Again"
 msgstr "மறுபடியும்"
 
-#: implodeactivity.py:395
+#: implodeactivity.py:376
 msgid "Next"
 msgstr "அடுத்தது"
 
-#: implodeactivity.py:421
+#: implodeactivity.py:404
 msgid "Stuck?  You can still solve the puzzle."
 msgstr "தடிக்கிய? இப்பவும் நீங்கள் புதிரை தீர்க்கலாம்."
 
-#: implodeactivity.py:428
+#: implodeactivity.py:411
 msgid "Undo some moves"
 msgstr "சில நகர்வுகளை ரத்து செய்"
+
+#~ msgid "Game"
+#~ msgstr "ஆட்டம்"
