@@ -7,10 +7,10 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-08-09 00:33-0400\n"
-"PO-Revision-Date: 2011-11-26 04:47+0200\n"
-"Last-Translator: Chris <cjl@laptop.org>\n"
+"PO-Revision-Date: 2013-02-11 14:04+0200\n"
+"Last-Translator: EdgarQuispeChambi <quispedgar@yahoo.es>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: aym\n"
+"Language: ayc\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,27 +19,29 @@ msgstr ""
 
 #: activity/activity.info:2
 msgid "Implode"
-msgstr ""
+msgstr "Phanchatatayaña"
 
 #: helpwidget.py:207
 msgid "Goal: Clear the board by removing blocks in groups of 3 or more."
-msgstr ""
+msgstr "Amtäwi: Siqinaka kimsata kimsata apsusa qillqaña qhanaptayaña"
 
 #: helpwidget.py:232
 msgid "You can't remove groups of one or two blocks."
-msgstr ""
+msgstr "Maya sapa siqi jani ukaxa paya siqi janiwa chhaqtayañjamati"
 
 #: helpwidget.py:275
 msgid "Blocks fall to fill empty gaps, and they slide to fill empty columns."
 msgstr ""
+"Siqiqnakaxa ch'usawjanakaru phuqantañatakiwa jalari ukata suchurarakiwa "
+"ch'usawjanakaru siqichañataki"
 
 #: helpwidget.py:298
 msgid "If you get stuck, you can undo to try again."
-msgstr ""
+msgstr "Jark'antayasisinxa, mayampi qalltañataki jaranuqasmawa."
 
 #: helpwidget.py:346
 msgid "There is always a way to clear the board."
-msgstr ""
+msgstr "Qillqaña qhanañchañaxa kunjatsa utjapuniwa."
 
 #  "Nuevo"
 #: implodeactivity.py:162
@@ -48,7 +50,7 @@ msgstr "Machaqa"
 
 #: implodeactivity.py:163
 msgid "Replay"
-msgstr ""
+msgstr "Kutxataña"
 
 #  "Deshacer"
 #: implodeactivity.py:167
@@ -62,15 +64,15 @@ msgstr "Wasitata luraña"
 
 #: implodeactivity.py:189
 msgid "Easy"
-msgstr ""
+msgstr "Phisna"
 
 #: implodeactivity.py:190
 msgid "Medium"
-msgstr ""
+msgstr "Taypi"
 
 #: implodeactivity.py:191
 msgid "Hard"
-msgstr ""
+msgstr "Ch'ama"
 
 #  "Ayuda"
 #: implodeactivity.py:204 implodeactivity.py:263
@@ -79,7 +81,7 @@ msgstr "Yanapt'awi"
 
 #: implodeactivity.py:327
 msgid "Done"
-msgstr ""
+msgstr "Luräwi"
 
 #  "Anterior"
 #: implodeactivity.py:374
@@ -88,7 +90,7 @@ msgstr "Nayrankiri"
 
 #: implodeactivity.py:375
 msgid "Again"
-msgstr ""
+msgstr "Mayampi"
 
 #  "Siguiente"
 #: implodeactivity.py:376
@@ -97,11 +99,11 @@ msgstr "Jutiri"
 
 #: implodeactivity.py:404
 msgid "Stuck?  You can still solve the puzzle."
-msgstr ""
+msgstr "¿Achuntata?   Chiqachaskasmawa."
 
 #: implodeactivity.py:411
 msgid "Undo some moves"
-msgstr ""
+msgstr "Maya qhawqha unuqiyata kuttayaña"
 
 #  "Juego"
 #~ msgid "Game"
