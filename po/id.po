@@ -35,8 +35,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-08-09 00:33-0400\n"
-"PO-Revision-Date: 2012-05-22 02:04+0200\n"
-"Last-Translator: Chris <cjl@laptop.org>\n"
+"PO-Revision-Date: 2013-06-29 15:06+0200\n"
+"Last-Translator: andika <andika@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
@@ -52,10 +52,11 @@ msgstr ""
 #: helpwidget.py:207
 msgid "Goal: Clear the board by removing blocks in groups of 3 or more."
 msgstr ""
+"Tujuan: Bersihkan papan dengan menghapus blok dalam kelompok 3 atau lebih."
 
 #: helpwidget.py:232
 msgid "You can't remove groups of one or two blocks."
-msgstr ""
+msgstr "Anda tak bisa menghapus kelompok dari satu atau dua blok."
 
 #: helpwidget.py:275
 msgid "Blocks fall to fill empty gaps, and they slide to fill empty columns."
