@@ -1,75 +1,66 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# User <juneleonora@yahoo.com>, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-08-09 00:33-0400\n"
-"PO-Revision-Date: 2010-11-13 15:41+0200\n"
-"Last-Translator: Rita <ritavanderheul@gmail.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2013-09-02 16:25-0400\n"
+"Last-Translator: User <juneleonora@yahoo.com>\n"
+"Language-Team: JuneLeonora\n"
 "Language: pap\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 2.0.3\n"
+"X-Generator: Virtaal 0.7.1\n"
 
 #: activity/activity.info:2
 msgid "Implode"
-msgstr "tira abou, cai abou, bai abou of als titel: Implode"
+msgstr "Implotá"
 
 #: helpwidget.py:207
 msgid "Goal: Clear the board by removing blocks in groups of 3 or more."
-msgstr "Meta: Limpia e plachi kitando blòkinan den grupo di 3 of mas."
+msgstr "Meta: Limpia e bòrchi kitando blòki den grupo di 3 of mas."
 
 #: helpwidget.py:232
 msgid "You can't remove groups of one or two blocks."
-msgstr "Bo no por elimina grupo di un of dos blòki."
+msgstr "Bo no por kita grupo di un of dos blòki."
 
 #: helpwidget.py:275
 msgid "Blocks fall to fill empty gaps, and they slide to fill empty columns."
-msgstr ""
-"Blòkinan ta kay pa yena espasionan bashi, anto nan ta shùif oa yena "
-"kolumnonan bashi."
+msgstr "Blòki ta kai pa yena buraku bashí, i nan ta skùif pa yena kolòm bashí."
 
 #: helpwidget.py:298
 msgid "If you get stuck, you can undo to try again."
-msgstr "Si bo pega, bo por anulá pa purba atrobe."
+msgstr "Si bo pega, bo por deshasí pa purba atrobe."
 
 #: helpwidget.py:346
 msgid "There is always a way to clear the board."
-msgstr "Semper tin un manera pa limpia e tabla."
+msgstr "Semper tin un manera pa limpia e bòrchi."
 
 #: implodeactivity.py:162
 msgid "New"
@@ -77,7 +68,7 @@ msgstr "Nobo"
 
 #: implodeactivity.py:163
 msgid "Replay"
-msgstr "Bolbé toké"
+msgstr "Bolbé tok´é"
 
 #: implodeactivity.py:167
 msgid "Undo"
@@ -85,7 +76,7 @@ msgstr "Deshasí"
 
 #: implodeactivity.py:168
 msgid "Redo"
-msgstr "Ripití"
+msgstr "Rehasí"
 
 #: implodeactivity.py:189
 msgid "Easy"
@@ -125,7 +116,7 @@ msgstr "Pegá? Ainda bo por solushoná e pùzel."
 
 #: implodeactivity.py:411
 msgid "Undo some moves"
-msgstr "Anulá algun moveshon"
+msgstr "Deshasí algun moveshon"
 
 #~ msgid "Game"
 #~ msgstr "Wega"
