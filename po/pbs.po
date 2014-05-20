@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-08-09 00:33-0400\n"
-"PO-Revision-Date: 2014-05-14 04:22+0200\n"
+"PO-Revision-Date: 2014-05-20 19:23+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: pbs\n"
@@ -94,7 +94,7 @@ msgstr "likiu'uch'"
 
 #: implodeactivity.py:404
 msgid "Stuck?  You can still solve the puzzle."
-msgstr "¿kuntsa'? va lania'at kikiuas."
+msgstr "¿kuntsa'?  va lania'at kikiuas."
 
 #: implodeactivity.py:411
 msgid "Undo some moves"
