@@ -63,6 +63,8 @@ class ImplodeActivity(Activity):
 
         # Show everything except the stuck strip.
         self.show_all()
+        self._configure_cb()
+
         game_box.pack_end(self._stuck_strip, expand=False, fill=False, padding=0)
 
         self._game.connect('show-stuck', self._show_stuck_cb)
@@ -142,6 +144,8 @@ class ImplodeActivity(Activity):
         controls, difficulty selector, help button, and stop button. All
         callbacks are locally defined."""
 
+        self._seps = []
+
         toolbar_box = ToolbarBox()
         toolbar = toolbar_box.toolbar
 
@@ -149,7 +153,7 @@ class ImplodeActivity(Activity):
         toolbar_box.toolbar.insert(activity_button, 0)
         activity_button.show()
 
-        toolbar.add(Gtk.SeparatorToolItem())
+        self._add_separator(toolbar)
 
         def add_button(icon_name, tooltip, func):
             def callback(source):
@@ -162,12 +166,12 @@ class ImplodeActivity(Activity):
         add_button('new-game'   , _("New")   , self._game.new_game)
         add_button('replay-game', _("Replay"), self._game.replay_game)
 
-        toolbar.add(Gtk.SeparatorToolItem())
+        self._add_separator(toolbar)
 
         add_button('edit-undo'  , _("Undo")  , self._game.undo)
         add_button('edit-redo'  , _("Redo")  , self._game.redo)
 
-        toolbar.add(Gtk.SeparatorToolItem())
+        self._add_separator(toolbar)
 
         self._levels_buttons = []
         def add_level_button(icon_name, tooltip, numeric_level):
@@ -191,7 +195,7 @@ class ImplodeActivity(Activity):
         add_level_button('medium-level', _("Medium"), 1)
         add_level_button('hard-level'  , _("Hard")  , 2)
 
-        toolbar.add(Gtk.SeparatorToolItem())
+        self._add_separator(toolbar)
 
         def _help_clicked_cb():
             help_window = _HelpWindow()
@@ -214,15 +218,34 @@ class ImplodeActivity(Activity):
         self.set_toolbar_box(toolbar_box)
         toolbar_box.show()
 
+        Gdk.Screen.get_default().connect('size-changed', self._configure_cb)
+
+    def _add_separator(self, toolbar):
+        self._seps.append(Gtk.SeparatorToolItem())
+        toolbar.add(self._seps[-1])
+        self._seps[-1].show()
+
     def _add_expander(self, toolbar, expand=True):
         """Insert a toolbar item which will expand to fill the available
         space."""
-        separator = Gtk.SeparatorToolItem()
-        separator.props.draw = False
-        separator.set_expand(expand)
-        toolbar.insert(separator, -1)
-        separator.show()
+        self._seps.append(Gtk.SeparatorToolItem())
+        self._seps[-1].props.draw = False
+        self._seps[-1].set_expand(expand)
+        toolbar.insert(self._seps[-1], -1)
+        self._seps[-1].show()
 
+    def _configure_cb(self, event=None):
+        if Gdk.Screen.width() < Gdk.Screen.height():
+            _logger.debug('TRUE')
+            hide = True
+        else:
+            _logger.debug('FALSE')
+            hide = False
+        for sep in self._seps:
+            if hide:
+                sep.hide()
+            else:
+                sep.show()
 
 class _DialogWindow(Gtk.Window):
     # A base class for a modal dialog window.
