@@ -6,3 +6,4 @@ icon = activity-implode
 exec = sugar-activity implodeactivity.ImplodeActivity
 license = GPLv2+
 show_launcher = yes
+repository = https://github.com/quozl/implode-activity.git
