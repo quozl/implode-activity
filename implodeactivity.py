@@ -274,6 +274,7 @@ class _DialogWindow(Gtk.Window):
         vbox.add(self.content_vbox)
 
         self.connect('realize', self._realize_cb)
+        self.connect('key-press-event', self._key_press_event_cb)
 
     def _stop_clicked_cb(self, source):
         self.destroy()
@@ -281,6 +282,10 @@ class _DialogWindow(Gtk.Window):
     def _realize_cb(self, source):
         self.set_type_hint(Gdk.WindowTypeHint.DIALOG)
         self.get_window().set_accept_focus(True)
+
+    def _key_press_event_cb(self, source, event):
+        if event.keyval == Gdk.KEY_Escape:
+            self.destroy()
 
 
 class _HelpWindow(_DialogWindow):
