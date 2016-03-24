@@ -7,3 +7,4 @@ exec = sugar-activity implodeactivity.ImplodeActivity
 license = GPLv2+
 show_launcher = yes
 repository = https://github.com/quozl/implode-activity.git
+summary = Implode blocks of the same colour until they are all gone
