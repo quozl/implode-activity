@@ -179,7 +179,8 @@ class GridWidget(Gtk.DrawingArea):
     @_log_errors
     def do_key_press_event(self, event):
         action = KEY_MAP.get(event.keyval, None)
-        if action == 'new':
+        if (action == 'new') or \
+           (action == 'select' and not self._board_drawer.board_is_valid()):
             self.emit('new-key-pressed', 0)
             return True
         # Ignore key presses while animating.
