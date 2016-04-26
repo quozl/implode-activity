@@ -55,6 +55,7 @@ KEY_MAP = {
 
     Gdk.KEY_Home         : 'new',
     Gdk.KEY_KP_Home      : 'new',
+    Gdk.KEY_period       : 'new',
     Gdk.KEY_Page_Down    : 'redo',
     Gdk.KEY_KP_Page_Down : 'redo',
     Gdk.KEY_Page_Up      : 'undo',
