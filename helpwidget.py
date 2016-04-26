@@ -40,12 +40,14 @@ if 'SUGAR_BUNDLE_PATH' in os.environ:
     _DEFAULT_PADDING = style.DEFAULT_PADDING
     _BG_COLOR = tuple(style.COLOR_SELECTION_GREY.get_rgba()[:3])
     _TOOLBAR_COLOR = tuple(style.COLOR_TOOLBAR_GREY.get_rgba()[:3])
+    _PREVIEW_TRIM_WIDTH = style.GRID_CELL_SIZE * 4
 else:
     # Fallbacks for non-Sugar testing.
     _DEFAULT_SPACING = 15
     _DEFAULT_PADDING = 6
     _BG_COLOR = (0.75, 0.75, 0.75)
     _TOOLBAR_COLOR = (0.16, 0.16, 0.16)
+    _PREVIEW_TRIM_WIDTH = 0
 
 _CURSOR_COLOR = (.8, .8, .8)
 _CURSOR_OUTLINE_COLOR = (.4, .4, .4)
@@ -819,7 +821,7 @@ class _PreviewWidget(Gtk.DrawingArea):
     def _configure_event_cb(self, widget, event):
         (width, height) = (event.width, event.height)
 
-        actual_width = width - style.GRID_CELL_SIZE * 4
+        actual_width = width - _PREVIEW_TRIM_WIDTH
         actual_height = actual_width * 3 / 4
 
         self.set_size_request(actual_width, actual_height)
