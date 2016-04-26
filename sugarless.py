@@ -19,10 +19,9 @@
 # A stub file for running the application on a sugarless GTK, when the Activity
 # framework is not available.
 
-import pygtk
-pygtk.require('2.0')
-import gtk
-import gobject
+from gi.repository import GObject
+from gi.repository import Gdk
+from gi.repository import Gtk
 
 import os
 
@@ -32,19 +31,36 @@ from keymap import KEY_MAP
 
 _DEFAULT_SPACING = 15
 
-class ImplodeWindow(gtk.Window):
+class ImplodeWindow(Gtk.Window):
     def __init__(self):
-        super(ImplodeWindow, self).__init__(gtk.WINDOW_TOPLEVEL)
-        self.set_geometry_hints(None, min_width=640, min_height=480)
+        super(ImplodeWindow, self).__init__(Gtk.WindowType.TOPLEVEL)
+
+        geometry = Gdk.Geometry()
+        (geometry.min_width, geometry.min_height) = (640, 480)
+        hints = Gdk.WindowHints(Gdk.WindowHints.MIN_SIZE)
+        self.set_geometry_hints(None, geometry, hints)
+
         self.set_title("Implode")
 
         self.connect("delete_event", self._delete_event_cb)
 
-        toolbar = gtk.Toolbar()
-        self.game = implodegame.ImplodeGame()
+        toolbar = Gtk.Toolbar()
+        toolbar.props.icon_size = 32
 
-        def add_button(id, func):
-            button = gtk.ToolButton(id)
+        self._game = implodegame.ImplodeGame()
+
+        icon_theme = Gtk.IconTheme()
+        icon_theme.set_search_path(['icons'])
+
+        def set_icon(button, icon):
+            image = Gtk.Image()
+            pixbuf = icon_theme.load_icon(icon, toolbar.props.icon_size, 0)
+            image.set_from_pixbuf(pixbuf)
+            button.set_icon_widget(image)
+
+        def add_button(icon, func):
+            button = Gtk.ToolButton()
+            set_icon(button, icon)
             toolbar.add(button)
 
             def callback(source):
@@ -53,19 +69,22 @@ class ImplodeWindow(gtk.Window):
 
             return button
 
-        add_button(gtk.STOCK_NEW, self.game.new_game)
-        add_button(gtk.STOCK_MEDIA_PREVIOUS, self.game.replay_game)
-        add_button(gtk.STOCK_UNDO, self.game.undo)
-        add_button(gtk.STOCK_REDO, self.game.redo)
+        add_button('new-game', self._game.new_game)
+        add_button('replay-game', self._game.replay_game)
+        add_button('edit-undo', self._game.undo)
+        add_button('edit-redo', self._game.redo)
 
-        toolbar.add(gtk.SeparatorToolItem())
+        toolbar.add(Gtk.SeparatorToolItem())
 
         radio_buttons = []
-        def add_radio_button(label, func):
-            button = gtk.RadioToolButton()
-            button.set_label(label)
-            toolbar.add(button)
+        def add_radio_button(icon, func):
+            if radio_buttons:
+                button = Gtk.RadioToolButton(group=radio_buttons[0])
+            else:
+                button = Gtk.RadioToolButton()
+            set_icon(button, icon)
             radio_buttons.append(button)
+            toolbar.add(button)
 
             def callback(source):
                 if source.get_active():
@@ -74,54 +93,52 @@ class ImplodeWindow(gtk.Window):
 
             return button
 
-        add_radio_button('easy', self._easy_clicked)
-        add_radio_button('medium', self._medium_clicked)
-        add_radio_button('hard', self._hard_clicked)
-        for button in radio_buttons[1:]:
-            button.set_group(radio_buttons[0])
+        add_radio_button('easy-level', self._easy_clicked)
+        add_radio_button('medium-level', self._medium_clicked)
+        add_radio_button('hard-level', self._hard_clicked)
 
-        separator = gtk.SeparatorToolItem()
+        separator = Gtk.SeparatorToolItem()
         separator.set_expand(True)
         separator.set_draw(False)
         toolbar.add(separator)
 
-        add_button(gtk.STOCK_HELP, self._help_clicked)
+        add_button('toolbar-help', self._help_clicked)
 
         self._stuck_strip = _StuckStrip()
 
-        game_box = gtk.VBox()
-        game_box.pack_start(self.game)
-        game_box.pack_end(self._stuck_strip, expand=False)
+        game_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        game_box.pack_start(self._game, True, True, 0)
+        game_box.pack_end(self._stuck_strip, False, False, 0)
 
-        main_box = gtk.VBox()
-        main_box.pack_start(toolbar, expand=False)
-        main_box.pack_end(game_box)
+        main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        main_box.pack_start(toolbar, False, True, 0)
+        main_box.pack_end(game_box, True, True, 0)
         self.add(main_box)
 
         # Show everything except the stuck strip.
         main_box.show_all()
         self._stuck_strip.hide()
 
-        self.game.connect('show-stuck', self._show_stuck_cb)
+        self._game.connect('show-stuck', self._show_stuck_cb)
         self._stuck_strip.connect('undo-clicked', self._stuck_undo_cb)
         game_box.connect('key-press-event', self._key_press_event_cb)
 
-        self.game.grab_focus()
+        self._game.grab_focus()
 
         self.show()
 
     def _delete_event_cb(self, window, event):
-        gtk.main_quit()
+        Gtk.main_quit()
         return False
 
     def _easy_clicked(self):
-        self.game.set_level(0)
+        self._game.set_level(0)
 
     def _medium_clicked(self):
-        self.game.set_level(1)
+        self._game.set_level(1)
 
     def _hard_clicked(self):
-        self.game.set_level(2)
+        self._game.set_level(2)
 
     def _help_clicked(self):
         help_window = _HelpWindow()
@@ -132,49 +149,48 @@ class ImplodeWindow(gtk.Window):
         if data:
             self._stuck_strip.show_all()
         else:
-            if self._stuck_strip.focus_child:
-                self.game.grab_focus()
+            if self._stuck_strip.get_focus_child():
+                self._game.grab_focus()
             self._stuck_strip.hide()
 
     def _stuck_undo_cb(self, state, data=None):
-        self.game.undo_to_solvable_state()
+        self._game.undo_to_solvable_state()
 
     def _key_press_event_cb(self, source, event):
         # Make the game navigable by keypad controls.
         action = KEY_MAP.get(event.keyval, None)
         if action is None:
             return False
-        if not self._stuck_strip.flags() & gtk.VISIBLE:
+        if not self._stuck_strip.get_state_flags() & Gtk.AccelFlags.VISIBLE:
             return True
-        if self.game.focus_child:
+        if self._game.get_focus_child():
             if action == 'down':
                 self._stuck_strip.button.grab_focus()
             return True
-        elif self._stuck_strip.focus_child:
+        elif self._stuck_strip.get_focus_child():
             if action == 'up':
-                self.game.grab_focus()
+                self._game.grab_focus()
             elif action == 'select':
                 self._stuck_strip.button.activate()
             return True
         return True
 
-class _HelpWindow(gtk.Window):
+class _HelpWindow(Gtk.Window):
     def __init__(self):
         super(_HelpWindow, self).__init__()
 
         self.set_size_request(640, 480)
-        self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
+        self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.set_modal(True)
 
-        vbox = gtk.VBox()
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.add(vbox)
 
         self._help_widget = HelpWidget(self._icon_file)
-        vbox.pack_start(self._help_widget)
+        vbox.pack_start(self._help_widget, True, True, 0)
 
         self._help_nav_bar = _HelpNavBar()
-        vbox.pack_end(self._help_nav_bar,
-                      expand=False)
+        vbox.pack_end(self._help_nav_bar, False, False, _DEFAULT_SPACING)
 
         for (signal_name, callback) in [
                 ('forward-clicked', self._forward_clicked_cb),
@@ -207,20 +223,22 @@ class _HelpWindow(gtk.Window):
         self._help_nav_bar.set_can_next_stage(hw.can_next_stage())
 
 
-class _HelpNavBar(gtk.HButtonBox):
+class _HelpNavBar(Gtk.HButtonBox):
+    # A widget to display the navigation controls at the bottom of the help
+    # dialog.
     __gsignals__ = {
-        'forward-clicked' : (gobject.SIGNAL_RUN_LAST, None, ()),
-        'back-clicked'    : (gobject.SIGNAL_RUN_LAST, None, ()),
-        'reload-clicked'  : (gobject.SIGNAL_RUN_LAST, None, ()),
+        'forward-clicked' : (GObject.SignalFlags.RUN_LAST, None, ()),
+        'back-clicked'    : (GObject.SignalFlags.RUN_LAST, None, ()),
+        'reload-clicked'  : (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     def __init__(self):
         super(_HelpNavBar, self).__init__()
 
-        self.set_layout(gtk.BUTTONBOX_SPREAD)
+        self.set_layout(Gtk.ButtonBoxStyle.SPREAD)
 
         def add_button(id, signal_name):
-            button = gtk.Button(stock=id)
+            button = Gtk.Button(stock=id)
             self.add(button)
 
             def callback(source):
@@ -229,9 +247,9 @@ class _HelpNavBar(gtk.HButtonBox):
 
             return button
 
-        self._back_button = add_button(gtk.STOCK_GO_BACK, 'back-clicked')
-        add_button(gtk.STOCK_MEDIA_PLAY, 'reload-clicked')
-        self._forward_button = add_button(gtk.STOCK_GO_FORWARD, 'forward-clicked')
+        self._back_button = add_button(Gtk.STOCK_GO_BACK, 'back-clicked')
+        add_button(Gtk.STOCK_MEDIA_PLAY, 'reload-clicked')
+        self._forward_button = add_button(Gtk.STOCK_GO_FORWARD, 'forward-clicked')
 
     def set_can_prev_stage(self, can_prev_stage):
         self._back_button.set_sensitive(can_prev_stage)
@@ -240,29 +258,31 @@ class _HelpNavBar(gtk.HButtonBox):
         self._forward_button.set_sensitive(can_next_stage)
 
 
-class _StuckStrip(gtk.HBox):
+class _StuckStrip(Gtk.Box):
     __gsignals__ = {
-        'undo-clicked' : (gobject.SIGNAL_RUN_LAST, None, ()),
+        'undo-clicked' : (GObject.SignalFlags.RUN_LAST, None, ()),
     }
     def __init__(self, *args, **kwargs):
         super(_StuckStrip, self).__init__(*args, **kwargs)
 
-        spacer1 = gtk.Label('')
-        self.pack_start(spacer1, expand=True)
+        self.orientation = Gtk.Orientation.HORIZONTAL
 
-        spacer2 = gtk.Label('')
-        self.pack_end(spacer2, expand=True)
+        spacer1 = Gtk.Label('')
+        self.pack_start(spacer1, True, True, 0)
+
+        spacer2 = Gtk.Label('')
+        self.pack_end(spacer2, True, False, 0)
 
         self.set_spacing(10)
 
         self.set_border_width(10)
 
-        label = gtk.Label("Stuck?  You can still solve the puzzle.")
-        self.pack_start(label, expand=False)
+        label = Gtk.Label("Stuck?  You can still solve the puzzle.")
+        self.pack_start(label, False, True, 0)
 
-        self.button = gtk.Button(stock=gtk.STOCK_UNDO)
+        self.button = Gtk.Button(stock=Gtk.STOCK_UNDO)
         self.button.set_label("Undo some moves")
-        self.pack_end(self.button, expand=False)
+        self.pack_end(self.button, False, False, 0)
 
         def callback(source):
             self.emit('undo-clicked')
@@ -271,7 +291,7 @@ class _StuckStrip(gtk.HBox):
 
 def main():
     w = ImplodeWindow()
-    gtk.main()
+    Gtk.main()
 
 if __name__ == "__main__":
     main()
