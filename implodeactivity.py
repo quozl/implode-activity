@@ -286,6 +286,9 @@ class _DialogWindow(Gtk.Window):
     def _key_press_event_cb(self, source, event):
         if event.keyval == Gdk.KEY_Escape:
             self.destroy()
+        elif event.keyval == Gdk.KEY_q and \
+            event.state & Gdk.ModifierType.CONTROL_MASK != 0:
+            Gtk.main_quit()
 
 
 class _HelpWindow(_DialogWindow):
