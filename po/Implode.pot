@@ -8,16 +8,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-09 00:33-0400\n"
+"POT-Creation-Date: 2016-05-19 14:57+1000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: activity/activity.info:2
 msgid "Implode"
+msgstr ""
+
+#: activity/activity.info:3
+msgid "Implode blocks of the same colour until they are all gone"
 msgstr ""
 
 #: helpwidget.py:207
@@ -40,58 +45,58 @@ msgstr ""
 msgid "There is always a way to clear the board."
 msgstr ""
 
-#: implodeactivity.py:162
+#: implodeactivity.py:166
 msgid "New"
 msgstr ""
 
-#: implodeactivity.py:163
+#: implodeactivity.py:167
 msgid "Replay"
 msgstr ""
 
-#: implodeactivity.py:167
+#: implodeactivity.py:171
 msgid "Undo"
 msgstr ""
 
-#: implodeactivity.py:168
+#: implodeactivity.py:172
 msgid "Redo"
 msgstr ""
 
-#: implodeactivity.py:189
+#: implodeactivity.py:194
 msgid "Easy"
 msgstr ""
 
-#: implodeactivity.py:190
+#: implodeactivity.py:195
 msgid "Medium"
 msgstr ""
 
-#: implodeactivity.py:191
+#: implodeactivity.py:196
 msgid "Hard"
 msgstr ""
 
-#: implodeactivity.py:204 implodeactivity.py:263
+#: implodeactivity.py:209 implodeactivity.py:294
 msgid "Help"
 msgstr ""
 
-#: implodeactivity.py:327
+#: implodeactivity.py:358
 msgid "Done"
 msgstr ""
 
-#: implodeactivity.py:374
+#: implodeactivity.py:405
 msgid "Previous"
 msgstr ""
 
-#: implodeactivity.py:375
+#: implodeactivity.py:406
 msgid "Again"
 msgstr ""
 
-#: implodeactivity.py:376
+#: implodeactivity.py:407
 msgid "Next"
 msgstr ""
 
-#: implodeactivity.py:404
+#: implodeactivity.py:435
 msgid "Stuck?  You can still solve the puzzle."
 msgstr ""
 
-#: implodeactivity.py:411
+#: implodeactivity.py:442
 msgid "Undo some moves"
 msgstr ""
