@@ -41,6 +41,10 @@ if 'SUGAR_BUNDLE_PATH' in os.environ:
     _BG_COLOR = tuple(style.COLOR_SELECTION_GREY.get_rgba()[:3])
     _TOOLBAR_COLOR = tuple(style.COLOR_TOOLBAR_GREY.get_rgba()[:3])
     _PREVIEW_TRIM_WIDTH = style.GRID_CELL_SIZE * 4
+
+    aspect_ratio = Gdk.Screen.width() * 100 / Gdk.Screen.height()
+    if aspect_ratio > 159:
+        _PREVIEW_TRIM_WIDTH = style.GRID_CELL_SIZE * 11
 else:
     # Fallbacks for non-Sugar testing.
     _DEFAULT_SPACING = 15
