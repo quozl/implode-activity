@@ -30,6 +30,7 @@ import math
 import os
 import time
 
+import powerd
 import board
 from anim import Anim
 from gridwidget import BoardDrawer, RemovalDrawer, WinDrawer
@@ -195,6 +196,7 @@ class _HelpStage(Gtk.EventBox):
         if self._action_index >= len(self._actions):
             self.preview.set_cursor_visible(False)
             return
+        powerd.fake()
         action = self._actions[self._action_index]
         self._action_index += 1
         action(self)
