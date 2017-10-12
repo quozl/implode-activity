@@ -43,15 +43,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-08-09 00:33-0400\n"
-"PO-Revision-Date: 2010-01-21 10:58+0200\n"
-"Last-Translator: jon <joni-ber_rock@hotmail.com>\n"
+"PO-Revision-Date: 2016-11-01 14:13+0000\n"
+"Last-Translator: Besnik_b <besnik@programeshqip.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: sq\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 2.0.1\n"
+"X-Generator: Pootle 2.5.1.1\n"
+"X-POOTLE-MTIME: 1478009596.000000\n"
 
 #: activity/activity.info:2
 msgid "Implode"
@@ -60,22 +61,25 @@ msgstr "Shpërthej"
 #: helpwidget.py:207
 msgid "Goal: Clear the board by removing blocks in groups of 3 or more."
 msgstr ""
+"Synimi: Pastrojeni fushën duke lëvizur blloqe në gru nga tre ose më tepër."
 
 #: helpwidget.py:232
 msgid "You can't remove groups of one or two blocks."
-msgstr "Ju nuk mund të hiqni grupe të një ose dy blloqeve."
+msgstr "S’mund të hiqni dot grupe me një ose dy blloqe."
 
 #: helpwidget.py:275
 msgid "Blocks fall to fill empty gaps, and they slide to fill empty columns."
 msgstr ""
+"Blloqet bien për të mbushur vende të zbrazët, dhe rrëshqasin që të "
+"plotësojnë shtylla të zbrazëta."
 
 #: helpwidget.py:298
 msgid "If you get stuck, you can undo to try again."
-msgstr ""
+msgstr "Nëse ngecni, mund ta zhbëni që të provoni sërish."
 
 #: helpwidget.py:346
 msgid "There is always a way to clear the board."
-msgstr "Ka gjithmonë një mënyrë për të pastruar bordit."
+msgstr "Ka përherë një rrugë për ta pastruar fushën."
 
 #: implodeactivity.py:162
 msgid "New"
@@ -83,11 +87,11 @@ msgstr "E re"
 
 #: implodeactivity.py:163
 msgid "Replay"
-msgstr "Përgjigju"
+msgstr "Riluajeni"
 
 #: implodeactivity.py:167
 msgid "Undo"
-msgstr "Asgjëso"
+msgstr "Zhbëje"
 
 #: implodeactivity.py:168
 msgid "Redo"
@@ -95,15 +99,15 @@ msgstr "Ribëje"
 
 #: implodeactivity.py:189
 msgid "Easy"
-msgstr "Lehtë"
+msgstr "E lehtë"
 
 #: implodeactivity.py:190
 msgid "Medium"
-msgstr "Mesatare"
+msgstr "Çka"
 
 #: implodeactivity.py:191
 msgid "Hard"
-msgstr "Vështirë"
+msgstr "E vështirë"
 
 #: implodeactivity.py:204 implodeactivity.py:263
 msgid "Help"
@@ -111,7 +115,7 @@ msgstr "Ndihmë"
 
 #: implodeactivity.py:327
 msgid "Done"
-msgstr "E përfunduar"
+msgstr "U bë"
 
 #: implodeactivity.py:374
 msgid "Previous"
@@ -119,19 +123,19 @@ msgstr "E mëparshmja"
 
 #: implodeactivity.py:375
 msgid "Again"
-msgstr "Përsëri"
+msgstr "Sërish"
 
 #: implodeactivity.py:376
 msgid "Next"
-msgstr "Tjetra"
+msgstr "Pasuesja"
 
 #: implodeactivity.py:404
 msgid "Stuck?  You can still solve the puzzle."
-msgstr "Ngjitur?  Ju ende mund ta zgjidhur enigmën."
+msgstr "Ngecët? Mundeni prapëseprapë ta zgjidhni."
 
 #: implodeactivity.py:411
 msgid "Undo some moves"
-msgstr "Kthe prapa disa lëvizje"
+msgstr "Zhbëni disa lëvizje"
 
 #~ msgid "Game"
 #~ msgstr "Loja"

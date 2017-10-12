@@ -36,90 +36,95 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-08-09 00:33-0400\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2017-02-15 17:48+0000\n"
+"Last-Translator: Soori <mbarzegar82@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: fa\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Translate Toolkit 1.3.0\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Pootle 2.5.1.1\n"
+"X-POOTLE-MTIME: 1487180933.000000\n"
 
 #: activity/activity.info:2
 msgid "Implode"
-msgstr ""
+msgstr "از داخل منفجر شدن"
 
 #: helpwidget.py:207
 msgid "Goal: Clear the board by removing blocks in groups of 3 or more."
-msgstr ""
+msgstr "هدف: پاک کردن صفحه با از بین بردن گروههای سه تایی یا بیشتر است."
 
 #: helpwidget.py:232
 msgid "You can't remove groups of one or two blocks."
-msgstr ""
+msgstr "شما نمیتوانید گروههای یک یا دو قطعه ای را حذف کنید"
 
 #: helpwidget.py:275
 msgid "Blocks fall to fill empty gaps, and they slide to fill empty columns."
 msgstr ""
+"قطعات فضاهای خالی را پر میکنند، و قادر به سر خوردن برای پر کردن ستونها هستند."
 
 #: helpwidget.py:298
 msgid "If you get stuck, you can undo to try again."
 msgstr ""
+"اگر گیر کردید، میتوانید به مرحله قبلی برگردید (undo) و دوباره انجام دهید."
 
 #: helpwidget.py:346
 msgid "There is always a way to clear the board."
-msgstr ""
+msgstr "همیشه یک راهی برای پاک کردن صفحه وجود دارد."
 
 #: implodeactivity.py:162
 msgid "New"
-msgstr ""
+msgstr "جدید"
 
 #: implodeactivity.py:163
 msgid "Replay"
-msgstr ""
+msgstr "بازی مجدد"
 
 #: implodeactivity.py:167
 msgid "Undo"
-msgstr ""
+msgstr "باطل کردن، خنثی کردن، کنسل کردن"
 
 #: implodeactivity.py:168
 msgid "Redo"
-msgstr ""
+msgstr "دوباره انجام دادن"
 
 #: implodeactivity.py:189
 msgid "Easy"
-msgstr ""
+msgstr "آسان"
 
 #: implodeactivity.py:190
 msgid "Medium"
-msgstr ""
+msgstr "متوسط"
 
 #: implodeactivity.py:191
 msgid "Hard"
-msgstr ""
+msgstr "سخت"
 
 #: implodeactivity.py:204 implodeactivity.py:263
 msgid "Help"
-msgstr ""
+msgstr "کمک"
 
 #: implodeactivity.py:327
 msgid "Done"
-msgstr ""
+msgstr "انجام شد"
 
 #: implodeactivity.py:374
 msgid "Previous"
-msgstr ""
+msgstr "قبلی"
 
 #: implodeactivity.py:375
 msgid "Again"
-msgstr ""
+msgstr "دوباره، مجدد"
 
 #: implodeactivity.py:376
 msgid "Next"
-msgstr ""
+msgstr "بعدی"
 
 #: implodeactivity.py:404
 msgid "Stuck?  You can still solve the puzzle."
-msgstr ""
+msgstr "آیا گیر کردید؟ شما هنوز قادر به حل پازل هستید"
 
 #: implodeactivity.py:411
 msgid "Undo some moves"
-msgstr ""
+msgstr "کنسل کردن بعضی حرکات"
