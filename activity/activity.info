@@ -9,4 +9,4 @@ show_launcher = yes
 repository = https://github.com/quozl/implode-activity.git
 summary = Implode blocks of the same colour until they are all gone.
 url = https://help.sugarlabs.org/en/implode.html
-tags = 
+tags = Game
