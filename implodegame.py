@@ -19,8 +19,6 @@
 import logging
 _logger = logging.getLogger('implode-activity.implodegame')
 
-from gettext import gettext as _
-
 from gi.repository import Gtk
 from gi.repository import GObject
 import random
@@ -38,6 +36,7 @@ _STUCK_DELAY = 0.5
 # Amount of time to wait between undos when undoing the board to a solvable
 # state after the player gets stuck, in seconds.
 _UNDO_DELAY = 0.3
+
 
 class ImplodeGame(Gtk.EventBox):
     """Gtk widget for playing the implode game."""
@@ -58,7 +57,7 @@ class ImplodeGame(Gtk.EventBox):
         self._winning_moves = []
 
         self._random = random.Random()
-        #self._random.seed(0)
+        # self._random.seed(0)
         self._difficulty = 0
         self._size = (8, 6)
         self._seed = 0
@@ -75,14 +74,14 @@ class ImplodeGame(Gtk.EventBox):
 
     def grab_focus(self):
         self._grid.grab_focus()
-        #self._grid.select_center_cell()
+        # self._grid.select_center_cell()
 
     def new_game(self):
         self._hide_stuck()
         self._stop_animation()
         self._seed = self._random.randint(0, 99999)
         size_frag_dict = {
-            0: (( 8,  6), 0),
+            0: ((8, 6), 0),
             1: ((12, 10), 0),
             2: ((20, 15), 2),
         }
@@ -121,7 +120,7 @@ class ImplodeGame(Gtk.EventBox):
 
         start_time = time.time()
 
-        def update_func(start_time_ref = [start_time]):
+        def update_func(start_time_ref=[start_time]):
             delta = time.time() - start_time_ref[0]
             if delta > _UNDO_DELAY:
                 self._undo_last_move()
@@ -186,22 +185,23 @@ class ImplodeGame(Gtk.EventBox):
             else:
                 return [w, h] + data
         return {
-            'difficulty' : self._difficulty,
-            'seed' : self._seed,
-            'size' : self._size,
-            'fragmentation' : self._fragmentation,
-            'board' : encode_board(self._board, None),
-            'undo_stack': [encode_board(b,m) for b,m in self._undo_stack],
-            'redo_stack': [encode_board(b,m) for b,m in self._redo_stack],
+            'difficulty': self._difficulty,
+            'seed': self._seed,
+            'size': self._size,
+            'fragmentation': self._fragmentation,
+            'board': encode_board(self._board, None),
+            'undo_stack': [encode_board(b, m) for b, m in self._undo_stack],
+            'redo_stack': [encode_board(b, m) for b, m in self._redo_stack],
             'win_draw_flag': self._grid.get_win_draw_flag(),
             'win_color': self._grid.get_win_color(),
-            'winning_moves' : self._winning_moves
+            'winning_moves': self._winning_moves
         }
 
     def set_game_state(self, state):
         # Sets the game state using a dictionary of atomic subobjects.
         self._hide_stuck()
         self._stop_animation()
+
         def decode_board(state):
             # Decodes a board (and maybe an appended move) from the given state
             # array.
@@ -236,9 +236,9 @@ class ImplodeGame(Gtk.EventBox):
     def _reset_board(self):
         # Regenerates the board with the current seed.
         (self._board, self._winning_moves) = \
-                boardgen.generate_board(seed=self._seed,
-                                        fragmentation=self._fragmentation,
-                                        max_size=self._size)
+            boardgen.generate_board(
+                seed=self._seed, fragmentation=self._fragmentation,
+                max_size=self._size)
         self._grid.set_board(self._board)
         self._grid.set_win_draw_flag(False)
         self._undo_stack = []

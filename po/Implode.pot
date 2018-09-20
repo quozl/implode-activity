@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-19 14:57+1000\n"
+"POT-Creation-Date: 2018-09-22 12:45+1000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,81 +22,81 @@ msgid "Implode"
 msgstr ""
 
 #: activity/activity.info:3
-msgid "Implode blocks of the same colour until they are all gone"
+msgid "Implode blocks of the same colour until they are all gone."
 msgstr ""
 
-#: helpwidget.py:207
+#: helpwidget.py:216
 msgid "Goal: Clear the board by removing blocks in groups of 3 or more."
 msgstr ""
 
-#: helpwidget.py:232
+#: helpwidget.py:242
 msgid "You can't remove groups of one or two blocks."
 msgstr ""
 
-#: helpwidget.py:275
+#: helpwidget.py:285
 msgid "Blocks fall to fill empty gaps, and they slide to fill empty columns."
 msgstr ""
 
-#: helpwidget.py:298
+#: helpwidget.py:309
 msgid "If you get stuck, you can undo to try again."
 msgstr ""
 
-#: helpwidget.py:346
+#: helpwidget.py:359
 msgid "There is always a way to clear the board."
 msgstr ""
 
-#: implodeactivity.py:166
+#: implodeactivity.py:168
 msgid "New"
 msgstr ""
 
-#: implodeactivity.py:167
+#: implodeactivity.py:169
 msgid "Replay"
 msgstr ""
 
-#: implodeactivity.py:171
+#: implodeactivity.py:173
 msgid "Undo"
 msgstr ""
 
-#: implodeactivity.py:172
+#: implodeactivity.py:174
 msgid "Redo"
 msgstr ""
 
-#: implodeactivity.py:194
+#: implodeactivity.py:197
 msgid "Easy"
 msgstr ""
 
-#: implodeactivity.py:195
+#: implodeactivity.py:198
 msgid "Medium"
 msgstr ""
 
-#: implodeactivity.py:196
+#: implodeactivity.py:199
 msgid "Hard"
 msgstr ""
 
-#: implodeactivity.py:209 implodeactivity.py:294
+#: implodeactivity.py:208 implodeactivity.py:296
 msgid "Help"
 msgstr ""
 
-#: implodeactivity.py:358
+#: implodeactivity.py:361
 msgid "Done"
 msgstr ""
 
-#: implodeactivity.py:405
+#: implodeactivity.py:408
 msgid "Previous"
 msgstr ""
 
-#: implodeactivity.py:406
+#: implodeactivity.py:409
 msgid "Again"
 msgstr ""
 
-#: implodeactivity.py:407
+#: implodeactivity.py:411
 msgid "Next"
 msgstr ""
 
-#: implodeactivity.py:435
+#: implodeactivity.py:440
 msgid "Stuck?  You can still solve the puzzle."
 msgstr ""
 
-#: implodeactivity.py:442
+#: implodeactivity.py:447
 msgid "Undo some moves"
 msgstr ""

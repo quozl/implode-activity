@@ -21,6 +21,7 @@ from gi.repository import GLib
 # Animation timer interval (in msec)
 _TIMER_INTERVAL = 20
 
+
 class Anim(object):
     """Manages an animation."""
     def __init__(self, update_func, end_anim_func):

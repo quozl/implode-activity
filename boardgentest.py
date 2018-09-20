@@ -16,11 +16,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import random
 import unittest
 
 import board
 import boardgen
+
 
 class TestEnumerateOneCellChanges(unittest.TestCase):
 
@@ -68,8 +68,6 @@ class TestEnumerateOneCellChanges(unittest.TestCase):
         for change in expChanges:
             self.assert_(change in changes)
 
-class TestChangeIsColorable(unittest.TestCase):
-    pass # TODO
 
 class TestMakeChange(unittest.TestCase):
     def testCol1(self):
@@ -220,6 +218,7 @@ class TestMakeChange(unittest.TestCase):
         boardgen._make_change(b, change)
         self.assertEqual(b, expBoard)
 
+
 class TestChangeIsColorable(unittest.TestCase):
     def test1(self):
         b = _make_board("""""")
@@ -247,6 +246,7 @@ class TestChangeIsColorable(unittest.TestCase):
                            1*3""")
         change = boardgen._InsertCellChange(1, 0)
         self.failIf(boardgen._change_is_colorable(b, change, 3))
+
 
 class TestGetCellChanges(unittest.TestCase):
 
@@ -293,6 +293,7 @@ class TestGetCellChanges(unittest.TestCase):
         for change in expChanges:
             self.assert_(change in changes)
 
+
 class TestGetColChanges(unittest.TestCase):
 
     def test1(self):
@@ -330,6 +331,7 @@ class TestGetColChanges(unittest.TestCase):
         for change in expChanges:
             self.assert_(change in changes)
 
+
 def _make_board(s):
     b = board.Board()
     # Constructs a board using the given string.
@@ -342,7 +344,7 @@ def _make_board(s):
     lens = [len(x) for x in lines]
     assert len(set(lens)) == 1
 
-    val_map = {'.' : None, '*' : -1}
+    val_map = {'.': None, '*': -1}
     for i in range(1, 9 + 1):
         val_map[str(i)] = i
 

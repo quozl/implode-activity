@@ -21,14 +21,14 @@ _logger = logging.getLogger('implode-activity')
 
 from gettext import gettext as _
 
-from sugar3.activity.activity import Activity, get_bundle_path
+from sugar3.activity.activity import Activity
 from sugar3.graphics import style
 from sugar3.graphics.icon import Icon
 from sugar3.graphics.radiotoolbutton import RadioToolButton
 from sugar3.graphics.toolbutton import ToolButton
 
 from sugar3.activity.widgets import ActivityToolbarButton, StopButton
-from sugar3.graphics.toolbarbox import ToolbarBox, ToolbarButton
+from sugar3.graphics.toolbarbox import ToolbarBox
 
 from implodegame import ImplodeGame
 from helpwidget import HelpWidget
@@ -42,6 +42,7 @@ from gi.repository import GObject
 from gi.repository import Gdk
 
 from keymap import KEY_MAP
+
 
 class ImplodeActivity(Activity):
     def __init__(self, handle):
@@ -65,7 +66,8 @@ class ImplodeActivity(Activity):
         self.show_all()
         self._configure_cb()
 
-        game_box.pack_end(self._stuck_strip, expand=False, fill=False, padding=0)
+        game_box.pack_end(
+            self._stuck_strip, expand=False, fill=False, padding=0)
 
         self._game.connect('show-stuck', self._show_stuck_cb)
         self._stuck_strip.connect('undo-clicked', self._stuck_undo_cb)
@@ -104,7 +106,7 @@ class ImplodeActivity(Activity):
         for path in (file_path, last_game_path):
             f = file(path, 'wt')
             io = StringIO()
-            json.dump(file_data,io)
+            json.dump(file_data, io)
             content = io.getvalue()
             f.write(content)
             f.close()
@@ -163,17 +165,18 @@ class ImplodeActivity(Activity):
             button.connect('clicked', callback)
             button.set_tooltip(tooltip)
 
-        add_button('new-game'   , _("New")   , self._game.new_game)
+        add_button('new-game', _("New"), self._game.new_game)
         add_button('replay-game', _("Replay"), self._game.replay_game)
 
         self._add_separator(toolbar)
 
-        add_button('edit-undo'  , _("Undo")  , self._game.undo)
-        add_button('edit-redo'  , _("Redo")  , self._game.redo)
+        add_button('edit-undo', _("Undo"), self._game.undo)
+        add_button('edit-redo', _("Redo"), self._game.redo)
 
         self._add_separator(toolbar)
 
         self._levels_buttons = []
+
         def add_level_button(icon_name, tooltip, numeric_level):
             if self._levels_buttons:
                 button = RadioToolButton(icon_name=icon_name,
@@ -191,9 +194,9 @@ class ImplodeActivity(Activity):
             button.connect('clicked', callback)
             button.set_tooltip(tooltip)
 
-        add_level_button('easy-level'  , _("Easy")  , 0)
+        add_level_button('easy-level', _("Easy"), 0)
         add_level_button('medium-level', _("Medium"), 1)
-        add_level_button('hard-level'  , _("Hard")  , 2)
+        add_level_button('hard-level', _("Hard"), 2)
 
         self._add_separator(toolbar)
 
@@ -243,13 +246,13 @@ class ImplodeActivity(Activity):
             else:
                 sep.show()
 
+
 class _DialogWindow(Gtk.Window):
     # A base class for a modal dialog window.
     def __init__(self, icon_name, title):
         super(_DialogWindow, self).__init__()
 
         self.set_border_width(style.LINE_WIDTH)
-        offset = style.GRID_CELL_SIZE
         width = Gdk.Screen.width() / 2
         height = Gdk.Screen.height() / 2
         self.set_size_request(width, height)
@@ -283,7 +286,7 @@ class _DialogWindow(Gtk.Window):
         if event.keyval == Gdk.KEY_Escape:
             self.destroy()
         elif event.keyval == Gdk.KEY_q and \
-            event.state & Gdk.ModifierType.CONTROL_MASK != 0:
+                event.state & Gdk.ModifierType.CONTROL_MASK != 0:
             Gtk.main_quit()
 
 
@@ -337,8 +340,9 @@ class _HelpWindow(_DialogWindow):
 class _DialogToolbar(Gtk.Toolbar):
     # Displays a dialog window's toolbar, with title, icon, and close box.
     __gsignals__ = {
-        'stop-clicked'       : (GObject.SignalFlags.RUN_LAST, None, ()),
+        'stop-clicked': (GObject.SignalFlags.RUN_LAST, None, ()),
     }
+
     def __init__(self, icon_name, title):
         super(_DialogToolbar, self).__init__()
 
@@ -377,9 +381,9 @@ class _HelpNavBar(Gtk.HButtonBox):
     # A widget to display the navigation controls at the bottom of the help
     # dialog.
     __gsignals__ = {
-        'forward-clicked' : (GObject.SignalFlags.RUN_LAST, None, ()),
-        'back-clicked'    : (GObject.SignalFlags.RUN_LAST, None, ()),
-        'reload-clicked'  : (GObject.SignalFlags.RUN_LAST, None, ()),
+        'forward-clicked': (GObject.SignalFlags.RUN_LAST, None, ()),
+        'back-clicked': (GObject.SignalFlags.RUN_LAST, None, ()),
+        'reload-clicked': (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     def __init__(self):
@@ -403,7 +407,8 @@ class _HelpNavBar(Gtk.HButtonBox):
 
         self._back_button = add_button('back', _("Previous"), 'back-clicked')
         add_button('reload', _("Again"), 'reload-clicked')
-        self._forward_button = add_button('forward', _("Next"), 'forward-clicked')
+        self._forward_button = add_button(
+            'forward', _("Next"), 'forward-clicked')
 
     def set_can_prev_stage(self, can_prev_stage):
         self._back_button.set_sensitive(can_prev_stage)
@@ -414,8 +419,9 @@ class _HelpNavBar(Gtk.HButtonBox):
 
 class _StuckStrip(Gtk.Box):
     __gsignals__ = {
-        'undo-clicked' : (GObject.SignalFlags.RUN_LAST, None, ()),
+        'undo-clicked': (GObject.SignalFlags.RUN_LAST, None, ()),
     }
+
     def __init__(self, *args, **kwargs):
         super(_StuckStrip, self).__init__(*args, **kwargs)
 

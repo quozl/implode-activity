@@ -31,6 +31,7 @@ from keymap import KEY_MAP
 
 _DEFAULT_SPACING = 15
 
+
 class ImplodeWindow(Gtk.Window):
     def __init__(self):
         super(ImplodeWindow, self).__init__(Gtk.WindowType.TOPLEVEL)
@@ -77,6 +78,7 @@ class ImplodeWindow(Gtk.Window):
         toolbar.add(Gtk.SeparatorToolItem())
 
         radio_buttons = []
+
         def add_radio_button(icon, func):
             if radio_buttons:
                 button = Gtk.RadioToolButton(group=radio_buttons[0])
@@ -175,6 +177,7 @@ class ImplodeWindow(Gtk.Window):
             return True
         return True
 
+
 class _HelpWindow(Gtk.Window):
     def __init__(self):
         super(_HelpWindow, self).__init__()
@@ -227,9 +230,9 @@ class _HelpNavBar(Gtk.HButtonBox):
     # A widget to display the navigation controls at the bottom of the help
     # dialog.
     __gsignals__ = {
-        'forward-clicked' : (GObject.SignalFlags.RUN_LAST, None, ()),
-        'back-clicked'    : (GObject.SignalFlags.RUN_LAST, None, ()),
-        'reload-clicked'  : (GObject.SignalFlags.RUN_LAST, None, ()),
+        'forward-clicked': (GObject.SignalFlags.RUN_LAST, None, ()),
+        'back-clicked': (GObject.SignalFlags.RUN_LAST, None, ()),
+        'reload-clicked': (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     def __init__(self):
@@ -249,7 +252,8 @@ class _HelpNavBar(Gtk.HButtonBox):
 
         self._back_button = add_button(Gtk.STOCK_GO_BACK, 'back-clicked')
         add_button(Gtk.STOCK_MEDIA_PLAY, 'reload-clicked')
-        self._forward_button = add_button(Gtk.STOCK_GO_FORWARD, 'forward-clicked')
+        self._forward_button = add_button(Gtk.STOCK_GO_FORWARD,
+                                          'forward-clicked')
 
     def set_can_prev_stage(self, can_prev_stage):
         self._back_button.set_sensitive(can_prev_stage)
@@ -260,8 +264,9 @@ class _HelpNavBar(Gtk.HButtonBox):
 
 class _StuckStrip(Gtk.Box):
     __gsignals__ = {
-        'undo-clicked' : (GObject.SignalFlags.RUN_LAST, None, ()),
+        'undo-clicked': (GObject.SignalFlags.RUN_LAST, None, ()),
     }
+
     def __init__(self, *args, **kwargs):
         super(_StuckStrip, self).__init__(*args, **kwargs)
 
@@ -292,6 +297,7 @@ class _StuckStrip(Gtk.Box):
 def main():
     w = ImplodeWindow()
     Gtk.main()
+    del w
 
 if __name__ == "__main__":
     main()

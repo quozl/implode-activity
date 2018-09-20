@@ -19,7 +19,6 @@
 import logging
 _logger = logging.getLogger('implode-activity.gridwidget')
 
-import cairo
 from gi.repository import GObject
 from gi.repository import Gtk
 from gi.repository import Gdk
@@ -71,28 +70,31 @@ _ANIM_STAGE_FALL = 2
 _ANIM_STAGE_ZOOM = 3
 
 _ANIM_STAGES = [
-  _ANIM_STAGE_NONE,
-  _ANIM_STAGE_SHRINK,
-  _ANIM_STAGE_FALL,
-  _ANIM_STAGE_ZOOM,
+    _ANIM_STAGE_NONE,
+    _ANIM_STAGE_SHRINK,
+    _ANIM_STAGE_FALL,
+    _ANIM_STAGE_ZOOM,
 ]
 
 # Animation time scaling factor (in seconds per tick).
 _ANIM_SCALE = 0.04
 
-#import traceback
-#def _log_errors(func):
-#    # A function decorator to add error logging to selected functions.
-#    # (For when GTK eats exceptions).
-#    def wrapper(*args, **kwargs):
-#        try:
-#            return func(*args, **kwargs)
-#        except:
-#            _logger.debug(traceback.format_exc())
-#            raise
-#    return wrapper
+# import traceback
+# def _log_errors(func):
+#     # A function decorator to add error logging to selected functions.
+#     # (For when GTK eats exceptions).
+#     def wrapper(*args, **kwargs):
+#         try:
+#             return func(*args, **kwargs)
+#         except:
+#             _logger.debug(traceback.format_exc())
+#             raise
+#     return wrapper
+
+
 def _log_errors(func):
     return func
+
 
 class GridWidget(Gtk.DrawingArea):
     """Gtk widget for rendering the game board."""
@@ -106,14 +108,15 @@ class GridWidget(Gtk.DrawingArea):
 
     def __init__(self, *args, **kwargs):
         super(GridWidget, self).__init__(*args, **kwargs)
-        self.set_events(Gdk.EventMask.BUTTON_PRESS_MASK
-                        | Gdk.EventMask.POINTER_MOTION_MASK
-                        | Gdk.EventMask.KEY_PRESS_MASK)
+        self.set_events(Gdk.EventMask.BUTTON_PRESS_MASK |
+                        Gdk.EventMask.POINTER_MOTION_MASK |
+                        Gdk.EventMask.KEY_PRESS_MASK)
         self.set_can_focus(True)
 
         self._board_drawer = BoardDrawer(self._get_size, self._invalidate_rect)
         self._win_drawer = WinDrawer(self._get_size, self._invalidate_rect)
-        self._removal_drawer = RemovalDrawer(self._get_size, self._invalidate_rect)
+        self._removal_drawer = RemovalDrawer(
+            self._get_size, self._invalidate_rect)
         self._set_current_drawer(self._board_drawer)
 
         self.connect('draw', self._draw_event_cb)
@@ -202,10 +205,10 @@ class GridWidget(Gtk.DrawingArea):
                 elif action == 'redo':
                     self.emit('redo-key-pressed', 0)
                 else:
-                    offsets = {'up'    : ( 0,  1),
-                               'down'  : ( 0, -1),
-                               'left'  : (-1,  0),
-                               'right' : ( 1,  0)}
+                    offsets = {'up': (0, 1),
+                               'down': (0, -1),
+                               'left': (-1, 0),
+                               'right': (1, 0)}
                     if action in offsets:
                         offset = offsets[action]
                         return self._board_drawer.move_selected_cell(*offset)
@@ -222,7 +225,6 @@ class GridWidget(Gtk.DrawingArea):
         else:
             x = event.x
             y = event.y
-            state = event.get_state()
         self._board_drawer.set_mouse_selection(x, y)
 
     def _draw_event_cb(self, widget, cr):
@@ -313,7 +315,7 @@ class BoardDrawer(object):
         if self._selected_cell is not None:
             # If a cell is selected, clamp it to new board boundaries.
             (x, y) = self._selected_cell
-            x = max(0, min(self._board_width  - 1, x))
+            x = max(0, min(self._board_width - 1, x))
             y = max(0, min(self._board_height - 1, y))
             self._selected_cell = (x, y)
         self._invalidate_board()
@@ -400,9 +402,9 @@ class BoardDrawer(object):
         pt1 = self._cell_to_display(min_x1, min_y1)
         pt2 = self._cell_to_display(max_x1, max_y1)
         min_x2 = math.floor(min(pt1[0], pt2[0])) - 1
-        max_x2 = math.ceil( max(pt1[0], pt2[0])) + 1
+        max_x2 = math.ceil(max(pt1[0], pt2[0])) + 1
         min_y2 = math.floor(min(pt1[1], pt2[1])) - 1
-        max_y2 = math.ceil( max(pt1[1], pt2[1])) + 1
+        max_y2 = math.ceil(max(pt1[1], pt2[1])) + 1
         rect = Gdk.Rectangle()
         rect.x, rect.y, rect.width, rect.height = (
             int(min_x2), int(min_y2),
@@ -451,8 +453,8 @@ class BoardDrawer(object):
     def _draw_selected(self, cr):
         # Draws a white background to selected blocks, then redraws blocks
         # on top.
-        if (self._selected_cell is None
-            or self._selected_cell not in self._contiguous_map):
+        if (self._selected_cell is None or
+                self._selected_cell not in self._contiguous_map):
             return
         contiguous = self._contiguous_map[self._selected_cell]
         value = self._board.get_value(*self._selected_cell)
@@ -489,16 +491,15 @@ class BoardDrawer(object):
 
     def _recalc_board_dimensions(self):
         if self.board_is_valid():
-            self._board_width  = self._board.width
+            self._board_width = self._board.width
             self._board_height = self._board.height
         else:
-            self._board_width  = 1
+            self._board_width = 1
             self._board_height = 1
 
     def board_is_valid(self):
         # Returns True if the board is set and has valid dimensions (>=1).
-        return (self._board is not None
-                and not self._board.is_empty())
+        return (self._board is not None and not self._board.is_empty())
 
 
 class RemovalDrawer(object):
@@ -538,7 +539,8 @@ class RemovalDrawer(object):
         """Sets the current animation stage; returns False if there are no
            more stages, True otherwise."""
         stage = self._anim_stage + 1
-        while stage < len(self._anim_lengths) and not self._anim_lengths[stage]:
+        while stage < len(self._anim_lengths) and \
+                not self._anim_lengths[stage]:
             stage += 1
         if stage == len(self._anim_lengths):
             return False
@@ -624,7 +626,7 @@ class RemovalDrawer(object):
         slide_map = board2.get_slide_map()
         max_change = 0
         board2.remove_empty_columns()
-        board_width2  = board2.width
+        board_width2 = board2.width
         board_height2 = board2.height
         for(i, j, scale, value) in falling_frame:
             if i in slide_map:
@@ -632,8 +634,8 @@ class RemovalDrawer(object):
                 max_change = max(max_change, i - slide_map[i])
             else:
                 zooming_frame.append((i, j, scale, value))
-        if (board_width2 == self._board_width
-            and board_height2 == self._board_height):
+        if (board_width2 == self._board_width and
+                board_height2 == self._board_height):
             zooming_transform = transform
         else:
             (width, height) = self._get_size_func()
@@ -660,7 +662,7 @@ class RemovalDrawer(object):
         stage = self._anim_stage
         prev_stage = _ANIM_STAGES[_ANIM_STAGES.index(stage, 1) - 1]
         (start_transform, start_coords) = self._anim_frames[prev_stage]
-        (end_transform,   end_coords  ) = self._anim_frames[stage]
+        (end_transform, end_coords) = self._anim_frames[stage]
 
         length = self.get_anim_length()
         if length == 0.0:
@@ -721,16 +723,15 @@ class RemovalDrawer(object):
 
     def _recalc_board_dimensions(self):
         if self.board_is_valid():
-            self._board_width  = self._board.width
+            self._board_width = self._board.width
             self._board_height = self._board.height
         else:
-            self._board_width  = 1
+            self._board_width = 1
             self._board_height = 1
 
     def board_is_valid(self):
         # Returns True if the board is set and has valid dimensions (>=1).
-        return (self._board is not None
-                and not self._board.is_empty())
+        return (self._board is not None and not self._board.is_empty())
 
 
 class WinDrawer(object):
@@ -745,7 +746,7 @@ class WinDrawer(object):
         self._win_starts = []
         self._win_ends = []
         self._anim_length = 0
-        self._win_size = (0,0)
+        self._win_size = (0, 0)
         self._win_transform = None
         self._win_color = 0
 
@@ -836,10 +837,13 @@ class WinDrawer(object):
             x = float(x) / width - 0.5
             y = float(y) / height - 0.5
             return 2 * math.sqrt(x * x + y * y)
+
         def x(coord):
             return float(coord[0]) / width
+
         def y(coord):
             return float(coord[1]) / height
+
         def angle(coord):
             (x, y) = coord
             x = float(x) / width - 0.5
@@ -863,7 +867,7 @@ class WinDrawer(object):
             if r.randint(0, 1):
                 list2.reverse()
             pairs = _interleave(list1, list2)
-        return [x[1] for x in pairs]
+        return [pair[1] for pair in pairs]
 
     def _get_win_starts(self, tiles, width, height):
         # Returns a list of starting coordinates for tiles.
@@ -874,7 +878,7 @@ class WinDrawer(object):
         start_y = height / 2.0 - 0.5
         for (i, (x, y)) in enumerate(tiles):
             starts.append((i * _ANIM_SCALE, start_x, start_y, 0.0))
-            #starts.append((i, x, y, 0.0))
+            # starts.append((i, x, y, 0.0))
         return starts
 
     def _get_win_ends(self, tiles):
@@ -908,7 +912,6 @@ class WinDrawer(object):
         cr.restore()
 
     def _draw_win(self, cr):
-        value = 1
         for (x, y, scale) in self._win_coords:
             if scale > 0.0:
                 self._draw_scaled_block(cr, x, y, self._win_color, scale)
@@ -929,7 +932,8 @@ class WinDrawer(object):
 
 
 def _draw_background(cr, width, height):
-    # Draws the board background using the given cairo context and width/height.
+    # Draws the board background using the given cairo context and
+    # width/height.
     cr.set_source_rgb(*_BG_COLOR)
     cr.rectangle(0, 0, width, height)
     cr.fill()
@@ -974,7 +978,7 @@ class _BoardTransform(object):
 
         self.scale_x = scale
         self.scale_y = -scale
-        self.offset_x =          (width - cells_across * scale) / 2
+        self.offset_x = (width - cells_across * scale) / 2
         self.offset_y = height - (height - cells_down * scale) / 2
 
         self.to_center_x = float(width) / 2
@@ -998,8 +1002,8 @@ class _BoardTransform(object):
 def _tween(trans1, trans2, w):
     t = _BoardTransform()
     inv_w = 1.0 - w
-    t.scale_x  = trans1.scale_x  * inv_w + trans2.scale_x  * w
-    t.scale_y  = trans1.scale_y  * inv_w + trans2.scale_y  * w
+    t.scale_x = trans1.scale_x * inv_w + trans2.scale_x * w
+    t.scale_y = trans1.scale_y * inv_w + trans2.scale_y * w
     t.offset_x = trans1.offset_x * inv_w + trans2.offset_x * w
     t.offset_y = trans1.offset_y * inv_w + trans2.offset_y * w
     t.to_center_x = trans1.to_center_x * inv_w + trans2.to_center_x * w
@@ -1007,6 +1011,7 @@ def _tween(trans1, trans2, w):
     t.from_center_x = trans1.from_center_x * inv_w + trans2.from_center_x * w
     t.from_center_y = trans1.from_center_y * inv_w + trans2.from_center_y * w
     return t
+
 
 def _interleave(*args):
     # From Richard Harris' recipe:

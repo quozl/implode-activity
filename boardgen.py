@@ -21,11 +21,12 @@ import random
 
 import board
 
+
 def generate_board(seed=0,
                    fragmentation=1,
                    fill=0.5,
                    max_colors=5,
-                   max_size=(30,20)):
+                   max_size=(30, 20)):
     """Generates a new board of the given properties using the given random
        seed as a starting point.  Returns both the board and the list of
        moves needed to solve it."""
@@ -38,6 +39,7 @@ def generate_board(seed=0,
         if move is not None:
             winning_moves.insert(0, move)
     return (b, winning_moves)
+
 
 def _try_add_piece(b, r, piece_size, max_colors, max_size):
     # Tries to add a piece of the given size to the board.  Returns the
@@ -61,11 +63,12 @@ def _try_add_piece(b, r, piece_size, max_colors, max_size):
             if total_added_cells >= 3:
                 break
             else:
-                #print "Aborted piece add."
+                # print "Aborted piece add."
                 return (b, None)
     piece = _get_new_piece_coords(b2)
     _color_piece_random(b2, r, max_colors)
     return (b2, min(piece))
+
 
 def _get_starting_change(b, r, max_colors, max_size):
     # Gets a valid initial change that adds a one-cell colorable piece to the
@@ -77,6 +80,7 @@ def _get_starting_change(b, r, max_colors, max_size):
         if _change_is_colorable(b, change, max_colors):
             return change
     return None
+
 
 def _enumerate_one_cell_changes(b, max_size):
     # Returns a list of all possible one-cell changes.
@@ -93,6 +97,7 @@ def _enumerate_one_cell_changes(b, max_size):
                 changes.append(_InsertCellChange(i, j))
     return changes
 
+
 def _try_add_cells(b, r, max_colors, max_size):
     # Tries to add a cell or cells to the new piece on the board in a way that
     # ensures the resulting board is within the given board size and is
@@ -100,20 +105,21 @@ def _try_add_cells(b, r, max_colors, max_size):
     # (zero, if no cell could be added).
     (cell_h_changes, cell_v_changes) = _get_cell_changes(b, max_size)
     col_changes = _get_col_changes(b, max_size)
-    while (len(cell_h_changes) > 0
-           or len(cell_v_changes) > 0
-           or len(col_changes) > 0):
+    while (len(cell_h_changes) > 0 or
+           len(cell_v_changes) > 0 or
+           len(col_changes) > 0):
         change = _remove_change(r, cell_h_changes, cell_v_changes, col_changes)
         if _change_is_colorable(b, change, max_colors):
             _make_change(b, change)
-            #print
-            #print change
-            #print b
+            # print
+            # print change
+            # print b
             if isinstance(change, _InsertCellChange):
                 return 1
             else:
                 return change.height
     return 0
+
 
 def _get_cell_changes(b, max_size):
     # Returns a list of all possible standard cell insertions.
@@ -127,12 +133,13 @@ def _get_cell_changes(b, max_size):
             for j in range(col_height + 1):
                 if b.get_value(i, j) != -1:
                     if (b.get_value(i + 1, j) == -1 or
-                        b.get_value(i - 1, j) == -1):
+                            b.get_value(i - 1, j) == -1):
                         h_changes.append(_InsertCellChange(i, j))
                     elif (b.get_value(i, j - 1) == -1 or
                           b.get_value(i, j + 1) == -1):
                         v_changes.append(_InsertCellChange(i, j))
     return h_changes, v_changes
+
 
 def _get_col_changes(b, max_size):
     # Returns a list of all possible column insertions.
@@ -157,6 +164,7 @@ def _get_col_changes(b, max_size):
             changes.append(_InsertColumnChange(i, height))
     return changes
 
+
 def _remove_change(r, cell_h_changes, cell_v_changes, col_changes):
     # Removes a change from cell changes or col changes (less likely) and
     # returns it.
@@ -171,9 +179,11 @@ def _remove_change(r, cell_h_changes, cell_v_changes, col_changes):
     else:
         return _pick(r, col_changes)
 
+
 def _pick(r, items):
     index = r.randint(0, len(items) - 1)
     return items.pop(index)
+
 
 def _change_is_colorable(b, change, max_colors):
     # Returns True if the board is still colorable after the given change is
@@ -182,6 +192,7 @@ def _change_is_colorable(b, change, max_colors):
     _make_change(b2, change)
     colors = _get_new_piece_colors(b2, max_colors)
     return len(colors) > 0
+
 
 def _make_change(b, change):
     # Makes the given change to the board (side-affects board parameter).
@@ -211,6 +222,7 @@ def _make_change(b, change):
     else:
         assert False
 
+
 def _color_piece_random(b, r, max_colors):
     # Colors in the new piece on the board with a random color using the given
     # random number generator and number of colors.
@@ -218,11 +230,13 @@ def _color_piece_random(b, r, max_colors):
     color = r.choice(list(colors))
     _color_piece(b, color)
 
+
 def _color_piece(b, color):
     # Colors in the new piece on the board with the given color.
     coords = _get_new_piece_coords(b)
     for (i, j) in coords:
         b.set_value(i, j, color)
+
 
 def _get_new_piece_colors(b, max_colors):
     # Returns the set of possible colors for the new piece.
@@ -232,6 +246,7 @@ def _get_new_piece_colors(b, max_colors):
         for (x_ofs, y_ofs) in ((-1, 0), (1, 0), (0, -1), (0, 1)):
             colors.discard(b.get_value(i + x_ofs, j + y_ofs))
     return colors
+
 
 def _get_new_piece_coords(b):
     # Returns a list of new piece coordinates.
@@ -243,6 +258,7 @@ def _get_new_piece_coords(b):
                 coords.append((i, j))
     return coords
 
+
 def _get_piece_sizes(r, fragmentation, fill, max_size):
     # Returns a list containing the new piece sizes for the board using the
     # given random number generator, fragmentation, fill, and board size.
@@ -253,8 +269,9 @@ def _get_piece_sizes(r, fragmentation, fill, max_size):
         piece_size = _get_piece_size(r, fragmentation, max_area)
         total_area += piece_size
         piece_sizes.append(piece_size)
-    #print piece_sizes
+    # print piece_sizes
     return piece_sizes
+
 
 def _get_piece_size(r, fragmentation, max_area):
     # Returns a random piece size using the given random number generator,
@@ -265,6 +282,7 @@ def _get_piece_size(r, fragmentation, max_area):
     piece_size = int(max(3, math.pow(value, exp) * upper_bound))
     return piece_size
 
+
 class _InsertColumnChange(object):
     # Represents the action of inserting a column into the board at column
     # "col" containing "height" cells.
@@ -273,15 +291,16 @@ class _InsertColumnChange(object):
         self.height = height
 
     def __eq__(self, other):
-        return (isinstance(other, _InsertColumnChange)
-                and self.col == other.col
-                and self.height == other.height)
+        return (isinstance(other, _InsertColumnChange) and
+                self.col == other.col and
+                self.height == other.height)
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
     def __repr__(self):
         return "_InsertColumnChange(%d, %d)" % (self.col, self.height)
+
 
 class _InsertCellChange(object):
     # Represents the action of inserting a cell into the board in column
@@ -291,9 +310,9 @@ class _InsertCellChange(object):
         self.height = height
 
     def __eq__(self, other):
-        return (isinstance(other, _InsertCellChange)
-                and self.col == other.col
-                and self.height == other.height)
+        return (isinstance(other, _InsertCellChange) and
+                self.col == other.col and
+                self.height == other.height)
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -301,17 +320,18 @@ class _InsertCellChange(object):
     def __repr__(self):
         return "_InsertCellChange(%d, %d)" % (self.col, self.height)
 
+
 def main():
     b = generate_board(seed=1,
                        fragmentation=1,
                        max_colors=5,
-                       max_size=(20,10))
+                       max_size=(20, 10))
     print repr(b)
 
 if __name__ == '__main__':
-    #import cProfile
-    #cProfile.run('main()', 'genprof')
-    #import pstats
-    #p = pstats.Stats('genprof')
-    #p.strip_dirs().sort_stats(-1).print_stats()
+    # import cProfile
+    # cProfile.run('main()', 'genprof')
+    # import pstats
+    # p = pstats.Stats('genprof')
+    # p.strip_dirs().sort_stats(-1).print_stats()
     main()

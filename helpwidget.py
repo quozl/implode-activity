@@ -84,6 +84,7 @@ _CLICK_SPEED = 0.2
 # Speed of the mouse, in units (4x3 per screen) per second.
 _MOUSE_SPEED = 0.5
 
+
 class HelpWidget(Gtk.EventBox):
     def __init__(self, icon_file_func, *args, **kwargs):
         super(HelpWidget, self).__init__(*args, **kwargs)
@@ -212,7 +213,8 @@ class _HelpStage1(_HelpStage):
         super(_HelpStage1, self).__init__(*args, **kwargs)
 
     def get_message(self):
-        return _("Goal: Clear the board by removing blocks in groups of 3 or more.")
+        return _("Goal: Clear the board "
+                 "by removing blocks in groups of 3 or more.")
 
     def _get_actions(self):
         return [
@@ -280,7 +282,8 @@ class _HelpStage3(_HelpStage):
         super(_HelpStage3, self).__init__(*args, **kwargs)
 
     def get_message(self):
-        return _("Blocks fall to fill empty gaps, and they slide to fill empty columns.")
+        return _("Blocks fall to fill empty gaps, "
+                 "and they slide to fill empty columns.")
 
     def _get_actions(self):
         return [
@@ -326,6 +329,7 @@ class _HelpStage4(_HelpStage):
             _pause(1),
         ]
 
+
 def _click_to_remove(x, y, pause=2):
     # Returns an array of action functions to remove the block at (x, y).
     return [
@@ -335,6 +339,7 @@ def _click_to_remove(x, y, pause=2):
         _remove_piece(x, y),
         _pause(pause),
     ]
+
 
 def _click_to_undo():
     # Returns an array of action functions to undo the last move.
@@ -416,9 +421,11 @@ class _HelpStage5(_HelpStage):
 # The following are functions that return a function that, given a HelpStage
 # object will set it up to perform the appropriate action.
 
+
 def _set_board(board_string):
     # Returns a function to reset the game board to a given state.
     board = _make_board(board_string)
+
     def action(stage):
         stage.set_board(board)
         stage.undo_stack = []
@@ -426,13 +433,16 @@ def _set_board(board_string):
         stage.next_action()
     return action
 
+
 def _pause(delay):
     # Returns a function to delay playback by the given amount of time.
     def action(stage):
         start_time = time.time()
+
         def update_func():
             delta = time.time() - start_time
             return delta < delay
+
         def end_anim_func(anim_stopped):
             if not anim_stopped:
                 stage.next_action()
@@ -440,17 +450,21 @@ def _pause(delay):
         stage.anim.start()
     return action
 
+
 def _move_to_block(x, y):
-    # Returns a function to move the mouse cursor to the given block coordinate.
+    # Returns a function to move the mouse cursor to the given block
+    # coordinate.
     def coord_func(stage):
         return stage.preview.get_block_coord(x, y)
     return _move_to(coord_func)
+
 
 def _move_to_icon(index):
     # Returns a function to move the mouse cursor to the given icon.
     def coord_func(stage):
         return stage.preview.get_icon_coord(index)
     return _move_to(coord_func)
+
 
 def _move_to(coord_func):
     def action(stage):
@@ -464,6 +478,7 @@ def _move_to(coord_func):
         dist = math.sqrt(delta_x * delta_x + delta_y * delta_y)
         move_time = dist * _MOUSE_SPEED
         start_time = time.time()
+
         def update_func():
             delta = time.time() - start_time
             if delta >= move_time or move_time == 0.0:
@@ -476,6 +491,7 @@ def _move_to(coord_func):
             move_y = old_y * inv_w + new_y * w
             stage.preview.set_cursor_pos(move_x, move_y)
             return True
+
         def end_anim_func(anim_stopped):
             if not anim_stopped:
                 stage.next_action()
@@ -483,14 +499,17 @@ def _move_to(coord_func):
         stage.anim.start()
     return action
 
+
 def _click():
     # Returns a function to play the mouse-click animation.
     def action(stage):
         start_time = time.time()
         stage.preview.set_click_visible(True)
+
         def update_func():
             delta = time.time() - start_time
             return (delta < _CLICK_SPEED)
+
         def end_anim_func(anim_stopped):
             stage.preview.set_click_visible(False)
             if not anim_stopped:
@@ -498,6 +517,7 @@ def _click():
         stage.anim = Anim(update_func, end_anim_func)
         stage.anim.start()
     return action
+
 
 def _remove_piece(x, y):
     # Returns a function to animate the removal of the given piece.
@@ -534,6 +554,7 @@ def _remove_piece(x, y):
         stage.anim.start()
     return action
 
+
 def _show_win(color):
     # Returns a function to animate a win.
     def action(stage):
@@ -557,6 +578,7 @@ def _show_win(color):
         stage.anim.start()
     return action
 
+
 def _undo():
     # Returns a function that undoes the previous move.
     def action(stage):
@@ -564,6 +586,7 @@ def _undo():
         stage.set_board(board)
         stage.next_action()
     return action
+
 
 class _PreviewWidget(Gtk.DrawingArea):
     def __init__(self, icon_file_func, *args, **kwargs):
@@ -646,9 +669,9 @@ class _PreviewWidget(Gtk.DrawingArea):
         self._invalidate_cursor()
 
     def get_block_coord(self, x, y):
-        # Returns the coordinate of the given board block in terms of 4x3 units.
-        if (self._preview_rect.width == 0
-            or self._preview_rect.height == 0):
+        # Returns the coordinate of the given board block in terms of
+        # 4x3 units.
+        if (self._preview_rect.width == 0 or self._preview_rect.height == 0):
             return (0, 0)
         (drawer_x, drawer_y) = self.board_drawer.get_block_coord(x, y)
         preview_x = drawer_x
@@ -880,6 +903,7 @@ def _make_board(board_string):
 
     return b
 
+
 def _flatten(items):
     # Returns a flattened list of items.
     out = []
@@ -894,6 +918,7 @@ def _flatten(items):
 # sugar.graphics.icon package doesn't seem to provide an easy way to get at
 # them, so we do a little reimplementing here).
 _icon_handles = {}
+
 
 def _get_icon_handle(file_path):
     global _icon_handles

@@ -18,6 +18,7 @@
 
 import random
 
+
 class Board(object):
     """Object that defines a board containing pieces."""
     # Board is represented as a dict from x coordinates to lists representing
@@ -125,7 +126,7 @@ class Board(object):
             return
         for i in range(len(col) - 1, -1, -1):
             if col[i] is not None:
-                self._data[x] = col[:i+1]
+                self._data[x] = col[:i + 1]
                 return
         del self._data[x]
 
@@ -272,6 +273,7 @@ class Board(object):
             lines.append(''.join(line))
         return '\n'.join(lines)
 
+
 def make_test_board(width, height):
     b = Board()
     r = random.Random()
@@ -288,8 +290,10 @@ def make_test_board(width, height):
         b.set_value(i, 0, i)
     return b
 
+
 def dump_board(b):
     print repr(b)
+
 
 def main():
     b = make_test_board(30, 20)
