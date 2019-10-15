@@ -19,11 +19,15 @@
 # A stub file for running the application on a sugarless GTK, when the Activity
 # framework is not available.
 
+import os
+import gi
+gi.require_version('Gdk', '3.0')
+gi.require_version('Gtk', '3.0')
+gi.require_version('Rsvg', '2.0')
+
 from gi.repository import GObject
 from gi.repository import Gdk
 from gi.repository import Gtk
-
-import os
 
 import implodegame
 from helpwidget import HelpWidget
