@@ -191,7 +191,7 @@ class ImplodeActivity(Activity):
                     self._game.set_level(numeric_level)
                     self._game.new_game()
 
-            button.connect('clicked', callback)
+            button.connect('toggled', callback)
             button.set_tooltip(tooltip)
 
         add_level_button('easy-level', _("Easy"), 0)
