@@ -767,7 +767,10 @@ class _PreviewWidget(Gtk.DrawingArea):
         for (i, icon_name) in enumerate(['new-game',
                                          'replay-game',
                                          'edit-undo',
-                                         'edit-redo']):
+                                         'edit-redo',
+                                         'easy-level',
+                                         'medium-level',
+                                         'hard-level',]):
             file_path = self._icon_file_func(icon_name)
             handle = _get_icon_handle(file_path)
             cr.save()
