@@ -50,7 +50,6 @@ class ImplodeWindow(Gtk.Window):
         self.connect("delete_event", self._delete_event_cb)
 
         toolbar = Gtk.Toolbar()
-        toolbar.props.icon_size = 32
 
         self._game = implodegame.ImplodeGame()
 
@@ -59,7 +58,7 @@ class ImplodeWindow(Gtk.Window):
 
         def set_icon(button, icon):
             image = Gtk.Image()
-            pixbuf = icon_theme.load_icon(icon, toolbar.props.icon_size, 0)
+            pixbuf = icon_theme.load_icon(icon, geometry.min_height / 10, 0)
             image.set_from_pixbuf(pixbuf)
             button.set_icon_widget(image)
 
