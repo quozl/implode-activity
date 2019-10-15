@@ -82,7 +82,7 @@ class ImplodeWindow(Gtk.Window):
 
         radio_buttons = []
 
-        def add_radio_button(icon, func):
+        def add_radio_button(icon, level):
             if radio_buttons:
                 button = Gtk.RadioToolButton(group=radio_buttons[0])
             else:
@@ -93,14 +93,15 @@ class ImplodeWindow(Gtk.Window):
 
             def callback(source):
                 if source.get_active():
-                    func()
-            button.connect('clicked', callback)
+                    self._game.set_level(level)
+                    self._game.new_game()
+            button.connect('toggled', callback)
 
             return button
 
-        add_radio_button('easy-level', self._easy_clicked)
-        add_radio_button('medium-level', self._medium_clicked)
-        add_radio_button('hard-level', self._hard_clicked)
+        add_radio_button('easy-level', 0)
+        add_radio_button('medium-level', 1)
+        add_radio_button('hard-level', 2)
 
         separator = Gtk.SeparatorToolItem()
         separator.set_expand(True)
@@ -135,15 +136,6 @@ class ImplodeWindow(Gtk.Window):
     def _delete_event_cb(self, window, event):
         Gtk.main_quit()
         return False
-
-    def _easy_clicked(self):
-        self._game.set_level(0)
-
-    def _medium_clicked(self):
-        self._game.set_level(1)
-
-    def _hard_clicked(self):
-        self._game.set_level(2)
 
     def _help_clicked(self):
         help_window = _HelpWindow()
