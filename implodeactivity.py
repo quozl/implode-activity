@@ -94,8 +94,9 @@ class ImplodeActivity(Activity):
         # _logger.debug(file_data)
         (file_type, version, game_data) = file_data
         if file_type == 'Implode save game' and version <= [1, 0]:
-            self._game.set_game_state(game_data)
-            # Ensure that the visual display matches the game state. <MS>
+            if not game_data['win_draw_flag']:
+                self._game.set_game_state(game_data)
+            # Ensure that the visual display matches the game state.
             self._levels_buttons[game_data['difficulty']].props.active = True
 
     def write_file(self, file_path):
