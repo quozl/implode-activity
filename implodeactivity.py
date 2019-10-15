@@ -36,7 +36,7 @@ from helpwidget import HelpWidget
 import os
 
 import json
-from StringIO import StringIO
+from io import StringIO
 from gi.repository import Gtk
 from gi.repository import GObject
 from gi.repository import Gdk
@@ -84,7 +84,7 @@ class ImplodeActivity(Activity):
 
     def read_file(self, file_path):
         # Loads the game state from a file.
-        f = file(file_path, 'rt')
+        f = open(file_path, 'rt')
         content = f.read()
         io = StringIO(content)
         file_data = json.load(io)
@@ -105,7 +105,7 @@ class ImplodeActivity(Activity):
         file_data = ['Implode save game', [1, 0], game_data]
         last_game_path = self._get_last_game_path()
         for path in (file_path, last_game_path):
-            f = file(path, 'wt')
+            f = open(path, 'wt')
             io = StringIO()
             json.dump(file_data, io)
             content = io.getvalue()
@@ -254,8 +254,8 @@ class _DialogWindow(Gtk.Window):
         super(_DialogWindow, self).__init__()
 
         self.set_border_width(style.LINE_WIDTH)
-        width = Gdk.Screen.width() / 2
-        height = Gdk.Screen.height() / 2
+        width = Gdk.Screen.width() // 2
+        height = Gdk.Screen.height() // 2
         self.set_size_request(width, height)
         self.set_position(Gtk.WindowPosition.CENTER_ALWAYS)
         self.set_decorated(False)

@@ -16,7 +16,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-from __future__ import with_statement
 
 from gettext import gettext as _
 
@@ -43,7 +42,7 @@ if 'SUGAR_BUNDLE_PATH' in os.environ:
     _TOOLBAR_COLOR = tuple(style.COLOR_TOOLBAR_GREY.get_rgba()[:3])
     _PREVIEW_TRIM_WIDTH = style.GRID_CELL_SIZE * 4
 
-    aspect_ratio = Gdk.Screen.width() * 100 / Gdk.Screen.height()
+    aspect_ratio = Gdk.Screen.width() * 100 // Gdk.Screen.height()
     if aspect_ratio > 159:
         _PREVIEW_TRIM_WIDTH = style.GRID_CELL_SIZE * 11
 else:
@@ -770,7 +769,7 @@ class _PreviewWidget(Gtk.DrawingArea):
                                          'edit-redo',
                                          'easy-level',
                                          'medium-level',
-                                         'hard-level',]):
+                                         'hard-level', ]):
             file_path = self._icon_file_func(icon_name)
             handle = _get_icon_handle(file_path)
             cr.save()
@@ -854,15 +853,15 @@ class _PreviewWidget(Gtk.DrawingArea):
         (width, height) = (event.width, event.height)
 
         actual_width = width - _PREVIEW_TRIM_WIDTH
-        actual_height = actual_width * 3 / 4
+        actual_height = actual_width * 3 // 4
 
         self.set_size_request(actual_width, actual_height)
 
         icon_height = int(math.ceil(actual_height * _ICON_HEIGHT))
         board_height = actual_height - icon_height
 
-        x_offset = (width - actual_width) / 2
-        y_offset = (height - actual_height) / 2
+        x_offset = (width - actual_width) // 2
+        y_offset = (height - actual_height) // 2
 
         self._preview_rect = Gdk.Rectangle()
         self._preview_rect.x = x_offset
@@ -917,6 +916,7 @@ def _flatten(items):
             out.append(item)
     return out
 
+
 # Simple caching mechanism for getting rsvg rendering handles for icons.  (The
 # sugar.graphics.icon package doesn't seem to provide an easy way to get at
 # them, so we do a little reimplementing here).
@@ -927,7 +927,7 @@ def _get_icon_handle(file_path):
     global _icon_handles
 
     if file_path not in _icon_handles:
-        with open(file_path, 'r') as f:
+        with open(file_path, 'rb') as f:
             data = f.read()
         _icon_handles[file_path] = Rsvg.Handle.new_from_data(data)
 

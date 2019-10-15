@@ -64,9 +64,9 @@ class TestEnumerateOneCellChanges(unittest.TestCase):
     def _assertChanges(self, changes, expChanges):
         self.assertEqual(len(changes), len(expChanges))
         for change in changes:
-            self.assert_(change in expChanges)
+            self.assertTrue(change in expChanges)
         for change in expChanges:
-            self.assert_(change in changes)
+            self.assertTrue(change in changes)
 
 
 class TestMakeChange(unittest.TestCase):
@@ -116,6 +116,7 @@ class TestMakeChange(unittest.TestCase):
     def testCell2(self):
         before = """1"""
         change = boardgen._InsertCellChange(0, 0)
+        # flake8: noqa: E221 (flake8 parser incorrectly detects)
         after =  """1
                     *"""
         self._assertMakeChange(before, change, after)
@@ -223,29 +224,29 @@ class TestChangeIsColorable(unittest.TestCase):
     def test1(self):
         b = _make_board("""""")
         change = boardgen._InsertCellChange(0, 0)
-        self.assert_(boardgen._change_is_colorable(b, change, 1))
+        self.assertTrue(boardgen._change_is_colorable(b, change, 1))
 
     def test2(self):
         b = _make_board("""1""")
         change = boardgen._InsertCellChange(0, 0)
-        self.failIf(boardgen._change_is_colorable(b, change, 1))
+        self.assertFalse(boardgen._change_is_colorable(b, change, 1))
 
     def test3(self):
         b = _make_board("""1""")
         change = boardgen._InsertCellChange(0, 0)
-        self.assert_(boardgen._change_is_colorable(b, change, 2))
+        self.assertTrue(boardgen._change_is_colorable(b, change, 2))
 
     def test4(self):
         b = _make_board("""1.2
                            1*3""")
         change = boardgen._InsertCellChange(1, 0)
-        self.failIf(boardgen._change_is_colorable(b, change, 2))
+        self.assertFalse(boardgen._change_is_colorable(b, change, 2))
 
     def test5(self):
         b = _make_board("""1.2
                            1*3""")
         change = boardgen._InsertCellChange(1, 0)
-        self.failIf(boardgen._change_is_colorable(b, change, 3))
+        self.assertFalse(boardgen._change_is_colorable(b, change, 3))
 
 
 class TestGetCellChanges(unittest.TestCase):
@@ -286,12 +287,12 @@ class TestGetCellChanges(unittest.TestCase):
         b = _make_board(s)
         (h_changes, v_changes) = boardgen._get_cell_changes(b, board_size)
         changes = h_changes + v_changes
-        print changes
+        print(changes)
         self.assertEqual(len(changes), len(expChanges))
         for change in changes:
-            self.assert_(change in expChanges)
+            self.assertTrue(change in expChanges)
         for change in expChanges:
-            self.assert_(change in changes)
+            self.assertTrue(change in changes)
 
 
 class TestGetColChanges(unittest.TestCase):
@@ -327,9 +328,9 @@ class TestGetColChanges(unittest.TestCase):
         changes = boardgen._get_col_changes(b, board_size)
         self.assertEqual(len(changes), len(expChanges))
         for change in changes:
-            self.assert_(change in expChanges)
+            self.assertTrue(change in expChanges)
         for change in expChanges:
-            self.assert_(change in changes)
+            self.assertTrue(change in changes)
 
 
 def _make_board(s):
@@ -353,6 +354,7 @@ def _make_board(s):
             b.set_value(j, i, val_map[ch])
 
     return b
+
 
 if __name__ == '__main__':
     unittest.main()

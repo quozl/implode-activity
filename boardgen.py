@@ -326,7 +326,8 @@ def main():
                        fragmentation=1,
                        max_colors=5,
                        max_size=(20, 10))
-    print repr(b)
+    print(repr(b))
+
 
 if __name__ == '__main__':
     # import cProfile

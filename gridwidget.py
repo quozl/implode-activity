@@ -340,7 +340,7 @@ class BoardDrawer(object):
             return
         if self._selected_cell is not None:
             self._invalidate_selection(self._selected_cell)
-        self._selected_cell = (int(self._board_width / 2),
+        self._selected_cell = (int(self._board_width // 2),
                                self._board_height - 1)
         self._invalidate_selection(self._selected_cell)
 
@@ -447,7 +447,7 @@ class BoardDrawer(object):
             return
 
         value_map = self._board.get_value_map()
-        for (coord, value) in value_map.items():
+        for (coord, value) in list(value_map.items()):
             self._draw_block(cr, coord[0], coord[1], value)
 
     def _draw_selected(self, cr):
@@ -583,7 +583,7 @@ class RemovalDrawer(object):
         # Calculate starting coords.
         starting_frame = []
         value_map = self._board.get_value_map()
-        for ((i, j), value) in value_map.items():
+        for ((i, j), value) in list(value_map.items()):
             starting_frame.append((i, j, 1.0, value))
         frames[_ANIM_STAGE_NONE] = (transform, starting_frame)
         lengths[_ANIM_STAGE_NONE] = 0.0
@@ -861,7 +861,7 @@ class WinDrawer(object):
         pairs.sort()
         # Re-interleave pairs, if desired.
         if r.randint(0, 1):
-            index1 = int(len(pairs) / 2)
+            index1 = int(len(pairs) // 2)
             list1 = pairs[:index1]
             list2 = pairs[index1:]
             if r.randint(0, 1):

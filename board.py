@@ -32,7 +32,7 @@ class Board(object):
     def clone(self):
         """Return a copy of the board."""
         b = Board()
-        for (col_index, col) in self._data.items():
+        for (col_index, col) in list(self._data.items()):
             b._data[col_index] = col[:]
         return b
 
@@ -103,7 +103,7 @@ class Board(object):
         if len(self._data) == 0:
             return 0
         else:
-            return max(0, max(len(col) for col in self._data.values()))
+            return max(0, max(len(col) for col in list(self._data.values())))
 
     def is_empty(self):
         return (len(self._data) == 0)
@@ -112,7 +112,7 @@ class Board(object):
         """Returns a map from coordinate tuples to values for all cells on the
            board."""
         value_map = {}
-        for (i, col) in self._data.items():
+        for (i, col) in list(self._data.items()):
             for (j, value) in enumerate(col):
                 if value is not None:
                     value_map[(i, j)] = value
@@ -136,7 +136,7 @@ class Board(object):
            tuples."""
         examined = set()
         all_contiguous = []
-        for (i, col) in self._data.items():
+        for (i, col) in list(self._data.items()):
             for (j, value) in enumerate(col):
                 coord = (i, j)
                 if coord not in examined:
@@ -206,7 +206,7 @@ class Board(object):
            columns higher."""
         assert num_columns >= 0
         new_data = {}
-        for (i, col) in self._data.items():
+        for (i, col) in list(self._data.items()):
             if i < col_index:
                 new_data[i] = col
             else:
@@ -218,7 +218,7 @@ class Board(object):
            higher-numbered columns to fill the space."""
         assert 0 <= num_columns
         new_data = {}
-        for (i, col) in self._data.items():
+        for (i, col) in list(self._data.items()):
             if i < col_index:
                 new_data[i] = col
             elif i >= col_index + num_columns:
@@ -229,12 +229,12 @@ class Board(object):
         """Returns a list of empty (all zero) columns."""
         empty_cols = []
         for i in range(min(0, self.min_x), self.max_x):
-            if i not in self._data.items():
+            if i not in list(self._data.items()):
                 empty_cols.append(i)
         return empty_cols
 
     def drop_pieces(self):
-        for (i, col) in self._data.items():
+        for (i, col) in list(self._data.items()):
             self._data[i] = [x for x in col if x is not None]
 
     def get_drop_map(self):
@@ -242,7 +242,7 @@ class Board(object):
            out None values vertically), as a dictionary mapping old
            coordinate tuples to new coordinate tuples."""
         drop_map = {}
-        for (i, col) in self._data.items():
+        for (i, col) in list(self._data.items()):
             offset = 0
             for (j, value) in enumerate(col):
                 if value is not None:
@@ -260,7 +260,7 @@ class Board(object):
         width = self.width
         height = self.height
         lines = []
-        for i in reversed(range(height)):
+        for i in reversed(list(range(height))):
             line = []
             for j in range(width):
                 value = self.get_value(j, i)
@@ -282,7 +282,7 @@ def make_test_board(width, height):
     for x in range(width):
         for y in range(height):
             unchosen.append((x, y))
-    for i in range(width * height * 4 / 6):
+    for i in range(width * height * 4 // 6):
         coord = r.choice(unchosen)
         unchosen.remove(coord)
         b.set_value(coord[0], coord[1], r.randint(0, 2))
@@ -292,13 +292,14 @@ def make_test_board(width, height):
 
 
 def dump_board(b):
-    print repr(b)
+    print(repr(b))
 
 
 def main():
     b = make_test_board(30, 20)
     dump_board(b)
-    print b.get_all_contiguous()
+    print(b.get_all_contiguous())
+
 
 if __name__ == '__main__':
     main()

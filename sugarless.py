@@ -58,7 +58,7 @@ class ImplodeWindow(Gtk.Window):
 
         def set_icon(button, icon):
             image = Gtk.Image()
-            pixbuf = icon_theme.load_icon(icon, geometry.min_height / 10, 0)
+            pixbuf = icon_theme.load_icon(icon, geometry.min_height // 10, 0)
             image.set_from_pixbuf(pixbuf)
             button.set_icon_widget(image)
 
@@ -293,6 +293,7 @@ def main():
     w = ImplodeWindow()
     Gtk.main()
     del w
+
 
 if __name__ == "__main__":
     main()
