@@ -21,7 +21,7 @@ _logger = logging.getLogger('implode-activity')
 
 from gettext import gettext as _
 
-from sugar3.activity.activity import Activity
+from sugar3.activity.activity import Activity, SCOPE_PRIVATE
 from sugar3.graphics import style
 from sugar3.graphics.icon import Icon
 from sugar3.graphics.radiotoolbutton import RadioToolButton
@@ -32,6 +32,7 @@ from sugar3.graphics.toolbarbox import ToolbarBox
 
 from implodegame import ImplodeGame
 from helpwidget import HelpWidget
+from collabwrapper import CollabWrapper
 
 import os
 
@@ -45,11 +46,12 @@ from keymap import KEY_MAP
 
 class ImplodeActivity(Activity):
     def __init__(self, handle):
-        super(ImplodeActivity, self).__init__(handle)
+        Activity.__init__(self, handle)
 
-        self.max_participants = 1
-
+        self._joining_hide = False
         self._game = ImplodeGame()
+        self._collab = CollabWrapper(self)
+        self._collab.connect('message', self._message_cb)
 
         game_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         game_box.pack_start(self._game, True, True, 0)
@@ -67,6 +69,10 @@ class ImplodeActivity(Activity):
             self._stuck_strip, expand=False, fill=False, padding=0)
 
         self._game.connect('show-stuck', self._show_stuck_cb)
+        self._game.connect('piece-selected', self._piece_selected_cb)
+        self._game.connect('undo-key-pressed', self._undo_key_pressed_cb)
+        self._game.connect('redo-key-pressed', self._redo_key_pressed_cb)
+        self._game.connect('new-key-pressed', self._new_key_pressed_cb)
         self._stuck_strip.connect('undo-clicked', self._stuck_undo_cb)
         game_box.connect('key-press-event', self._key_press_event_cb)
 
@@ -76,8 +82,30 @@ class ImplodeActivity(Activity):
         if os.path.exists(last_game_path):
             self.read_file(last_game_path)
 
+        self._collab.setup()
+
+        # Hide the canvas when joining a shared activity
+        if self.shared_activity:
+            if not self.get_shared():
+                self.get_canvas().hide()
+                self.busy()
+                self._joining_hide = True
+
     def _get_last_game_path(self):
         return os.path.join(self.get_activity_root(), 'data', 'last_game')
+
+    def get_data(self):
+        return self._game.get_game_state()
+
+    def set_data(self, data):
+        if not data['win_draw_flag']:
+            self._game.set_game_state(data)
+        # Ensure that the visual display matches the game state.
+        self._levels_buttons[data['difficulty']].props.active = True
+        # Release the cork
+        if self._joining_hide:
+            self.get_canvas().show()
+            self.unbusy()
 
     def read_file(self, file_path):
         # Loads the game state from a file.
@@ -87,15 +115,12 @@ class ImplodeActivity(Activity):
 
         (file_type, version, game_data) = file_data
         if file_type == 'Implode save game' and version <= [1, 0]:
-            if not game_data['win_draw_flag']:
-                self._game.set_game_state(game_data)
-            # Ensure that the visual display matches the game state.
-            self._levels_buttons[game_data['difficulty']].props.active = True
+            self.set_data(game_data)
 
     def write_file(self, file_path):
         # Writes the game state to a file.
-        game_data = self._game.get_game_state()
-        file_data = ['Implode save game', [1, 0], game_data]
+        data = self.get_data()
+        file_data = ['Implode save game', [1, 0], data]
         last_game_path = self._get_last_game_path()
         for path in (file_path, last_game_path):
             f = open(path, 'w')
@@ -103,6 +128,12 @@ class ImplodeActivity(Activity):
             f.close()
 
     def _show_stuck_cb(self, state, data=None):
+        if self.shared_activity:
+            return
+        if self.metadata:
+            share_scope = self.metadata.get('share-scope', SCOPE_PRIVATE)
+            if share_scope != SCOPE_PRIVATE:
+                return
         if data:
             self._stuck_strip.show_all()
         else:
@@ -148,21 +179,20 @@ class ImplodeActivity(Activity):
 
         self._add_separator(toolbar)
 
-        def add_button(icon_name, tooltip, func):
-            def callback(source):
-                func()
+        def add_button(icon_name, tooltip, callback):
             button = ToolButton(icon_name)
             toolbar.add(button)
             button.connect('clicked', callback)
             button.set_tooltip(tooltip)
+            return button
 
-        add_button('new-game', _("New"), self._game.new_game)
-        add_button('replay-game', _("Replay"), self._game.replay_game)
+        add_button('new-game', _("New"), self._new_game_cb)
+        add_button('replay-game', _("Replay"), self._replay_game_cb)
 
         self._add_separator(toolbar)
 
-        add_button('edit-undo', _("Undo"), self._game.undo)
-        add_button('edit-redo', _("Redo"), self._game.redo)
+        add_button('edit-undo', _("Undo"), self._undo_cb)
+        add_button('edit-redo', _("Redo"), self._redo_cb)
 
         self._add_separator(toolbar)
 
@@ -179,6 +209,7 @@ class ImplodeActivity(Activity):
 
             def callback(source):
                 if source.get_active():
+                    self._collab.post({'action': icon_name})
                     self._game.set_level(numeric_level)
                     self._game.new_game()
 
@@ -191,12 +222,18 @@ class ImplodeActivity(Activity):
 
         self._add_separator(toolbar)
 
-        def _help_clicked_cb():
+        def _help_clicked_cb(button):
             help_window = _HelpWindow()
             help_window.set_transient_for(self.get_toplevel())
             help_window.show_all()
 
-        add_button('toolbar-help', _("Help"), _help_clicked_cb)
+        help_button = add_button('toolbar-help', _("Help"), _help_clicked_cb)
+
+        def _help_disable_cb(collab, buddy):
+            if help_button.props.sensitive:
+                help_button.props.sensitive = False
+
+        self._collab.connect('buddy-joined', _help_disable_cb)
 
         self._add_expander(toolbar)
 
@@ -233,6 +270,61 @@ class ImplodeActivity(Activity):
                 sep.hide()
             else:
                 sep.show()
+
+    def _new_game_cb(self, button):
+        self._game.reseed()
+        self._collab.post({'action': 'new-game',
+                           'seed': self._game.get_seed()})
+        self._game.new_game()
+
+    def _replay_game_cb(self, button):
+        self._collab.post({'action': 'replay-game'})
+        self._game.replay_game()
+
+    def _undo_cb(self, button):
+        self._collab.post({'action': 'edit-undo'})
+        self._game.undo()
+
+    def _redo_cb(self, button):
+        self._collab.post({'action': 'edit-redo'})
+        self._game.redo()
+
+    def _message_cb(self, collab, buddy, msg):
+        action = msg.get('action')
+        if action == 'new-game':
+            self._game.set_seed(msg.get('seed'))
+            self._game.new_game()
+        elif action == 'replay-game':
+            self._game.replay_game()
+        elif action == 'edit-undo':
+            self._game.undo()
+        elif action == 'edit-redo':
+            self._game.redo()
+        elif action == 'easy-level':
+            self._game.set_level(0)
+            self._game.new_game()
+        elif action == 'medium-level':
+            self._game.set_level(1)
+            self._game.new_game()
+        elif action == 'hard-level':
+            self._game.set_level(2)
+            self._game.new_game()
+        elif action == 'piece-selected':
+            x = msg.get('x')
+            y = msg.get('y')
+            self._game.piece_selected(x, y)
+
+    def _piece_selected_cb(self, game, x, y):
+        self._collab.post({'action': 'piece-selected', 'x': x, 'y': y})
+
+    def _undo_key_pressed_cb(self, game, dummy):
+        self._collab.post({'action': 'edit-undo'})
+
+    def _redo_key_pressed_cb(self, game, dummy):
+        self._collab.post({'action': 'edit-redo'})
+
+    def _new_key_pressed_cb(self, game, seed):
+        self._collab.post({'action': 'new-game', 'seed': seed})
 
 
 class _DialogWindow(Gtk.Window):

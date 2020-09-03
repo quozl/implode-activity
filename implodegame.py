@@ -43,6 +43,10 @@ class ImplodeGame(Gtk.EventBox):
 
     __gsignals__ = {
         'show-stuck': (GObject.SignalFlags.RUN_LAST, None, (int,)),
+        'piece-selected': (GObject.SignalFlags.RUN_LAST, None, (int, int)),
+        'undo-key-pressed': (GObject.SignalFlags.RUN_LAST, None, (int,)),
+        'redo-key-pressed': (GObject.SignalFlags.RUN_LAST, None, (int,)),
+        'new-key-pressed': (GObject.SignalFlags.RUN_LAST, None, (int,)),
     }
 
     def __init__(self, *args, **kwargs):
@@ -57,10 +61,8 @@ class ImplodeGame(Gtk.EventBox):
         self._winning_moves = []
 
         self._random = random.Random()
-        # self._random.seed(0)
         self._difficulty = 0
         self._size = (8, 6)
-        self._seed = 0
         self._fragmentation = 0
 
         self._grid = gridwidget.GridWidget()
@@ -70,16 +72,26 @@ class ImplodeGame(Gtk.EventBox):
         self._grid.connect('new-key-pressed', self._new_key_pressed_cb)
         self.add(self._grid)
 
+        self._seed = self._random.randint(0, 99999)
         self.new_game()
 
     def grab_focus(self):
         self._grid.grab_focus()
         # self._grid.select_center_cell()
 
+    def reseed(self):
+        self.set_seed(self._random.randint(0, 99999))
+
+    def set_seed(self, seed):
+        self._seed = seed
+        self._random.seed(self._seed)
+
+    def get_seed(self):
+        return self._seed
+
     def new_game(self):
         self._hide_stuck()
         self._stop_animation()
-        self._seed = self._random.randint(0, 99999)
         size_frag_dict = {
             0: ((8, 6), 0),
             1: ((12, 10), 0),
@@ -217,7 +229,7 @@ class ImplodeGame(Gtk.EventBox):
             else:
                 return b, None
         self._difficulty = state['difficulty']
-        self._seed = state['seed']
+        self.set_seed(state['seed'])
         self._size = state['size']
         self._fragmentation = state['fragmentation']
         (self._board, dummy) = decode_board(state['board'])
@@ -253,6 +265,10 @@ class ImplodeGame(Gtk.EventBox):
         if len(self._board.get_contiguous(x, y)) < 3:
             return
 
+        self.emit('piece-selected', x, y)
+        self.piece_selected(x, y)
+
+    def piece_selected(self, x, y):
         self._hide_stuck()
         self._stop_animation()
         # We recalc contiguous here because _stop_animation may modify board
@@ -270,15 +286,19 @@ class ImplodeGame(Gtk.EventBox):
                 remove_func()
 
     def _undo_key_pressed_cb(self, widget, dummy):
+        self.emit('undo-key-pressed', dummy)
         self.undo()
 
     def _redo_key_pressed_cb(self, widget, dummy):
+        self.emit('redo-key-pressed', dummy)
         self.redo()
 
     def _new_key_pressed_cb(self, widget, dummy):
         # Only invoke new command via game pad if board is clear, to prevent
         # terrible accidents.
         if self._board.is_empty():
+            self.reseed()
+            self.emit('new-key-pressed', self._seed)
             self.new_game()
 
     def _stop_animation(self):
