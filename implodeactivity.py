@@ -36,7 +36,6 @@ from helpwidget import HelpWidget
 import os
 
 import json
-from io import StringIO
 from gi.repository import Gtk
 from gi.repository import GObject
 from gi.repository import Gdk
@@ -84,10 +83,8 @@ class ImplodeActivity(Activity):
 
     def read_file(self, file_path):
         # Loads the game state from a file.
-        f = open(file_path, 'rt')
-        content = f.read()
-        io = StringIO(content)
-        file_data = json.load(io)
+        f = open(file_path, 'r')
+        file_data = json.loads(f.read())
         f.close()
 
         # print file_data
@@ -105,11 +102,8 @@ class ImplodeActivity(Activity):
         file_data = ['Implode save game', [1, 0], game_data]
         last_game_path = self._get_last_game_path()
         for path in (file_path, last_game_path):
-            f = open(path, 'wt')
-            io = StringIO()
-            json.dump(file_data, io)
-            content = io.getvalue()
-            f.write(content)
+            f = open(path, 'w')
+            f.write(json.dumps(file_data))
             f.close()
 
     def _show_stuck_cb(self, state, data=None):
