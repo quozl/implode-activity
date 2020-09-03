@@ -47,8 +47,6 @@ class ImplodeActivity(Activity):
     def __init__(self, handle):
         super(ImplodeActivity, self).__init__(handle)
 
-        _logger.debug('Starting implode activity...')
-
         self.max_participants = 1
 
         self._game = ImplodeGame()
@@ -87,8 +85,6 @@ class ImplodeActivity(Activity):
         file_data = json.loads(f.read())
         f.close()
 
-        # print file_data
-        # _logger.debug(file_data)
         (file_type, version, game_data) = file_data
         if file_type == 'Implode save game' and version <= [1, 0]:
             if not game_data['win_draw_flag']:
@@ -230,10 +226,8 @@ class ImplodeActivity(Activity):
 
     def _configure_cb(self, event=None):
         if Gdk.Screen.width() < Gdk.Screen.height():
-            _logger.debug('TRUE')
             hide = True
         else:
-            _logger.debug('FALSE')
             hide = False
         for sep in self._seps:
             if hide:
