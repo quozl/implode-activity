@@ -73,6 +73,7 @@ class ImplodeActivity(Activity):
         self._game.connect('undo-key-pressed', self._undo_key_pressed_cb)
         self._game.connect('redo-key-pressed', self._redo_key_pressed_cb)
         self._game.connect('new-key-pressed', self._new_key_pressed_cb)
+        self._game.connect('cell-selected', self._cell_selected_cb)
         self._stuck_strip.connect('undo-clicked', self._stuck_undo_cb)
         game_box.connect('key-press-event', self._key_press_event_cb)
 
@@ -313,6 +314,13 @@ class ImplodeActivity(Activity):
             x = msg.get('x')
             y = msg.get('y')
             self._game.piece_selected(x, y)
+        elif action == 'cell-selected':
+            x = msg.get('x')
+            y = msg.get('y')
+            colors = buddy.props.color.split(',')
+            fg = style.Color(colors[0])
+            bg = style.Color(colors[1])
+            self._game.cell_selected(buddy.props.key, fg, bg, x, y)
 
     def _piece_selected_cb(self, game, x, y):
         self._collab.post({'action': 'piece-selected', 'x': x, 'y': y})
@@ -325,6 +333,9 @@ class ImplodeActivity(Activity):
 
     def _new_key_pressed_cb(self, game, seed):
         self._collab.post({'action': 'new-game', 'seed': seed})
+
+    def _cell_selected_cb(self, game, x, y):
+        self._collab.post({'action': 'cell-selected', 'x': x, 'y': y})
 
 
 class _DialogWindow(Gtk.Window):
