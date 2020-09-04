@@ -37,6 +37,9 @@ _BG_COLOR = (0.35, 0.35, 0.7)
 # Color of the selection border.
 _SELECTED_COLOR = (1.0, 1.0, 1.0)
 
+# Outline color of the others selected dots.
+_OTHERS_CELLS_COLOR = (0.0, 0.0, 0.0)
+
 # Ratio of the width/height (whichever is smaller) to leave as a margin
 # around the playing board.
 _BORDER = 0.05
@@ -104,6 +107,7 @@ class GridWidget(Gtk.DrawingArea):
         'undo-key-pressed': (GObject.SignalFlags.RUN_LAST, None, (int,)),
         'redo-key-pressed': (GObject.SignalFlags.RUN_LAST, None, (int,)),
         'new-key-pressed': (GObject.SignalFlags.RUN_LAST, None, (int,)),
+        'cell-selected': (GObject.SignalFlags.RUN_LAST, None, (int, int)),
     }
 
     def __init__(self, *args, **kwargs):
@@ -211,7 +215,13 @@ class GridWidget(Gtk.DrawingArea):
                                'right': (1, 0)}
                     if action in offsets:
                         offset = offsets[action]
-                        return self._board_drawer.move_selected_cell(*offset)
+                        changed = self._board_drawer.move_selected_cell(
+                            *offset)
+                        if changed:
+                            self.emit(
+                                'cell-selected',
+                                *self._board_drawer.get_selected_cell())
+                        return changed
                     else:
                         return False
 
@@ -225,7 +235,11 @@ class GridWidget(Gtk.DrawingArea):
         else:
             x = event.x
             y = event.y
-        self._board_drawer.set_mouse_selection(x, y)
+        changed = self._board_drawer.set_mouse_selection(x, y)
+        if changed:
+            self.emit(
+                'cell-selected',
+                *self._board_drawer.get_selected_cell())
 
     def _draw_event_cb(self, widget, cr):
         alloc = self.get_allocation()
@@ -283,6 +297,9 @@ class GridWidget(Gtk.DrawingArea):
 
         return Anim(update_func, local_end_anim_func)
 
+    def set_others_cells(self, key, fg, bg, x, y):
+        self._board_drawer.set_others_cells(key, fg, bg, x, y)
+
 
 # NOTE: We separate the drawing/interaction code from the GTK widget code so
 # that we can reuse the drawing in a widget that draws more on top; apparently
@@ -297,6 +314,7 @@ class BoardDrawer(object):
         self._board_width = 0
         self._board_height = 0
         self._selected_cell = None
+        self._others_cells = {}  # {key: [fg, bg, x, y]}
         self._contiguous_map = {}
 
         # Drawing offset and scale.
@@ -318,6 +336,7 @@ class BoardDrawer(object):
             x = max(0, min(self._board_width - 1, x))
             y = max(0, min(self._board_height - 1, y))
             self._selected_cell = (x, y)
+        self._others_cells = {}
         self._invalidate_board()
 
     def _recalc_contiguous_map(self):
@@ -328,6 +347,12 @@ class BoardDrawer(object):
         for contiguous in all_contiguous:
             for coord in contiguous:
                 self._contiguous_map[coord] = contiguous
+
+    def set_others_cells(self, key, fg, bg, x, y):
+        if key in self._others_cells:
+            self._invalidate_selection(self._others_cells[key][2:])
+        self._others_cells[key] = (fg, bg, x, y)
+        self._invalidate_selection(self._others_cells[key][2:])
 
     def get_selected_cell(self):
         return self._selected_cell
@@ -363,13 +388,16 @@ class BoardDrawer(object):
         # and y coordinates.
         if not self.board_is_valid():
             self._selected_cell = None
-            return
+            return False
         old_selection = self._selected_cell
         (x1, y1) = self._display_to_cell(x, y)
         if (0 <= x1 < self._board_width and 0 <= y1 < self._board_height):
-            self._selected_cell = (x1, y1)
-        self._invalidate_selection(old_selection)
-        self._invalidate_selection(self._selected_cell)
+            if self._selected_cell != (x1, y1):
+                self._selected_cell = (x1, y1)
+                self._invalidate_selection(old_selection)
+                self._invalidate_selection(self._selected_cell)
+                return True
+        return False
 
     def get_block_coord(self, x, y):
         if not self.board_is_valid():
@@ -440,6 +468,7 @@ class BoardDrawer(object):
         # a cell on the board.
         self._draw_blocks(cr)
         self._draw_selected(cr)
+        self._draw_others_selected_dot(cr)
         self._draw_selected_dot(cr)
 
     def _draw_blocks(self, cr):
@@ -488,6 +517,24 @@ class BoardDrawer(object):
         (x, y) = self._selected_cell
         cr.arc(x + 0.5, y + 0.5, _SELECTED_DOT_RADIUS, 0, math.pi * 2.0)
         cr.fill()
+
+    def _draw_others_selected_dot(self, cr):
+        if self._others_cells is None:
+            return
+
+        # Draws dots indicating others selected cells
+        for key, value in self._others_cells.items():
+            (fg, bg, x, y) = value
+            arcs = [
+                [_SELECTED_DOT_RADIUS * 2, _OTHERS_CELLS_COLOR],
+                [_SELECTED_DOT_RADIUS * 1.8, fg.get_rgba()],
+                [_SELECTED_DOT_RADIUS, bg.get_rgba()],
+            ]
+
+            for radius, rgba in arcs:
+                cr.arc(x + 0.5, y + 0.5, radius, 0, math.pi * 2.0)
+                cr.set_source_rgba(*rgba)
+                cr.fill()
 
     def _recalc_board_dimensions(self):
         if self.board_is_valid():

@@ -47,6 +47,7 @@ class ImplodeGame(Gtk.EventBox):
         'undo-key-pressed': (GObject.SignalFlags.RUN_LAST, None, (int,)),
         'redo-key-pressed': (GObject.SignalFlags.RUN_LAST, None, (int,)),
         'new-key-pressed': (GObject.SignalFlags.RUN_LAST, None, (int,)),
+        'cell-selected': (GObject.SignalFlags.RUN_LAST, None, (int, int)),
     }
 
     def __init__(self, *args, **kwargs):
@@ -70,6 +71,7 @@ class ImplodeGame(Gtk.EventBox):
         self._grid.connect('undo-key-pressed', self._undo_key_pressed_cb)
         self._grid.connect('redo-key-pressed', self._redo_key_pressed_cb)
         self._grid.connect('new-key-pressed', self._new_key_pressed_cb)
+        self._grid.connect('cell-selected', self._cell_selected_cb)
         self.add(self._grid)
 
         self._seed = self._random.randint(0, 99999)
@@ -300,6 +302,12 @@ class ImplodeGame(Gtk.EventBox):
             self.reseed()
             self.emit('new-key-pressed', self._seed)
             self.new_game()
+
+    def _cell_selected_cb(self, widget, x, y):
+        self.emit('cell-selected', x, y)
+
+    def cell_selected(self, key, fg, bg, x, y):
+        self._grid.set_others_cells(key, fg, bg, x, y)
 
     def _stop_animation(self):
         if self._anim is not None:
