@@ -89,7 +89,8 @@ class ImplodeActivity(Activity):
         if self.shared_activity:
             if not self.get_shared():
                 self.get_canvas().hide()
-                self.busy()
+                if hasattr(self, 'busy'):
+                    self.busy()
                 self._joining_hide = True
 
     def _get_last_game_path(self):
@@ -106,7 +107,8 @@ class ImplodeActivity(Activity):
         # Release the cork
         if self._joining_hide:
             self.get_canvas().show()
-            self.unbusy()
+            if hasattr(self, 'unbusy'):
+                self.unbusy()
 
     def read_file(self, file_path):
         # Loads the game state from a file.
